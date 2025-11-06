@@ -1,4 +1,4 @@
-import '../models/threat_model.dart';
+import 'package:scanx/core/models/threat_model.dart';
 import 'dart:async';
 
 /// Static analysis engine for APK manifest and code patterns

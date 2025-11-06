@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:crypto/crypto.dart';
-import '../models/threat_model.dart';
+import 'package:scanx/core/models/threat_model.dart';
 
 /// Collects device telemetry and installed app metadata
 class DeviceDataCollector {

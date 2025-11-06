@@ -1,5 +1,5 @@
 import 'package:uuid/uuid.dart';
-import '../models/threat_model.dart';
+import 'package:scanx/core/models/threat_model.dart';
 import 'signature_engine.dart';
 import 'static_analysis_engine.dart';
 import 'behavioral_anomaly_engine.dart';

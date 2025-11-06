@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="95" fill="#1F2937" stroke="#FF6B35" stroke-width="2"/>
+  
+  <!-- Shield Base -->
+  <path d="M 100 40 L 140 60 L 140 110 C 140 135 100 160 100 160 C 100 160 60 135 60 110 L 60 60 Z" 
+        fill="none" stroke="#FF6B35" stroke-width="3" stroke-linejoin="round"/>
+  
+  <!-- X Design (Threat Detection) -->
+  <g transform="translate(100, 100)">
+    <!-- First diagonal line of X -->
+    <line x1="-25" y1="-25" x2="25" y2="25" stroke="#00D9FF" stroke-width="4" stroke-linecap="round"/>
+    <!-- Second diagonal line of X -->
+    <line x1="25" y1="-25" x2="-25" y2="25" stroke="#00D9FF" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Scanning Lines (radar effect) -->
+  <circle cx="100" cy="100" r="45" fill="none" stroke="#FF6B35" stroke-width="1" opacity="0.5"/>
+  <circle cx="100" cy="100" r="55" fill="none" stroke="#FF6B35" stroke-width="1" opacity="0.3"/>
+  
+  <!-- Text: ScanX -->
+  <text x="100" y="175" font-family="Arial, sans-serif" font-size="18" font-weight="bold" 
+        text-anchor="middle" fill="#00D9FF">ScanX</text>
+</svg>

@@ -1,4 +1,4 @@
-import '../models/threat_model.dart';
+import 'package:scanx/core/models/threat_model.dart';
 
 /// Real-time behavioral anomaly detection
 class BehavioralAnomalyEngine {

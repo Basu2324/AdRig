@@ -1,6 +1,6 @@
 import 'package:crypto/crypto.dart';
 import 'dart:io';
-import '../models/threat_model.dart';
+import 'package:scanx/core/models/threat_model.dart';
 
 /// Signature-based malware detection engine
 class SignatureEngine {
