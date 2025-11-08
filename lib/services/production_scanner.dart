@@ -59,7 +59,7 @@ class ProductionScanner {
     
     try {
       // ==================== STEP 1: Static Analysis ====================
-      print('📊 [1/4] Static APK Analysis...');
+      print('📊 [1/6] Static APK Analysis...');
       scanSteps.add('Static Analysis');
       
       APKAnalysisResult? apkAnalysis;
@@ -86,7 +86,7 @@ class ProductionScanner {
       }
       
       // ==================== STEP 2: YARA Pattern Matching ====================
-      print('\n🔍 [2/5] YARA Pattern Matching...');
+      print('\n🔍 [2/6] YARA Pattern Matching...');
       scanSteps.add('YARA Rules');
       
       if (apkAnalysis != null && apkAnalysis.suspiciousStrings.isNotEmpty) {
@@ -118,7 +118,7 @@ class ProductionScanner {
       }
       
       // ==================== STEP 3: Signature Matching ====================
-      print('\n🔐 [3/5] Signature Database Check...');
+      print('\n🔐 [3/6] Signature Database Check...');
       scanSteps.add('Signature Matching');
       
       bool signatureMatch = false;
@@ -157,7 +157,7 @@ class ProductionScanner {
       }
       
       // ==================== STEP 4: Cloud Reputation ====================
-      print('\n☁️  [4/5] Cloud Reputation Check...');
+      print('\n☁️  [4/6] Cloud Reputation Check...');
       scanSteps.add('Cloud Reputation');
       
       ReputationScore? reputation;
@@ -201,7 +201,7 @@ class ProductionScanner {
       }
       
       // ==================== STEP 5: Risk Assessment ====================
-      print('\n🎯 [5/5] Risk Assessment & Decision...');
+      print('\n🎯 [5/6] Risk Assessment & Decision...');
       scanSteps.add('Decision Engine');
       
       final assessment = _decisionEngine.assessThreat(
