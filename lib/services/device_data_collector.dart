@@ -1,14 +1,92 @@
 import 'dart:io';
 import 'package:crypto/crypto.dart';
-import 'package:scanx/core/models/threat_model.dart';
+import 'package:flutter/services.dart';
+import 'package:adrig/core/models/threat_model.dart';
 
 /// Collects device telemetry and installed app metadata
 class DeviceDataCollector {
-  /// Get list of all installed apps with metadata
+  static const platform = MethodChannel('com.autoguard.malware_scanner/apps');
+
+  /// Get list of all installed apps with metadata - REAL APPS FROM DEVICE
   Future<List<AppMetadata>> getInstalledApps() async {
-    // In production: use native Android method channel to enumerate packages
-    // For now: return mock data for testing
-    return _generateMockApps();
+    try {
+      print('[DeviceDataCollector] Fetching real installed apps from Android PackageManager...');
+      
+      // Call native Android method to get REAL installed packages
+      final List<dynamic> apps = await platform.invokeMethod('getInstalledApps');
+      
+      print('[DeviceDataCollector] Retrieved ${apps.length} real apps from device');
+      
+      return apps.map((app) {
+        final Map<String, dynamic> appMap = Map<String, dynamic>.from(app);
+        return AppMetadata(
+          packageName: appMap['packageName'] ?? '',
+          appName: appMap['appName'] ?? 'Unknown',
+          version: appMap['version'] ?? '0.0.0',
+          hash: '', // Will be computed by APKAnalyzer
+          installTime: appMap['installTime'] ?? 0,
+          lastUpdateTime: appMap['lastUpdateTime'] ?? 0,
+          isSystemApp: appMap['isSystemApp'] ?? false,
+          installerPackage: appMap['installerPackage'] ?? 'unknown',
+          size: appMap['size'] ?? 0,
+          requestedPermissions: List<String>.from(appMap['requestedPermissions'] ?? []),
+          grantedPermissions: List<String>.from(appMap['grantedPermissions'] ?? []),
+          apkPath: appMap['apkPath'],
+          versionCode: appMap['versionCode']?.toString(),
+          targetSdkVersion: appMap['targetSdkVersion']?.toString(),
+          nativeLibraryDir: appMap['nativeLibraryDir'],
+          dataDir: appMap['dataDir'],
+        );
+      }).toList();
+    } catch (e) {
+      print('[DeviceDataCollector] ERROR: Failed to get installed apps: $e');
+      print('[DeviceDataCollector] Make sure you\'re running on Android device/emulator');
+      return [];
+    }
+  }
+
+  /// Get detailed info for specific app
+  Future<AppMetadata?> getAppDetails(String packageName) async {
+    try {
+      final Map<dynamic, dynamic> details = await platform.invokeMethod(
+        'getAppDetails',
+        {'packageName': packageName},
+      );
+      
+      final Map<String, dynamic> appMap = Map<String, dynamic>.from(details);
+      return AppMetadata(
+        packageName: appMap['packageName'] ?? '',
+        appName: appMap['appName'] ?? 'Unknown',
+        version: appMap['version'] ?? '0.0.0',
+        hash: '',
+        installTime: appMap['installTime'] ?? 0,
+        lastUpdateTime: appMap['lastUpdateTime'] ?? 0,
+        isSystemApp: appMap['isSystemApp'] ?? false,
+        installerPackage: appMap['installerPackage'] ?? 'unknown',
+        size: appMap['size'] ?? 0,
+        requestedPermissions: List<String>.from(appMap['requestedPermissions'] ?? []),
+        grantedPermissions: List<String>.from(appMap['grantedPermissions'] ?? []),
+        apkPath: appMap['apkPath'],
+        versionCode: appMap['versionCode']?.toString(),
+        targetSdkVersion: appMap['targetSdkVersion']?.toString(),
+        nativeLibraryDir: appMap['nativeLibraryDir'],
+        dataDir: appMap['dataDir'],
+      );
+    } catch (e) {
+      print('[DeviceDataCollector] Error getting app details for $packageName: $e');
+      return null;
+    }
+  }
+
+  /// Get count of installed apps
+  Future<int> getInstalledAppCount() async {
+    try {
+      final int count = await platform.invokeMethod('getInstalledAppCount');
+      return count;
+    } catch (e) {
+      print('[DeviceDataCollector] Error getting app count: $e');
+      return 0;
+    }
   }
 
   /// Calculate file hashes (MD5, SHA1, SHA256)
@@ -67,9 +145,12 @@ class DeviceDataCollector {
     }
   }
 
-  // Mock data generation for testing
-
-  List<AppMetadata> _generateMockApps() {
+  /// Get app manifest information (stub for now)
+  Future<Map<String, dynamic>> getAppManifest(String packageName) async {
+    // TODO: Parse AndroidManifest.xml from APK in native code
+    return {};
+  }
+}
     return [
       // Legitimate apps
       AppMetadata(

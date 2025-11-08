@@ -1,11 +1,11 @@
 {
-    "name": "malware_scanner",
-    "short_name": "malware_scanner",
+    "name": "AdRig Security - Malware Scanner",
+    "short_name": "AdRig Security",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1A1B26",
+    "theme_color": "#FF6B35",
+    "description": "Comprehensive mobile security scanner with multi-layer threat detection",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

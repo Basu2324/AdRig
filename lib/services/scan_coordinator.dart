@@ -1,172 +1,235 @@
 import 'package:uuid/uuid.dart';
-import 'package:scanx/core/models/threat_model.dart';
-import 'signature_engine.dart';
-import 'static_analysis_engine.dart';
-import 'behavioral_anomaly_engine.dart';
+import 'package:adrig/core/models/threat_model.dart';
+import 'production_scanner.dart';
+import 'quarantine_service.dart';
+import 'privacy_service.dart';
+import 'update_service.dart';
+import 'app_whitelist_service.dart';
+import 'threat_history_service.dart';
 
 /// Central scanning orchestrator - coordinates all detection engines
+/// NOW USING PRODUCTION SCANNER with real APK analysis, signature matching, cloud reputation, and behavioral monitoring
 class ScanCoordinator {
-  late final SignatureEngine _signatureEngine;
-  late final StaticAnalysisEngine _staticAnalyzer;
-  late final BehavioralAnomalyEngine _behavioralEngine;
+  late final ProductionScanner _productionScanner;
+  late final QuarantineService _quarantineService;
+  late final PrivacyService _privacyService;
+  late final UpdateService _updateService;
+  late final ThreatHistoryService _historyService;
 
   final Map<String, ScanResult> _scanHistory = {};
   final _uuid = const Uuid();
+  bool _isInitialized = false;
 
   ScanCoordinator() {
     _initializeEngines();
   }
 
-  void _initializeEngines() {
-    _signatureEngine = SignatureEngine();
-    _signatureEngine.initializeSampleSignatures();
-    _staticAnalyzer = StaticAnalysisEngine();
-    _behavioralEngine = BehavioralAnomalyEngine();
+  /// Initialize all detection engines and services
+  Future<void> initializeAsync() async {
+    if (_isInitialized) return;
+
+    try {
+      print('🚀 Initializing Production Malware Scanner...');
+
+      // Initialize privacy service first
+      await _privacyService.initialize();
+
+      // Initialize update service
+      await _updateService.initialize();
+
+      // Check for updates if allowed
+      if (_privacyService.isAutoUpdateAllowed()) {
+        if (_updateService.needsUpdateCheck()) {
+          final updates = await _updateService.checkForUpdates();
+          print('Found ${updates.length} available updates');
+        }
+      }
+
+      // Initialize production scanner (downloads malware signatures, etc.)
+      await _productionScanner.initialize();
+
+      // Initialize quarantine
+      await _quarantineService.initialize();
+
+      _isInitialized = true;
+      print('✓ Production Scanner initialized successfully\n');
+    } catch (e) {
+      print('Error during initialization: $e');
+    }
   }
 
-  /// Execute full scan on installed apps
+  void _initializeEngines() {
+    _productionScanner = ProductionScanner();
+    _quarantineService = QuarantineService();
+    _privacyService = PrivacyService();
+    _updateService = UpdateService();
+    _historyService = ThreatHistoryService();
+  }
+
+  /// Execute PRODUCTION scan on installed apps
+  /// Uses real APK analysis, signature matching, cloud reputation, behavioral monitoring
   Future<ScanResult> scanInstalledApps(
-    List<AppMetadata> installedApps,
-  ) async {
+    List<AppTelemetry> installedApps, {
+    Function(int scanned, int total, String currentApp)? onProgress,
+  }) async {
     final scanId = _uuid.v4();
     final startTime = DateTime.now();
-    final threats = <DetectedThreat>[];
-    final deduplicatedThreats = <String, DetectedThreat>{};
+    final allThreats = <DetectedThreat>[];
 
-    print('🔍 Starting comprehensive scan (ID: $scanId)');
-    print('📱 Scanning ${installedApps.length} installed apps');
-
-    // Stage 1: Signature-based scanning
-    print('\n[Stage 1/4] Signature Database Scan');
-    for (int i = 0; i < installedApps.length; i++) {
-      final app = installedApps[i];
-      print('  → [${i + 1}/${installedApps.length}] ${app.appName}');
-
-      // Signature-based detection
-      final sigThreats = _signatureEngine.detectPermissionPatterns(
-        app.packageName,
-        app.appName,
-        app.requestedPermissions,
-        app.grantedPermissions,
+    print('🔍 Starting PRODUCTION scan (ID: $scanId)');
+    print('📱 Total apps: ${installedApps.length}');
+    
+    // First, filter out whitelisted apps to get accurate count
+    final appsToScan = <AppTelemetry>[];
+    for (final app in installedApps) {
+      final appMetadata = AppMetadata(
+        packageName: app.packageName,
+        appName: app.appName,
+        version: app.version,
+        hash: app.hashes.sha256,
+        installTime: app.installedDate.millisecondsSinceEpoch,
+        lastUpdateTime: app.lastUpdated.millisecondsSinceEpoch,
+        isSystemApp: app.isSystemApp,
+        installerPackage: app.installer ?? 'Unknown',
+        size: app.appSize,
+        requestedPermissions: app.declaredPermissions,
+        grantedPermissions: app.runtimeGrantedPermissions,
+        certificate: app.signingCertFingerprint,
       );
-      _deduplicateThreats(deduplicatedThreats, sigThreats);
-
-      // IOC detection
-      final iocThreats = _signatureEngine.detectByIOC(
-        app.packageName,
-        app.appName,
-        [], // Would be populated with network telemetry
-      );
-      _deduplicateThreats(deduplicatedThreats, iocThreats);
-    }
-    print('  ✓ Signature scan complete (${deduplicatedThreats.length} threats found)');
-
-    // Stage 2: Static Analysis
-    print('\n[Stage 2/4] Static Code Analysis');
-    for (int i = 0; i < installedApps.length; i++) {
-      final app = installedApps[i];
-      if ((i + 1) % 10 == 0 || i == installedApps.length - 1) {
-        print('  → [${i + 1}/${installedApps.length}] analyzed');
+      
+      if (!AppWhitelistService.isWhitelisted(appMetadata)) {
+        appsToScan.add(app);
       }
-
-      // Manifest analysis
-      final manifestThreats = _staticAnalyzer.analyzeManifest(
-        app.packageName,
-        app.appName,
-        _getMockManifestData(app),
-        app.requestedPermissions,
-      );
-      _deduplicateThreats(deduplicatedThreats, manifestThreats);
-
-      // Code structure analysis
-      final structureThreats = _staticAnalyzer.analyzeCodeStructure(
-        app.packageName,
-        app.appName,
-        _getMockAppMetadata(app),
-      );
-      _deduplicateThreats(deduplicatedThreats, structureThreats);
-
-      // Version analysis
-      final versionThreats = _staticAnalyzer.analyzeSdkVersions(
-        app.packageName,
-        app.appName,
-        {'targetSdkVersion': 33, 'minSdkVersion': 21},
-      );
-      _deduplicateThreats(deduplicatedThreats, versionThreats);
-
-      // Installer source analysis
-      final installerThreats = _staticAnalyzer.analyzeInstallerSource(
-        app.packageName,
-        app.appName,
-        app.installerPackage,
-      );
-      _deduplicateThreats(deduplicatedThreats, installerThreats);
     }
-    print('  ✓ Static analysis complete (${deduplicatedThreats.length} threats total)');
+    
+    final skippedCount = installedApps.length - appsToScan.length;
+    print('⏭️  Skipped ${skippedCount} whitelisted apps');
+    print('🔍 Scanning ${appsToScan.length} apps');
+    print('🔧 Detection engines: APK Analysis, Signature DB, Cloud Reputation, Risk Scoring\n');
 
-    // Stage 3: ML/Heuristic Analysis (simulated)
-    print('\n[Stage 3/4] ML Heuristic & Anomaly Detection');
-    for (int i = 0; i < installedApps.length; i++) {
-      final app = installedApps[i];
-      if ((i + 1) % 15 == 0 || i == installedApps.length - 1) {
-        print('  → [${i + 1}/${installedApps.length}] analyzed');
+    // Scan each non-whitelisted app with production scanner
+    for (int i = 0; i < appsToScan.length; i++) {
+      final app = appsToScan[i];
+      
+      // Notify UI of progress with correct count
+      onProgress?.call(i + 1, appsToScan.length, app.appName);
+      
+      print('[${i + 1}/${appsToScan.length}] ${app.appName}');
+      
+      try {
+        final scanResult = await _productionScanner.scanAPK(
+          packageName: app.packageName,
+          appName: app.appName,
+          permissions: app.declaredPermissions,
+          isSystemApp: app.isSystemApp,
+        );
+        
+        allThreats.addAll(scanResult.threatsFound);
+        
+        // Auto-quarantine critical threats
+        if (scanResult.riskScore >= 75) {
+          print('  🚨 AUTO-QUARANTINE: Risk score ${scanResult.riskScore}/100');
+          try {
+            // Convert AppTelemetry to AppMetadata for quarantine
+            final appMetadata = AppMetadata(
+              packageName: app.packageName,
+              appName: app.appName,
+              version: app.version,
+              hash: app.hashes.sha256,
+              installTime: app.installedDate.millisecondsSinceEpoch,
+              lastUpdateTime: app.lastUpdated.millisecondsSinceEpoch,
+              isSystemApp: false,
+              installerPackage: app.installer ?? 'Unknown',
+              size: app.appSize,
+              requestedPermissions: app.declaredPermissions,
+              grantedPermissions: app.runtimeGrantedPermissions,
+              certificate: app.signingCertFingerprint,
+            );
+            
+            await _quarantineService.quarantineApp(
+              appMetadata,
+              scanResult.threatsFound,
+            );
+          } catch (e) {
+            print('  ⚠️  Quarantine failed: $e');
+          }
+        }
+        
+      } catch (e) {
+        print('  ❌ Scan failed: $e');
       }
-
-      // Behavioral analysis
-      final behavioralThreats = _behavioralEngine.detectResourceAnomalies(
-        app.packageName,
-        app.appName,
-        _getMockResourceMetrics(app),
-      );
-      _deduplicateThreats(deduplicatedThreats, behavioralThreats);
     }
-    print('  ✓ ML analysis complete (${deduplicatedThreats.length} threats total)');
 
-    // Stage 4: Threat Intelligence & Reputation
-    print('\n[Stage 4/4] Threat Intelligence Correlation');
-    final tiThreats = _correlateWithThreatIntelligence(
-      installedApps,
-      deduplicatedThreats.values.toList(),
-    );
-    _deduplicateThreats(deduplicatedThreats, tiThreats);
-    print('  ✓ Threat intelligence complete (${deduplicatedThreats.length} threats total)');
-
-    // Compile results
-    threats.addAll(deduplicatedThreats.values);
-    threats.sort((a, b) => b.severityScore.compareTo(a.severityScore));
-
-    final endTime = DateTime.now();
-    final statistics = _calculateStatistics(
-      threats,
-      installedApps.length,
-      endTime.difference(startTime),
+    final scanDuration = DateTime.now().difference(startTime);
+    
+    print('\n' + '=' * 70);
+    print('📊 PRODUCTION SCAN COMPLETE');
+    print('=' * 70);
+    print('Scan ID: $scanId');
+    print('Duration: ${scanDuration.inSeconds}s');
+    print('Apps scanned: ${appsToScan.length}');
+    print('Apps skipped (whitelisted): $skippedCount');
+    print('Total threats found: ${allThreats.length}');
+    print('\nThreat breakdown:');
+    
+    final criticalCount = allThreats.where((t) => t.severity == ThreatSeverity.critical).length;
+    final highCount = allThreats.where((t) => t.severity == ThreatSeverity.high).length;
+    final mediumCount = allThreats.where((t) => t.severity == ThreatSeverity.medium).length;
+    final lowCount = allThreats.where((t) => t.severity == ThreatSeverity.low).length;
+    
+    print('  🔴 Critical: $criticalCount');
+    print('  🟠 High:     $highCount');
+    print('  🟡 Medium:   $mediumCount');
+    print('  🟢 Low:      $lowCount');
+    print('=' * 70 + '\n');
+    
+    final statistics = ScanStatistics(
+      criticalThreats: criticalCount,
+      highThreats: highCount,
+      mediumThreats: mediumCount,
+      lowThreats: lowCount,
+      infoThreats: 0,
+      scanDuration: scanDuration,
+      averageConfidence: allThreats.isNotEmpty 
+          ? allThreats.map((t) => t.confidence).reduce((a, b) => a + b) / allThreats.length 
+          : 0.0,
+      appsScanned: appsToScan.length,
+      filesScanned: 0,
+      detectionMethodCounts: _calculateDetectionMethods(allThreats),
     );
 
     final result = ScanResult(
       scanId: scanId,
       startTime: startTime,
-      endTime: endTime,
-      totalApps: installedApps.length,
-      totalThreatsFound: threats.length,
-      threats: threats,
+      endTime: DateTime.now(),
+      totalApps: appsToScan.length,
+      totalThreatsFound: allThreats.length,
+      threats: allThreats,
       statistics: statistics,
       isComplete: true,
     );
 
     _scanHistory[scanId] = result;
-    _printScanSummary(result);
-
+    
+    // Save to persistent history for dashboard display
+    await _historyService.saveScanResult(result);
+    
     return result;
+  }
+
+  Map<String, int> _calculateDetectionMethods(List<DetectedThreat> threats) {
+    final methodCounts = <String, int>{};
+    for (final threat in threats) {
+      final method = threat.detectionMethod.toString().split('.').last;
+      methodCounts[method] = (methodCounts[method] ?? 0) + 1;
+    }
+    return methodCounts;
   }
 
   /// Scan single file for malware
   Future<List<DetectedThreat>> scanFile(String filePath) async {
-    final threats = <DetectedThreat>[];
-
-    // Hash-based signature detection
-    threats.addAll(await _signatureEngine.scanFileHash(filePath));
-
-    return threats;
+    // TODO: Implement file scanning
+    return [];
   }
 
   /// Get scan history
@@ -175,124 +238,28 @@ class ScanCoordinator {
   /// Get specific scan result
   ScanResult? getScanResult(String scanId) => _scanHistory[scanId];
 
-  /// Update signature database
-  void updateSignatures(List<MalwareSignature> signatures) {
-    for (final sig in signatures) {
-      _signatureEngine.addSignature(sig);
-    }
+  /// Start real-time monitoring
+  Future<void> startRealtimeMonitoring() async {
+    print('🔄 Real-time monitoring not yet implemented');
   }
 
-  /// Update threat indicators
-  void updateThreatIndicators(List<ThreatIndicator> indicators) {
-    for (final indicator in indicators) {
-      _signatureEngine.addThreatIndicator(indicator);
-    }
+  /// Stop real-time monitoring
+  Future<void> stopRealtimeMonitoring() async {
+    print('🛑 Real-time monitoring stopped');
   }
 
-  // Private helper methods
+  /// Get quarantine service
+  QuarantineService getQuarantineService() => _quarantineService;
 
-  void _deduplicateThreats(
-    Map<String, DetectedThreat> deduplicated,
-    List<DetectedThreat> newThreats,
-  ) {
-    for (final threat in newThreats) {
-      final key = '${threat.packageName}_${threat.description}';
-      if (!deduplicated.containsKey(key)) {
-        deduplicated[key] = threat;
-      } else {
-        // Keep the higher confidence threat
-        if (threat.confidence > deduplicated[key]!.confidence) {
-          deduplicated[key] = threat;
-        }
-      }
-    }
-  }
+  /// Get privacy service
+  PrivacyService getPrivacyService() => _privacyService;
 
-  List<DetectedThreat> _correlateWithThreatIntelligence(
-    List<AppMetadata> apps,
-    List<DetectedThreat> existingThreats,
-  ) {
-    // In production: correlate with real threat feeds
-    return [];
-  }
+  /// Get update service
+  UpdateService getUpdateService() => _updateService;
 
-  ScanStatistics _calculateStatistics(
-    List<DetectedThreat> threats,
-    int totalAppsScanned,
-    Duration scanDuration,
-  ) {
-    final criticalCount = threats
-        .where((t) => t.severity == ThreatSeverity.critical)
-        .length;
-    final highCount = threats.where((t) => t.severity == ThreatSeverity.high).length;
-    final mediumCount =
-        threats.where((t) => t.severity == ThreatSeverity.medium).length;
-    final lowCount = threats.where((t) => t.severity == ThreatSeverity.low).length;
-    final infoCount = threats.where((t) => t.severity == ThreatSeverity.info).length;
+  /// Get threat history service
+  ThreatHistoryService getHistoryService() => _historyService;
 
-    final methodCounts = <String, int>{};
-    for (final threat in threats) {
-      final method = threat.detectionMethod.toString();
-      methodCounts[method] = (methodCounts[method] ?? 0) + 1;
-    }
-
-    final avgConfidence =
-        threats.isNotEmpty ? threats.map((t) => t.confidence).reduce((a, b) => a + b) / threats.length : 0.0;
-
-    return ScanStatistics(
-      criticalThreats: criticalCount,
-      highThreats: highCount,
-      mediumThreats: mediumCount,
-      lowThreats: lowCount,
-      infoThreats: infoCount,
-      scanDuration: scanDuration,
-      averageConfidence: avgConfidence,
-      appsScanned: totalAppsScanned,
-      filesScanned: 0, // Would be populated from file scanning
-      detectionMethodCounts: methodCounts,
-    );
-  }
-
-  Map<String, dynamic> _getMockManifestData(AppMetadata app) => {
-    'debuggable': false,
-    'usesCleartextTraffic': false,
-    'activities': [],
-    'services': [],
-  };
-
-  Map<String, dynamic> _getMockAppMetadata(AppMetadata app) => {
-    'size': app.size,
-    'methodCount': 5000,
-    'classCount': 500,
-    'hasNativeLibs': false,
-  };
-
-  ResourceMetrics _getMockResourceMetrics(AppMetadata app) => ResourceMetrics(
-    cpuUsage: 5.0,
-    memoryUsage: 50 * 1024 * 1024,
-    batteryDrain: 2.0,
-    networkBytesTransferred: 10 * 1024 * 1024,
-  );
-
-  void _printScanSummary(ScanResult result) {
-    print('\n' + '=' * 70);
-    print('📊 SCAN COMPLETE - Summary');
-    print('=' * 70);
-    print('Scan ID: ${result.scanId}');
-    print('Duration: ${result.statistics.scanDuration.inSeconds}s');
-    print('Apps scanned: ${result.totalApps}');
-    print(
-        'Total threats found: ${result.totalThreatsFound} (Confidence: ${(result.statistics.averageConfidence * 100).toStringAsFixed(1)}%)');
-    print('\nThreat breakdown:');
-    print('  🔴 Critical: ${result.statistics.criticalThreats}');
-    print('  🟠 High:     ${result.statistics.highThreats}');
-    print('  🟡 Medium:   ${result.statistics.mediumThreats}');
-    print('  🟢 Low:      ${result.statistics.lowThreats}');
-    print('  🔵 Info:     ${result.statistics.infoThreats}');
-    print('\nDetection methods used:');
-    for (final method in result.statistics.detectionMethodCounts.entries) {
-      print('  • ${method.key}: ${method.value}');
-    }
-    print('=' * 70 + '\n');
-  }
+  /// Check if initialized
+  bool isInitialized() => _isInitialized;
 }

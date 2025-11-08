@@ -1,12 +1,183 @@
-import 'package:scanx/core/models/threat_model.dart';
+import 'package:adrig/core/models/threat_model.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
 
-/// Real-time behavioral anomaly detection
+/// Real-time behavioral anomaly detection using native monitors
 class BehavioralAnomalyEngine {
+  static const platform = MethodChannel('com.autoguard.malware_scanner/security');
+  
   final Map<String, BehaviorProfile> _knownBehaviors = {};
   final Map<String, List<BehavioralAnomaly>> _detectedAnomalies = {};
 
   BehavioralAnomalyEngine() {
     _initializeKnownBehaviors();
+  }
+
+  /// Analyze app using native network and process monitors
+  Future<List<DetectedThreat>> analyzeRuntimeBehavior(
+    String packageName,
+    String appName,
+  ) async {
+    final threats = <DetectedThreat>[];
+    
+    try {
+      // Get network threats from NetworkMonitor.kt
+      final networkThreats = await _getNetworkThreats(packageName);
+      threats.addAll(_parseNetworkThreats(networkThreats, appName));
+      
+      // Get process anomalies from ProcessMonitor.kt
+      final processAnomalies = await _getProcessAnomalies(packageName);
+      threats.addAll(_parseProcessAnomalies(processAnomalies, appName));
+      
+    } catch (e) {
+      print('[BehavioralEngine] Error analyzing runtime: $e');
+    }
+    
+    return threats;
+  }
+  
+  /// Get network threats from native monitor
+  Future<List<dynamic>> _getNetworkThreats(String packageName) async {
+    try {
+      final result = await platform.invokeMethod('getNetworkThreats', {
+        'packageName': packageName,
+      });
+      return result != null ? List<dynamic>.from(result) : [];
+    } catch (e) {
+      print('[BehavioralEngine] Failed to get network threats: $e');
+      return [];
+    }
+  }
+  
+  /// Get process anomalies from native monitor
+  Future<List<dynamic>> _getProcessAnomalies(String packageName) async {
+    try {
+      final result = await platform.invokeMethod('getProcessAnomalies', {
+        'packageName': packageName,
+      });
+      return result != null ? List<dynamic>.from(result) : [];
+    } catch (e) {
+      print('[BehavioralEngine] Failed to get process anomalies: $e');
+      return [];
+    }
+  }
+  
+  /// Parse network threats from native data
+  List<DetectedThreat> _parseNetworkThreats(List<dynamic> networkData, String appName) {
+    final threats = <DetectedThreat>[];
+    
+    for (var threat in networkData) {
+      final type = threat['type']?.toString() ?? '';
+      final severity = _mapSeverity(threat['severity']?.toString() ?? 'MEDIUM');
+      
+      threats.add(DetectedThreat(
+        id: 'net_${DateTime.now().millisecondsSinceEpoch}_${threats.length}',
+        packageName: threat['packageName']?.toString() ?? '',
+        appName: appName,
+        threatType: _mapNetworkThreatType(type),
+        severity: severity,
+        detectionMethod: DetectionMethod.behavioral,
+        description: threat['description']?.toString() ?? 'Network anomaly detected',
+        indicators: [threat['destination']?.toString() ?? ''],
+        confidence: 0.85,
+        detectedAt: DateTime.now(),
+        recommendedAction: severity == ThreatSeverity.critical 
+          ? ActionType.autoblock 
+          : ActionType.quarantine,
+        metadata: {
+          'threat_type': type,
+          'destination': threat['destination']?.toString() ?? '',
+          'detection_source': 'NetworkMonitor',
+        },
+      ));
+    }
+    
+    return threats;
+  }
+  
+  /// Parse process anomalies from native data
+  List<DetectedThreat> _parseProcessAnomalies(List<dynamic> anomalyData, String appName) {
+    final threats = <DetectedThreat>[];
+    
+    for (var anomaly in anomalyData) {
+      final type = anomaly['type']?.toString() ?? '';
+      final severity = _mapSeverity(anomaly['severity']?.toString() ?? 'MEDIUM');
+      
+      threats.add(DetectedThreat(
+        id: 'proc_${DateTime.now().millisecondsSinceEpoch}_${threats.length}',
+        packageName: anomaly['packageName']?.toString() ?? '',
+        appName: appName,
+        threatType: _mapProcessThreatType(type),
+        severity: severity,
+        detectionMethod: DetectionMethod.behavioral,
+        description: anomaly['description']?.toString() ?? 'Process anomaly detected',
+        indicators: [type],
+        confidence: 0.80,
+        detectedAt: DateTime.now(),
+        recommendedAction: severity == ThreatSeverity.critical 
+          ? ActionType.autoblock 
+          : ActionType.monitor,
+        metadata: {
+          'anomaly_type': type,
+          'pid': anomaly['pid']?.toString() ?? '0',
+          'detection_source': 'ProcessMonitor',
+        },
+      ));
+    }
+    
+    return threats;
+  }
+  
+  /// Map network threat type string to ThreatType enum
+  ThreatType _mapNetworkThreatType(String type) {
+    switch (type) {
+      case 'C2_COMMUNICATION':
+        return ThreatType.trojan;
+      case 'DATA_EXFILTRATION':
+        return ThreatType.spyware;
+      case 'MALICIOUS_IP':
+        return ThreatType.trojan;
+      case 'TOR_USAGE':
+        return ThreatType.pua;
+      case 'CRYPTO_MINING':
+        return ThreatType.cryptominer;
+      default:
+        return ThreatType.pua;
+    }
+  }
+  
+  /// Map process threat type string to ThreatType enum
+  ThreatType _mapProcessThreatType(String type) {
+    switch (type) {
+      case 'ROOT_DETECTION':
+        return ThreatType.rootkit;
+      case 'PRIVILEGE_ESCALATION':
+        return ThreatType.trojan;
+      case 'CODE_INJECTION':
+        return ThreatType.trojan;
+      case 'CHILD_PROCESS_SPAWN':
+        return ThreatType.dropper;
+      case 'DEBUGGER_EVASION':
+        return ThreatType.trojan;
+      default:
+        return ThreatType.pua;
+    }
+  }
+  
+  /// Map severity string to ThreatSeverity enum
+  ThreatSeverity _mapSeverity(String severity) {
+    switch (severity.toUpperCase()) {
+      case 'CRITICAL':
+        return ThreatSeverity.critical;
+      case 'HIGH':
+        return ThreatSeverity.high;
+      case 'MEDIUM':
+        return ThreatSeverity.medium;
+      case 'LOW':
+        return ThreatSeverity.low;
+      default:
+        return ThreatSeverity.info;
+    }
   }
 
   /// Detect network beaconing (C2 communication)
@@ -460,20 +631,6 @@ class ProcessBehavior {
     required this.process,
     required this.action,
     required this.timestamp,
-  });
-}
-
-class ResourceMetrics {
-  final double cpuUsage; // 0-100%
-  final int memoryUsage; // bytes
-  final double batteryDrain; // percentage
-  final int networkBytesTransferred; // bytes
-
-  ResourceMetrics({
-    required this.cpuUsage,
-    required this.memoryUsage,
-    required this.batteryDrain,
-    required this.networkBytesTransferred,
   });
 }
 
