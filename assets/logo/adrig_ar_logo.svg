@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+  <defs>
+    <!-- Cyan to Blue Gradient -->
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00F5FF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#00B4FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0080FF;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Inner glow -->
+    <filter id="innerGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="blur" in2="SourceAlpha" operator="in"/>
+    </filter>
+  </defs>
+  
+  <!-- Hexagonal Shield Base -->
+  <path d="M 300 50 L 500 175 L 500 425 L 300 550 L 100 425 L 100 175 Z" 
+        fill="none" 
+        stroke="url(#mainGradient)" 
+        stroke-width="4"
+        opacity="0.6"/>
+  
+  <!-- Inner geometric A shape - Angular, modern -->
+  <g fill="url(#mainGradient)" filter="url(#glow)">
+    <!-- Left side of A -->
+    <polygon points="200,450 220,450 280,200 250,200"/>
+    
+    <!-- Right side of A -->
+    <polygon points="320,200 350,200 380,450 360,450"/>
+    
+    <!-- Crossbar of A - but styled as data flow lines -->
+    <rect x="240" y="320" width="120" height="25" rx="2"/>
+    
+    <!-- Top peak of A -->
+    <polygon points="265,150 300,100 335,150 300,180"/>
+  </g>
+  
+  <!-- Circuit pattern overlay for tech feel -->
+  <g stroke="url(#mainGradient)" stroke-width="2" fill="none" opacity="0.4">
+    <!-- Top circuit lines -->
+    <path d="M 150 180 L 180 180 L 180 200"/>
+    <path d="M 420 180 L 450 180 L 450 200"/>
+    <circle cx="180" cy="200" r="3" fill="url(#mainGradient)"/>
+    <circle cx="450" cy="200" r="3" fill="url(#mainGradient)"/>
+    
+    <!-- Side circuit lines -->
+    <path d="M 120 300 L 150 300"/>
+    <path d="M 450 300 L 480 300"/>
+    <circle cx="150" cy="300" r="3" fill="url(#mainGradient)"/>
+    <circle cx="450" cy="300" r="3" fill="url(#mainGradient)"/>
+    
+    <!-- Bottom circuit lines -->
+    <path d="M 180 450 L 180 480 L 200 480"/>
+    <path d="M 420 450 L 420 480 L 400 480"/>
+    <circle cx="180" cy="450" r="3" fill="url(#mainGradient)"/>
+    <circle cx="420" cy="450" r="3" fill="url(#mainGradient)"/>
+  </g>
+  
+  <!-- Neural network nodes - AI representation -->
+  <g fill="url(#mainGradient)" opacity="0.7">
+    <circle cx="300" cy="250" r="6"/>
+    <circle cx="250" cy="300" r="5"/>
+    <circle cx="350" cy="300" r="5"/>
+    <circle cx="275" cy="370" r="4"/>
+    <circle cx="325" cy="370" r="4"/>
+  </g>
+  
+  <!-- Connecting lines between nodes -->
+  <g stroke="url(#mainGradient)" stroke-width="1.5" opacity="0.5">
+    <line x1="300" y1="250" x2="250" y2="300"/>
+    <line x1="300" y1="250" x2="350" y2="300"/>
+    <line x1="250" y1="300" x2="275" y2="370"/>
+    <line x1="350" y1="300" x2="325" y2="370"/>
+  </g>
+  
+  <!-- Scan line animation element (decorative) -->
+  <g opacity="0.3">
+    <rect x="100" y="280" width="400" height="2" fill="url(#mainGradient)">
+      <animate attributeName="y" values="100;500;100" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+</svg>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AdRig — Redesign D: Minimal custom wordmark with refined 'R' ligature -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360">
+  <defs>
+    <linearGradient id="gdD" x1="0%" x2="100%" y1="0%" y2="60%">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="100%" stop-color="#0070FF"/>
+    </linearGradient>
+    <style><![CDATA[
+      .wm { font-family: 'Inter', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif; font-weight:800; }
+    ]]></style>
+  </defs>
+
+  <!-- Transparent background; use over app header -->
+  <g transform="translate(60,220)">
+    <!-- Base wordmark: 'AdRi' normal, 'g' customised to be rounded and 'R' with refined tail -->
+    <text x="0" y="0" class="wm" font-size="152" fill="url(#gdD)" letter-spacing="4">AdR</text>
+
+    <!-- Draw a custom 'i' and 'g' with tighter spacing -->
+    <g transform="translate(330,0)">
+      <text x="0" y="0" class="wm" font-size="152" fill="url(#gdD)" letter-spacing="4">ig</text>
+      <!-- small dot for 'i' as a clean square for identity -->
+      <rect x="72" y="-128" width="12" height="12" rx="2" fill="#00D4FF" opacity="0.95" />
+    </g>
+
+    <!-- thin top highlight for premium finish -->
+    <text x="0" y="-8" class="wm" font-size="152" fill="rgba(255,255,255,0.08)" letter-spacing="4">AdRig</text>
+  </g>
+</svg>

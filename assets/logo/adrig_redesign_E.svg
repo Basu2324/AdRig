@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AdRig — Redesign E: Tech-ligature wordmark — subtle circuit motif inside 'A' -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="360" viewBox="0 0 1300 360">
+  <defs>
+    <linearGradient id="gdE" x1="0%" x2="100%" y1="0%" y2="70%">
+      <stop offset="0%" stop-color="#00F0FF"/>
+      <stop offset="60%" stop-color="#00A0FF"/>
+      <stop offset="100%" stop-color="#0058E6"/>
+    </linearGradient>
+    <style><![CDATA[
+      .wm { font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif; font-weight:800; }
+      .motif { stroke:#00F0FF; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; fill:none; opacity:0.9 }
+    ]]></style>
+  </defs>
+
+  <g transform="translate(60,220)">
+    <!-- Wordmark 'AdRig' -->
+    <text x="160" y="0" class="wm" font-size="140" fill="url(#gdE)" letter-spacing="5">dRig</text>
+
+    <!-- Stylized 'A' as a standalone motif to the left, with a subtle circuit line inside -->
+    <g transform="translate(0,-106)">
+      <path d="M110 200 L160 40 L210 200 Z" fill="url(#gdE)" />
+      <!-- inner cut for 'A' -- small bridge -->
+      <path d="M140 120 L180 120" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity="0.12"/>
+      <!-- circuit motif inside A -->
+      <path class="motif" d="M150 130 L150 160 M150 145 L135 145 M150 160 L165 160"/>
+    </g>
+
+    <!-- 'A' top highlight to match wordmark finish -->
+    <path d="M110 200 L160 40 L210 200 Z" fill="rgba(255,255,255,0.06)" transform="translate(0,-106)" />
+  </g>
+</svg>

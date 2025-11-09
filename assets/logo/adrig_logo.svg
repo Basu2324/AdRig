@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AdRig logo (SVG) - Simple, professional, typographic logo
+  - Scalable vector (use directly in app or export PNG at needed sizes)
+  - Colors: bright cyan -> deep blue gradient
+  - Subtle soft outer glow and a small drop shadow for depth
+  - No tagline included (text-only logo). If you want a tagline variant, tell me.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="420" viewBox="0 0 1024 420">
+  <defs>
+    <linearGradient id="g1" x1="0%" x2="100%" y1="0%" y2="60%">
+      <stop offset="0%" stop-color="#00D9FF" />
+      <stop offset="50%" stop-color="#00A9FF" />
+      <stop offset="100%" stop-color="#0066FF" />
+    </linearGradient>
+
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="16" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feOffset dx="6" dy="10" result="offOut"/>
+      <feGaussianBlur in="offOut" stdDeviation="8" result="blurOut"/>
+      <feColorMatrix in="blurOut" type="matrix" values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0   0 0 0 0.45"/>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- A slightly condensed, geometric sans feel. Use system fonts as fallback. -->
+    <style type="text/css"><![CDATA[
+      .logoText { font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-weight: 800; }
+    ]]></style>
+  </defs>
+
+  <!-- Background is transparent; SVG designed to be placed over your app gradient -->
+  <g transform="translate(48,40)">
+    <!-- Soft cyan glow behind text for subtle depth -->
+    <g filter="url(#softGlow)">
+      <text x="0" y="160" class="logoText" font-size="160" fill="url(#g1)" letter-spacing="6">AdRig</text>
+    </g>
+
+    <!-- Slight drop shadow for readability on dark backgrounds -->
+    <g filter="url(#dropShadow)">
+      <text x="0" y="160" class="logoText" font-size="160" fill="url(#g1)" letter-spacing="6">AdRig</text>
+    </g>
+
+    <!-- Crisp top highlight to make the logotype pop (small white overlay at 15% opacity) -->
+    <text x="0" y="154" class="logoText" font-size="160" fill="rgba(255,255,255,0.12)" letter-spacing="6">AdRig</text>
+
+    <!-- Optional small dot accent after 'g' to create a unique brand mark (subtle) -->
+    <circle cx="820" cy="108" r="8" fill="#00D9FF" opacity="0.95" />
+  </g>
+</svg>

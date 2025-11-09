@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../services/scan_coordinator.dart';
 import '../services/app_telemetry_collector.dart';
 import '../services/auth_service.dart';
+import '../widgets/adrig_logo.dart';
 import 'scan_results_screen.dart';
 import 'settings_screen.dart';
 import 'profile_screen.dart';
@@ -180,31 +181,12 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         ),
         title: Row(
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF2196F3), Color(0xFF0D47A1)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text(
-                  'AR',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
+            // AdRig Logo in header
+            AdRigLogo(size: 35, showText: false),
             SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'AdRig',
@@ -245,37 +227,47 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
+          Container(
+            height: 200,
+            padding: EdgeInsets.fromLTRB(16, 40, 16, 16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF2196F3), Color(0xFF0D47A1)],
+                colors: [Color(0xFF000428), Color(0xFF004e92)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 35,
-                  backgroundColor: Colors.white24,
-                  child: Icon(Icons.person, size: 40, color: Colors.white),
+                // AdRig Logo
+                AdRigLogo(size: 80, showText: false),
+                SizedBox(height: 8),
+                Text(
+                  'AI THREAT INTELLIGENCE',
+                  style: TextStyle(
+                    color: Color(0xFF00D9FF),
+                    fontSize: 10,
+                    letterSpacing: 2,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 SizedBox(height: 12),
                 Text(
                   _userName,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                SizedBox(height: 4),
                 Text(
                   _subscriptionType,
                   style: TextStyle(
                     color: Colors.white70,
-                    fontSize: 12,
+                    fontSize: 11,
                   ),
                 ),
               ],
@@ -307,8 +299,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               );
             },
           ),
-          
-          Divider(color: Colors.white12, height: 1),
           
           // Help & Support
           _buildDrawerItem(
@@ -398,14 +388,21 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 animation: _pulseController,
                 builder: (context, child) {
                   return Container(
-                    width: 200,
-                    height: 200,
+                    width: 240,
+                    height: 240,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFF6C63FF).withOpacity(0.5),
+                          blurRadius: 40,
+                          spreadRadius: 10,
+                        ),
+                      ],
                       gradient: RadialGradient(
                         colors: [
-                          Color(0xFF6C63FF).withOpacity(0.3),
-                          Color(0xFF00D9FF).withOpacity(0.1),
+                          Color(0xFF6C63FF).withOpacity(0.4),
+                          Color(0xFF00D9FF).withOpacity(0.2),
                           Colors.transparent,
                         ],
                         stops: [
@@ -416,32 +413,80 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                       ),
                     ),
                     child: Center(
-                      child: ElevatedButton(
-                        onPressed: _startScan,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF6C63FF),
-                          shape: CircleBorder(),
-                          padding: EdgeInsets.all(50),
-                          elevation: 8,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.play_arrow_rounded,
-                              size: 40,
-                              color: Colors.white,
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'SCAN NOW',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFF7C6DFF),
+                              Color(0xFF6C63FF),
+                              Color(0xFF5B52E8),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFF6C63FF).withOpacity(0.6),
+                              blurRadius: 30,
+                              offset: Offset(0, 10),
                             ),
                           ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _startScan,
+                            borderRadius: BorderRadius.circular(100),
+                            splashColor: Colors.white.withOpacity(0.3),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.3),
+                                  width: 2,
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white.withOpacity(0.2),
+                                    ),
+                                    child: Icon(
+                                      Icons.play_arrow_rounded,
+                                      size: 50,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(height: 12),
+                                  Text(
+                                    'SCAN NOW',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      letterSpacing: 2,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    'AI-Powered Protection',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white70,
+                                      letterSpacing: 1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),

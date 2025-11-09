@@ -504,6 +504,8 @@ class _ThreatListScreenState extends State<ThreatListScreen> {
         return Icons.radar;
       case DetectionMethod.behavioral:
         return Icons.psychology;
+      case DetectionMethod.ml:
+        return Icons.smart_toy;
       case DetectionMethod.machinelearning:
         return Icons.smart_toy;
       case DetectionMethod.threatintel:
@@ -525,6 +527,8 @@ class _ThreatListScreenState extends State<ThreatListScreen> {
         return 'Heuristic';
       case DetectionMethod.behavioral:
         return 'Behavioral';
+      case DetectionMethod.ml:
+        return 'AI Detection';
       case DetectionMethod.machinelearning:
         return 'AI Detection';
       case DetectionMethod.threatintel:

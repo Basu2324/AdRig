@@ -170,6 +170,10 @@ class QuarantineService {
       case ActionType.monitoronly:
         // Continue monitoring
         return true;
+
+      case ActionType.warn:
+        // Warn user (handled in UI)
+        return true;
     }
   }
 

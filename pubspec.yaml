@@ -55,6 +55,9 @@ dependencies:
   url_launcher: ^6.2.2
   android_intent_plus: ^4.0.3
   
+  # SVG Support
+  flutter_svg: ^2.0.9
+  
   # JSON & Data Processing
   json_annotation: ^4.8.1
   
@@ -73,11 +76,13 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: false
-  image_path: "assets/icon/adrig_icon.png"
-  adaptive_icon_background: "#667eea"
-  adaptive_icon_foreground: "assets/icon/adrig_icon_foreground.png"
+  image_path: "assets/logo/adrig_launcher_icon.png"
+  adaptive_icon_background: "#1a237e"
+  adaptive_icon_foreground: "assets/logo/adrig_launcher_icon.png"
+  remove_alpha_ios: true
 
 flutter:
   uses-material-design: true
   assets:
     - assets/icon/
+    - assets/logo/

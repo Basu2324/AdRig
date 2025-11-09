@@ -11,6 +11,8 @@ class LocalAuthService {
   static const String _subscriptionExpiryKey = 'subscription_expiry';
   static const String _privacyConsentKey = 'privacy_consent_accepted';
   static const String _rememberMeKey = 'remember_me';
+  static const String _savedEmailKey = 'saved_email';
+  static const String _savedPasswordKey = 'saved_password';
 
   /// Check if user is logged in
   Future<bool> isLoggedIn() async {
@@ -231,6 +233,29 @@ class LocalAuthService {
   Future<void> setRememberMe(bool remember) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_rememberMeKey, remember);
+  }
+  
+  /// Save credentials for Remember Me
+  Future<void> saveCredentials(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_savedEmailKey, email);
+    await prefs.setString(_savedPasswordKey, password);
+  }
+  
+  /// Get saved credentials
+  Future<Map<String, String?>> getSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'email': prefs.getString(_savedEmailKey),
+      'password': prefs.getString(_savedPasswordKey),
+    };
+  }
+  
+  /// Clear saved credentials
+  Future<void> clearSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_savedEmailKey);
+    await prefs.remove(_savedPasswordKey);
   }
 
   /// Hash password using SHA-256

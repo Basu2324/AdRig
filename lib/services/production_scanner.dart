@@ -6,6 +6,10 @@ import 'package:adrig/services/decision_engine.dart';
 import 'package:adrig/services/yara_rule_engine.dart';
 import 'package:adrig/services/app_whitelist_service.dart';
 import 'package:adrig/services/ai_detection_engine.dart';
+import 'package:adrig/services/behavioral_sequence_engine.dart';
+import 'package:adrig/services/advanced_ml_engine.dart';
+import 'package:adrig/services/crowdsourced_intelligence_service.dart';
+import 'package:adrig/services/anti_evasion_engine.dart';
 
 /// Production-grade malware scanner
 /// Integrates all detection engines into unified scanning pipeline
@@ -16,6 +20,10 @@ class ProductionScanner {
   final DecisionEngine _decisionEngine = DecisionEngine();
   final YaraRuleEngine _yaraEngine = YaraRuleEngine();
   final AIDetectionEngine _aiEngine = AIDetectionEngine();
+  final BehavioralSequenceEngine _sequenceEngine = BehavioralSequenceEngine();
+  final AdvancedMLEngine _mlEngine = AdvancedMLEngine();
+  final CrowdsourcedIntelligenceService _crowdIntel = CrowdsourcedIntelligenceService();
+  final AntiEvasionEngine _antiEvasion = AntiEvasionEngine();
   
   bool _initialized = false;
   
@@ -36,6 +44,22 @@ class ProductionScanner {
     // Initialize AI detection engine
     await _aiEngine.initialize();
     print('✅ AI engine ready');
+    
+    // Initialize behavioral sequence engine
+    _sequenceEngine.initialize();
+    print('✅ Behavioral sequence engine ready (${_sequenceEngine.getRuleCount()} patterns)');
+    
+    // Initialize advanced ML engine
+    await _mlEngine.initialize();
+    print('✅ Advanced ML engine ready (50+ features)');
+    
+    // Initialize crowdsourced intelligence
+    await _crowdIntel.initialize();
+    print('✅ Crowdsourced intelligence ready');
+    
+    // Initialize anti-evasion engine
+    await _antiEvasion.initialize();
+    print('✅ Anti-evasion engine ready');
     
     _initialized = true;
     print('✅ Production Scanner initialized\n');
@@ -252,7 +276,7 @@ class ProductionScanner {
       }
       
       // ==================== STEP 6: AI-Based Analysis ====================
-      print('\n🤖 [6/6] AI Behavioral Analysis...');
+      print('\n🤖 [6/9] AI Behavioral Analysis...');
       scanSteps.add('AI Detection');
       
       try {
@@ -317,6 +341,173 @@ class ProductionScanner {
         }
       } catch (e) {
         print('  ⚠️  AI analysis skipped: $e');
+      }
+      
+      // ==================== STEP 7: Behavioral Sequence Detection ====================
+      print('\n🔗 [7/9] Behavioral Sequence Analysis...');
+      scanSteps.add('Sequence Detection');
+      
+      try {
+        final sequenceDetections = _sequenceEngine.detectSequences(packageName);
+        
+        if (sequenceDetections.isNotEmpty) {
+          print('  ⚠️  ${sequenceDetections.length} attack sequences detected:');
+          for (final detection in sequenceDetections.take(3)) {
+            print('     - ${detection.ruleName} (${(detection.confidence * 100).toStringAsFixed(0)}% confidence)');
+          }
+          
+          // Add threat for each detected sequence
+          for (final detection in sequenceDetections) {
+            threats.add(DetectedThreat(
+              id: 'threat_sequence_${DateTime.now().millisecondsSinceEpoch}',
+              packageName: packageName,
+              appName: appName,
+              threatType: ThreatType.trojan,
+              severity: detection.confidence >= 0.95 
+                  ? ThreatSeverity.critical 
+                  : ThreatSeverity.high,
+              detectionMethod: DetectionMethod.behavioral,
+              description: detection.description,
+              indicators: detection.matchedEvents.map((e) => '${e.type.name} at ${e.timestamp}').toList(),
+              confidence: detection.confidence,
+              detectedAt: DateTime.now(),
+              hash: apkAnalysis?.hashes['sha256'] ?? '',
+              version: '',
+              recommendedAction: ActionType.quarantine,
+              metadata: {
+                'sequenceRule': detection.ruleName,
+                'eventCount': detection.matchedEvents.length,
+              },
+              isSystemApp: isSystemApp,
+            ));
+          }
+        } else {
+          print('  ✓ No malicious sequences detected');
+        }
+      } catch (e) {
+        print('  ⚠️  Sequence analysis skipped: $e');
+      }
+      
+      // ==================== STEP 8: Advanced ML Classification ====================
+      print('\n🧠 [8/9] Advanced ML Classification...');
+      scanSteps.add('ML Classification');
+      
+      try {
+        final features = await _mlEngine.extractFeatures(
+          packageName: packageName,
+          permissions: permissions,
+          staticAnalysis: {
+            'method_count': apkAnalysis?.totalStrings ?? 0,
+            'class_count': 100, // Would be from actual analysis
+            'string_count': apkAnalysis?.totalStrings ?? 0,
+            'native_lib_count': 0,
+            'dex_count': 1,
+            'app_size_mb': 0.0,
+            'obfuscation_ratio': apkAnalysis?.obfuscationRatio ?? 0.0,
+            'entropy': 3.5,
+            'hidden_files_count': apkAnalysis?.hiddenExecutables.length ?? 0,
+            'suspicious_strings': apkAnalysis?.suspiciousStrings.length ?? 0,
+            'api_calls': apkAnalysis?.suspiciousStrings ?? [],
+          },
+          behavioralData: {
+            'cpu_usage': 0.0,
+            'memory_mb': 0.0,
+            'network_kb': 0.0,
+            'process_count': 0,
+            'background_starts': 0,
+            'permission_requests': permissions.length,
+            'file_modifications': 0,
+            'network_connections': 0,
+          },
+          networkDomains: apkAnalysis?.suspiciousStrings
+              .where((s) => s.contains('://'))
+              .map((s) => s.split('://').last.split('/').first)
+              .toList() ?? [],
+        );
+        
+        final mlResult = await _mlEngine.classifyMalware(features);
+        
+        print('  ✓ ML Probability: ${(mlResult.threatProbability * 100).toStringAsFixed(1)}%');
+        print('  ✓ Confidence: ${(mlResult.confidence * 100).toStringAsFixed(1)}%');
+        print('  ✓ RF: ${(mlResult.modelScores['random_forest']! * 100).toStringAsFixed(0)}% | GB: ${(mlResult.modelScores['gradient_boosting']! * 100).toStringAsFixed(0)}% | NN: ${(mlResult.modelScores['neural_network']! * 100).toStringAsFixed(0)}%');
+        
+        if (mlResult.isMalware) {
+          print('  ⚠️  Top features: ${mlResult.topFeatures.take(3).join(", ")}');
+          
+          threats.add(DetectedThreat(
+            id: 'threat_ml_${DateTime.now().millisecondsSinceEpoch}',
+            packageName: packageName,
+            appName: appName,
+            threatType: ThreatType.trojan,
+            severity: mlResult.severity,
+            detectionMethod: DetectionMethod.ml,
+            description: 'Advanced ML models detected malware (${(mlResult.threatProbability * 100).toStringAsFixed(1)}% probability)',
+            indicators: mlResult.topFeatures,
+            confidence: mlResult.confidence,
+            detectedAt: DateTime.now(),
+            hash: apkAnalysis?.hashes['sha256'] ?? '',
+            version: '',
+            recommendedAction: mlResult.severity == ThreatSeverity.critical 
+                ? ActionType.quarantine 
+                : ActionType.warn,
+            metadata: {
+              'mlProbability': mlResult.threatProbability,
+              'rfScore': mlResult.modelScores['random_forest'],
+              'gbScore': mlResult.modelScores['gradient_boosting'],
+              'nnScore': mlResult.modelScores['neural_network'],
+            },
+            isSystemApp: isSystemApp,
+          ));
+        }
+      } catch (e) {
+        print('  ⚠️  ML classification skipped: $e');
+      }
+      
+      // ==================== STEP 9: Crowdsourced Intelligence ====================
+      print('\n🌐 [9/9] Crowdsourced Intelligence Check...');
+      scanSteps.add('Crowdsourced Intel');
+      
+      try {
+        if (apkAnalysis?.hashes['sha256'] != null) {
+          final globalReputation = await _crowdIntel.queryGlobalReputation(
+            apkAnalysis!.hashes['sha256']!,
+          );
+          
+          if (globalReputation.reportCount > 0) {
+            print('  ✓ Global reports: ${globalReputation.reportCount}');
+            print('  ✓ Community verdict: ${globalReputation.isThreat ? "THREAT" : "SAFE"} (${(globalReputation.confidence * 100).toStringAsFixed(0)}% confidence)');
+            
+            if (globalReputation.isThreat) {
+              print('  ⚠️  Severity breakdown: ${globalReputation.severityBreakdown}');
+              
+              threats.add(DetectedThreat(
+                id: 'threat_crowdsourced_${DateTime.now().millisecondsSinceEpoch}',
+                packageName: packageName,
+                appName: appName,
+                threatType: ThreatType.trojan,
+                severity: ThreatSeverity.high,
+                detectionMethod: DetectionMethod.threatintel,
+                description: 'Flagged by ${globalReputation.reportCount} users in community threat database',
+                indicators: globalReputation.detectionEngines,
+                confidence: globalReputation.confidence,
+                detectedAt: DateTime.now(),
+                hash: apkAnalysis.hashes['sha256'] ?? '',
+                version: '',
+                recommendedAction: ActionType.quarantine,
+                metadata: {
+                  'reportCount': globalReputation.reportCount,
+                  'firstSeen': globalReputation.firstSeen?.toString(),
+                  'severityBreakdown': globalReputation.severityBreakdown,
+                },
+                isSystemApp: isSystemApp,
+              ));
+            }
+          } else {
+            print('  ✓ No community reports');
+          }
+        }
+      } catch (e) {
+        print('  ⚠️  Crowdsourced intel skipped: $e');
       }
       
       print('\n✅ Scan complete: ${threats.length} threats detected');

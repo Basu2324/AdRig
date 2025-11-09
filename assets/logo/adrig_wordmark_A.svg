@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AdRig — Concept A: Clean Wordmark (Minimal, Professional) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="gradA" x1="0%" x2="100%" y1="0%" y2="60%">
+      <stop offset="0%" stop-color="#00D9FF" />
+      <stop offset="50%" stop-color="#00A9FF" />
+      <stop offset="100%" stop-color="#0066FF" />
+    </linearGradient>
+    <filter id="softGlowA" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style><![CDATA[
+      .wordmark { font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-weight:800; }
+    ]]></style>
+  </defs>
+
+  <!-- Transparent background: place over your app gradient -->
+  <g transform="translate(60,220)">
+    <!-- Subtle soft cyan glow (behind) -->
+    <g filter="url(#softGlowA)" opacity="0.9">
+      <text class="wordmark" x="0" y="0" font-size="160" fill="url(#gradA)" letter-spacing="6">AdRig</text>
+    </g>
+
+    <!-- Crisp primary wordmark -->
+    <text class="wordmark" x="0" y="0" font-size="160" fill="url(#gradA)" letter-spacing="6">AdRig</text>
+
+    <!-- Very slight white highlight to imply polish -->
+    <text class="wordmark" x="0" y="-8" font-size="160" fill="rgba(255,255,255,0.08)" letter-spacing="6">AdRig</text>
+  </g>
+</svg>

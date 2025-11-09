@@ -371,6 +371,8 @@ class ScanLogScreen extends StatelessWidget {
         return 'Signature';
       case DetectionMethod.yara:
         return 'YARA';
+      case DetectionMethod.ml:
+        return 'ML';
       case DetectionMethod.machinelearning:
         return 'ML';
       case DetectionMethod.staticanalysis:

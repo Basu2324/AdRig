@@ -37,9 +37,24 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _loadRememberMe() async {
     final authService = AuthService();
     final remember = await authService.isRememberMeEnabled();
-    setState(() {
-      _rememberMe = remember;
-    });
+    
+    if (remember) {
+      // Load saved credentials if Remember Me is enabled
+      final credentials = await authService.getSavedCredentials();
+      setState(() {
+        _rememberMe = remember;
+        if (credentials['email'] != null) {
+          _emailController.text = credentials['email']!;
+        }
+        if (credentials['password'] != null) {
+          _passwordController.text = credentials['password']!;
+        }
+      });
+    } else {
+      setState(() {
+        _rememberMe = remember;
+      });
+    }
   }
 
   Future<void> _handleSignIn() async {
@@ -58,8 +73,19 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = false);
 
     if (result.success && mounted) {
-      // Save Remember Me preference
+      // Save Remember Me preference and credentials
       await authService.setRememberMe(_rememberMe);
+      
+      if (_rememberMe) {
+        // Save credentials if Remember Me is checked
+        await authService.saveCredentials(
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
+      } else {
+        // Clear saved credentials if Remember Me is unchecked
+        await authService.clearSavedCredentials();
+      }
       
       // Check if user has already accepted privacy consent
       final hasConsent = await authService.hasAcceptedPrivacyConsent();
@@ -130,68 +156,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const SizedBox(height: 40),
                     
-                    // Premium Logo with glow
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFF00F5FF).withOpacity(0.3),
-                            blurRadius: 60,
-                            spreadRadius: 20,
-                          ),
-                        ],
-                      ),
-                      child: AdRigLogo(size: 140, showText: false),
-                    ),
-                    const SizedBox(height: 24),
-                    
-                    // Brand name with gradient
-                    ShaderMask(
-                      shaderCallback: (bounds) => LinearGradient(
-                        colors: [
-                          Color(0xFF00F5FF),
-                          Color(0xFF0066FF),
-                        ],
-                      ).createShader(bounds),
-                      child: Text(
-                        'AdRig',
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    
-                    // Tagline badge
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Color(0xFF00F5FF).withOpacity(0.2),
-                            Color(0xFF0066FF).withOpacity(0.2),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Color(0xFF00F5FF).withOpacity(0.5),
-                          width: 1,
-                        ),
-                      ),
-                      child: Text(
-                        'AI THREAT INTELLIGENCE',
-                        style: TextStyle(
-                          color: Color(0xFF00F5FF),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 3,
-                        ),
-                      ),
-                    ),
+                    // PREMIUM WORLD-CLASS LOGO
+                    AdRigLogo(size: 100, showText: true),
                     const SizedBox(height: 50),
 
                     // Modern glassmorphic login card

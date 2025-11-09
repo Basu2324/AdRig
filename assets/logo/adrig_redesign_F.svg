@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AdRig — Redesign F: Compact AR monogram with negative-space lock (for app badge) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="gdF" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#00D9FF"/>
+      <stop offset="100%" stop-color="#0066FF"/>
+    </linearGradient>
+    <style><![CDATA[
+      .mono { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; font-weight:900; }
+    ]]></style>
+  </defs>
+
+  <!-- rounded square bg -->
+  <rect x="12" y="12" rx="64" ry="64" width="488" height="488" fill="url(#gdF)"/>
+
+  <!-- negative-space 'A' formed inside white 'R' shape for unique lock -->
+  <g transform="translate(60,60)">
+    <!-- white 'R' block -->
+    <path d="M80 320 L80 0 L220 0 C300 0 320 90 240 140 L360 320 L220 320 L220 200 L160 200 L160 320 Z" fill="#FFFFFF" opacity="0.92"/>
+    <!-- cutout 'A' negative-space -->
+    <path d="M120 220 L180 80 L240 220 Z" fill="url(#gdF)"/>
+    <!-- small 'AdRig' below small text optional -->
+    <text x="260" y="360" class="mono" font-size="36" fill="#FFFFFF">AdRig</text>
+  </g>
+</svg>

@@ -480,6 +480,21 @@ class AuthService {
   Future<void> setRememberMe(bool remember) async {
     return await _localAuth.setRememberMe(remember);
   }
+  
+  /// Save credentials for Remember Me
+  Future<void> saveCredentials(String email, String password) async {
+    return await _localAuth.saveCredentials(email, password);
+  }
+  
+  /// Get saved credentials
+  Future<Map<String, String?>> getSavedCredentials() async {
+    return await _localAuth.getSavedCredentials();
+  }
+  
+  /// Clear saved credentials
+  Future<void> clearSavedCredentials() async {
+    return await _localAuth.clearSavedCredentials();
+  }
 }
 
 /// Authentication result wrapper

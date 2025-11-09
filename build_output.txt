@@ -1,64 +1,2484 @@
-Resolving dependencies...
-Downloading packages...
-  _fe_analyzer_shared 67.0.0 (92.0.0 available)
-  analyzer 6.4.1 (9.0.0 available)
-  archive 3.6.1 (4.0.7 available)
-  build 2.4.1 (4.0.2 available)
-  build_config 1.1.2 (1.2.0 available)
-  build_resolvers 2.4.2 (3.0.4 available)
-  build_runner 2.4.13 (2.10.1 available)
-  build_runner_core 7.3.2 (9.3.2 available)
-  characters 1.4.0 (1.4.1 available)
-  connectivity_plus 5.0.2 (7.0.0 available)
-  connectivity_plus_platform_interface 1.2.4 (2.0.1 available)
-  dart_style 2.3.6 (3.1.2 available)
-  device_info_plus 9.1.2 (12.2.0 available)
-  dio_web_adapter 1.1.1 (2.1.1 available)
-  flutter_lints 2.0.3 (6.0.0 available)
-  http 1.2.0 (1.5.0 available)
-  js 0.6.7 (0.7.2 available)
-  json_serializable 6.8.0 (6.11.1 available)
-  lints 2.1.1 (6.0.0 available)
-  material_color_utilities 0.11.1 (0.13.0 available)
-  meta 1.16.0 (1.17.0 available)
-  network_info_plus 5.0.3 (7.0.0 available)
-  package_info_plus 5.0.1 (9.0.0 available)
-  package_info_plus_platform_interface 2.0.1 (3.2.1 available)
-  permission_handler 11.4.0 (12.0.1 available)
-  permission_handler_android 12.1.0 (13.0.1 available)
-  permission_handler_html 0.1.1 (0.1.3+5 available)
-  shared_preferences 2.2.3 (2.5.3 available)
-  shared_preferences_web 2.2.2 (2.4.3 available)
-  shelf_web_socket 2.0.1 (3.0.0 available)
-  source_gen 1.5.0 (4.0.2 available)
-  source_helper 1.3.5 (1.3.8 available)
-  test_api 0.7.6 (0.7.7 available)
-  tflite_flutter 0.10.4 (0.12.1 available)
-  url_launcher_web 2.2.3 (2.4.1 available)
-  web 0.4.2 (1.1.1 available)
-  web_socket_channel 2.4.3 (3.0.3 available)
-  win32_registry 1.1.5 (2.1.0 available)
-Got dependencies!
-38 packages have newer versions incompatible with dependency constraints.
-Try `flutter pub outdated` for more information.
-Running Gradle task 'assembleDebug'...                          
-lib/services/scan_coordinator.dart:95:26: Error: The getter 'isSystemApp' isn't defined for the type 'AppTelemetry'.
- - 'AppTelemetry' is from 'package:adrig/core/models/threat_model.dart' ('lib/core/models/threat_model.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'isSystemApp'.
-        isSystemApp: app.isSystemApp,
-                         ^^^^^^^^^^^
-lib/screens/threat_detail_screen.dart:735:23: Error: The getter 'isSystemApp' isn't defined for the type 'DetectedThreat'.
- - 'DetectedThreat' is from 'package:adrig/core/models/threat_model.dart' ('lib/core/models/threat_model.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'isSystemApp'.
-    if (widget.threat.isSystemApp) {
-                      ^^^^^^^^^^^
+Running Gradle task 'assembleRelease'...                        
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+Note: /Users/basu/.pub-cache/hosted/pub.dev/android_intent_plus-4.0.3/android/src/main/java/dev/fluttercommunity/plus/androidintent/IntentSender.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /Users/basu/.pub-cache/hosted/pub.dev/android_intent_plus-4.0.3/android/src/main/java/dev/fluttercommunity/plus/androidintent/MethodCallHandlerImpl.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+3 warnings
+lib/widgets/adrig_logo.dart:103:42: Error: Can't find ']' to match '['.
+              ),                shadows: [
+                                         ^
+lib/widgets/adrig_logo.dart:127:73: Error: Can't find ')' to match '('.
+                  Color(0xFF0066FF).withOpacity(0.2),          Container(
+                                                                        ^
+lib/widgets/adrig_logo.dart:135:58: Error: Can't find ']' to match '['.
+              border: Border.all(                colors: [
+                                                         ^
+lib/widgets/adrig_logo.dart:133:93: Error: Can't find ')' to match '('.
+              borderRadius: BorderRadius.circular(20),              gradient: LinearGradient(
+                                                                                          ^
+lib/widgets/adrig_logo.dart:131:54: Error: Can't find ')' to match '('.
+              ),            decoration: BoxDecoration(
+                                                     ^
+lib/widgets/adrig_logo.dart:67:42: Error: Can't find ')' to match '('.
+          ShaderMask(          ShaderMask(
+                                         ^
+lib/widgets/adrig_logo.dart:67:21: Error: Can't find ')' to match '('.
+          ShaderMask(          ShaderMask(
+                    ^
+lib/widgets/adrig_logo.dart:61:26: Error: Can't find ']' to match '['.
+        if (showText) ...[        if (showText) ...[
+                         ^
+lib/widgets/adrig_logo.dart:41:34: Error: Can't find ']' to match '['.
+      children: [      children: [
+                                 ^
+lib/widgets/adrig_logo.dart:41:17: Error: Can't find ']' to match '['.
+      children: [      children: [
+                ^
+lib/widgets/adrig_logo.dart:155:59: Error: Can't find ']' to match '['.
+                letterSpacing: 3,              boxShadow: [
+                                                          ^
+lib/widgets/adrig_logo.dart:171:27: Error: Can't find ')' to match '('.
+  }            child: Text(
+                          ^
+lib/widgets/adrig_logo.dart:181:49: Error: Can't find '}' to match '{'.
+class _InnovativeAPainter extends CustomPainter {                letterSpacing: 3,
+                                                ^
+lib/widgets/adrig_logo.dart:257:13: Error: Can't find ']' to match '['.
+            [
+            ^
+lib/widgets/adrig_logo.dart:383:145: Error: Can't find '}' to match '{'.
+      rightMid.dx - radius * 0.1, rightMid.dy + radius * 0.4,  void _drawCircuitDNA(Canvas canvas, Offset center, double radius, Path clipPath) {
+                                                                                          ^
+lib/widgets/adrig_logo.dart:431:24: Error: Can't find ')' to match '('.
+      canvas.drawCircle(      }
+                       ^
+lib/widgets/adrig_logo.dart:445:12: Error: Can't find ']' to match '['.
+    }      [
+           ^
+lib/widgets/adrig_logo.dart:503:32: Error: Can't find ')' to match '('.
+      );      canvas.drawCircle(
+                               ^
+lib/widgets/adrig_logo.dart:551:77: Error: Can't find ']' to match '['.
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 3),              [
+                                                                            ^
+lib/widgets/adrig_logo.dart:561:41: Error: Can't find ']' to match '['.
+        Offset(x, y),          shadows: [
+                                        ^
+lib/widgets/adrig_logo.dart:579:84: Error: Can't find '}' to match '{'.
+  void _drawEnergyFlow(Canvas canvas, Offset center, double radius, Path clipPath) {    );
+                                                                                   ^
+lib/widgets/adrig_logo.dart:597:35: Error: Can't find '}' to match '{'.
+    for (int i = -3; i <= 3; i++) {    );
+                                  ^
+lib/widgets/adrig_logo.dart:623:40: Error: Can't find ']' to match '['.
+          Offset(x1, y1),              [
+                                       ^
+lib/widgets/adrig_logo.dart:633:32: Error: Can't find ']' to match '['.
+          ],          shadows: [
+                               ^
+lib/widgets/adrig_logo.dart:603:85: Error: Can't find ')' to match '('.
+      for (double t = 0; t <= 1.0; t += 0.1) {    final rigTextPainter = TextPainter(
+                                                                                    ^
+lib/widgets/adrig_logo.dart:683:46: Error: Can't find ']' to match '['.
+        ..shader = ui.Gradient.sweep(        [
+                                             ^
+lib/widgets/adrig_logo.dart:713:55: Error: Can't find '}' to match '{'.
+    canvas.drawPath(    for (int i = -2; i <= 2; i++) {
+                                                      ^
+lib/widgets/adrig_logo.dart:739:41: Error: Can't find '}' to match '{'.
+    for (int i = 0; i < nodeCount; i++) {          ..color = Color(0xFF00F5FF).withOpacity(0.3)
+                                        ^
+lib/widgets/adrig_logo.dart:791:24: Error: Can't find ')' to match '('.
+      canvas.drawCircle(            Color(0xFF0066FF),
+                       ^
+lib/widgets/adrig_logo.dart:831:32: Error: Can't find ')' to match '('.
+      );      canvas.drawCircle(
+                               ^
+lib/widgets/adrig_logo.dart:839:84: Error: Can't find '}' to match '{'.
+  void _drawScanEffect(Canvas canvas, Offset center, double radius, Path clipPath) {          ..color = Color(0xFF00F5FF)
+                                                                                   ^
+lib/widgets/adrig_logo.dart:849:58: Error: Can't find ')' to match '('.
+    for (int i = 0; i < 12; i++) {      canvas.drawCircle(
+                                                         ^
+lib/widgets/adrig_logo.dart:951:43: Error: Can't find ')' to match '('.
+    _pulseController = AnimationController(    super.initState();
+                                          ^
+lib/widgets/adrig_logo.dart:1001:18: Error: Can't find '}' to match '{'.
+  void dispose() {      curve: Curves.easeInOut,
+                 ^
+lib/widgets/adrig_logo.dart:1017:27: Error: Can't find ')' to match '('.
+    return AnimatedBuilder(    super.dispose();
+                          ^
+lib/widgets/adrig_logo.dart:1035:26: Error: Can't find ')' to match '('.
+                BoxShadow(          scale: _pulseAnimation.value,
+                         ^
+lib/widgets/adrig_logo.dart:1033:57: Error: Can't find ')' to match '('.
+              boxShadow: [        return Transform.scale(
+                                                        ^
+lib/widgets/adrig_logo.dart:1031:70: Error: Can't find '}' to match '{'.
+              shape: BoxShape.circle,      builder: (context, child) {
+                                                                     ^
+lib/widgets/adrig_logo.dart:13:42: Error: Classes can't be declared inside other classes.
+Try moving the class to the top-level.
+class AdRigLogo extends StatelessWidget {class AdRigLogo extends StatelessWidget {
+                                         ^^^^^
+lib/widgets/adrig_logo.dart:13:58: Error: Expected a class member, but got 'extends'.
+class AdRigLogo extends StatelessWidget {class AdRigLogo extends StatelessWidget {
+                                                         ^^^^^^^
+lib/widgets/adrig_logo.dart:13:66: Error: A method declaration needs an explicit list of parameters.
+Try adding a parameter list to the method declaration.
+class AdRigLogo extends StatelessWidget {class AdRigLogo extends StatelessWidget {
+                                                                 ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:203:5: Error: The name of a constructor must match the name of the enclosing class.
+    canvas.save();/// Custom painter with "AdRig" integrated into shield design
+    ^^^^^^
+lib/widgets/adrig_logo.dart:205:5: Error: Classes can't be declared inside other classes.
+Try moving the class to the top-level.
+    class _AdRigBrandPainter extends CustomPainter {
+    ^^^^^
+lib/widgets/adrig_logo.dart:205:30: Error: Expected a class member, but got 'extends'.
+    class _AdRigBrandPainter extends CustomPainter {
+                             ^^^^^^^
+lib/widgets/adrig_logo.dart:205:38: Error: A method declaration needs an explicit list of parameters.
+Try adding a parameter list to the method declaration.
+    class _AdRigBrandPainter extends CustomPainter {
+                                     ^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:447:18: Error: Expected an identifier, but got '0xFF00F5FF'.
+Try inserting an identifier before '0xFF00F5FF'.
+  }        Color(0xFF00F5FF).withOpacity(0.6),
+                 ^^^^^^^^^^
+lib/widgets/adrig_logo.dart:447:29: Error: Expected '{' before this.
+  }        Color(0xFF00F5FF).withOpacity(0.6),
+                            ^
+lib/widgets/adrig_logo.dart:447:29: Error: Expected a class member, but got '.'.
+  }        Color(0xFF00F5FF).withOpacity(0.6),
+                            ^
+lib/widgets/adrig_logo.dart:447:42: Error: Expected an identifier, but got '0.6'.
+Try inserting an identifier before '0.6'.
+  }        Color(0xFF00F5FF).withOpacity(0.6),
+                                         ^^^
+lib/widgets/adrig_logo.dart:447:46: Error: Expected '{' before this.
+  }        Color(0xFF00F5FF).withOpacity(0.6),
+                                             ^
+lib/widgets/adrig_logo.dart:447:46: Error: Expected a class member, but got ','.
+  }        Color(0xFF00F5FF).withOpacity(0.6),
+                                             ^
+lib/widgets/adrig_logo.dart:449:17: Error: Expected an identifier, but got '0xFF0066FF'.
+Try inserting an identifier before '0xFF0066FF'.
+          Color(0xFF0066FF).withOpacity(0.4),
+                ^^^^^^^^^^
+lib/widgets/adrig_logo.dart:449:28: Error: Expected '{' before this.
+          Color(0xFF0066FF).withOpacity(0.4),
+                           ^
+lib/widgets/adrig_logo.dart:449:28: Error: Expected a class member, but got '.'.
+          Color(0xFF0066FF).withOpacity(0.4),
+                           ^
+lib/widgets/adrig_logo.dart:449:41: Error: Expected an identifier, but got '0.4'.
+Try inserting an identifier before '0.4'.
+          Color(0xFF0066FF).withOpacity(0.4),
+                                        ^^^
+lib/widgets/adrig_logo.dart:449:45: Error: Expected '{' before this.
+          Color(0xFF0066FF).withOpacity(0.4),
+                                            ^
+lib/widgets/adrig_logo.dart:449:45: Error: Expected a class member, but got ','.
+          Color(0xFF0066FF).withOpacity(0.4),
+                                            ^
+lib/widgets/adrig_logo.dart:509:19: Error: Expected '{' before this.
+  }        Paint()..color = Color(0xFF00F5FF),
+                  ^^
+lib/widgets/adrig_logo.dart:509:19: Error: Operator declarations must be preceded by the keyword 'operator'.
+Try adding the keyword 'operator'.
+  }        Paint()..color = Color(0xFF00F5FF),
+                  ^^
+lib/widgets/adrig_logo.dart:509:19: Error: The string '..' isn't a user-definable operator.
+  }        Paint()..color = Color(0xFF00F5FF),
+                  ^^
+lib/widgets/adrig_logo.dart:509:19: Error: A method declaration needs an explicit list of parameters.
+Try adding a parameter list to the method declaration.
+  }        Paint()..color = Color(0xFF00F5FF),
+                  ^^
+lib/widgets/adrig_logo.dart:509:21: Error: Expected '{' before this.
+  }        Paint()..color = Color(0xFF00F5FF),
+                    ^^^^^
+lib/widgets/adrig_logo.dart:509:21: Error: Variables must be declared using the keywords 'const', 'final', 'var' or a type name.
+Try adding the name of the type of the variable or the keyword 'var'.
+  }        Paint()..color = Color(0xFF00F5FF),
+                    ^^^^^
+lib/widgets/adrig_logo.dart:511:9: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+        );
+        ^
+lib/widgets/adrig_logo.dart:515:5: Error: The name of a constructor must match the name of the enclosing class.
+    canvas.save();    
+    ^^^^^^
+lib/widgets/adrig_logo.dart:517:5: Error: The name of a constructor must match the name of the enclosing class.
+    canvas.clipPath(clipPath);    canvas.restore();
+    ^^^^^^
+lib/widgets/adrig_logo.dart:517:35: Error: The name of a constructor must match the name of the enclosing class.
+    canvas.clipPath(clipPath);    canvas.restore();
+                                  ^^^^^^
+lib/widgets/adrig_logo.dart:527:5: Error: 'for' can't be used as an identifier because it's a keyword.
+Try renaming this to be an identifier that isn't a keyword.
+    for (int i = 0; i < 50; i++) {    
+    ^^^
+lib/widgets/adrig_logo.dart:527:16: Error: Non-optional parameters can't have a default value.
+Try removing the default value or making the parameter optional.
+    for (int i = 0; i < 50; i++) {    
+               ^
+lib/widgets/adrig_logo.dart:527:19: Error: Expected ')' before this.
+    for (int i = 0; i < 50; i++) {    
+                  ^
+lib/widgets/adrig_logo.dart:753:7: Error: A function declaration needs an explicit list of parameters.
+Try adding a parameter list to the function declaration.
+      canvas.drawCircle(    // Outer glow
+      ^^^^^^
+lib/widgets/adrig_logo.dart:753:13: Error: Expected '{' before this.
+      canvas.drawCircle(    // Outer glow
+            ^
+lib/widgets/adrig_logo.dart:753:13: Error: Expected a declaration, but got '.'.
+      canvas.drawCircle(    // Outer glow
+            ^
+lib/widgets/adrig_logo.dart:757:9: Error: Expected an identifier, but got '6'.
+Try inserting an identifier before '6'.
+        6,      shieldPath,
+        ^
+lib/widgets/adrig_logo.dart:759:22: Error: Expected ')' before this.
+        Paint()      Paint()
+                     ^^^^^
+lib/widgets/adrig_logo.dart:755:41: Error: Expected an identifier, but got '('.
+Try inserting an identifier before '('.
+        Offset(x, y),    canvas.drawPath(
+                                        ^
+lib/widgets/adrig_logo.dart:765:8: Error: Expected ')' before this.
+      );        ..strokeWidth = 6
+       ^
+lib/widgets/adrig_logo.dart:891:11: Error: Expected a function body or '=>'.
+Try adding {}.
+  }      );
+          ^
+lib/widgets/adrig_logo.dart:893:7: Error: Expected a declaration, but got '}'.
+      }
+      ^
+lib/widgets/adrig_logo.dart:895:14: Error: Expected a declaration, but got '}'.
+  @override  }
+             ^
+lib/widgets/adrig_logo.dart:897:22: Error: Can't have modifier 'covariant' here.
+Try removing 'covariant'.
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;  
+                     ^^^^^^^^^
+lib/widgets/adrig_logo.dart:899:1: Error: Expected a declaration, but got '}'.
+}  @override
+^
+lib/widgets/adrig_logo.dart:901:22: Error: Can't have modifier 'covariant' here.
+Try removing 'covariant'.
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+                     ^^^^^^^^^
+lib/widgets/adrig_logo.dart:909:3: Error: Classes can't be declared inside other classes.
+Try moving the class to the top-level.
+  class AnimatedAdRigLogo extends StatefulWidget {
+  ^^^^^
+lib/widgets/adrig_logo.dart:909:27: Error: Expected a class member, but got 'extends'.
+  class AnimatedAdRigLogo extends StatefulWidget {
+                          ^^^^^^^
+lib/widgets/adrig_logo.dart:909:35: Error: A method declaration needs an explicit list of parameters.
+Try adding a parameter list to the method declaration.
+  class AnimatedAdRigLogo extends StatefulWidget {
+                                  ^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:929:1: Error: Classes can't be declared inside other classes.
+Try moving the class to the top-level.
+class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>}
+^^^^^
+lib/widgets/adrig_logo.dart:929:31: Error: Expected a class member, but got 'extends'.
+class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>}
+                              ^^^^^^^
+lib/widgets/adrig_logo.dart:929:39: Error: A method declaration needs an explicit list of parameters.
+Try adding a parameter list to the method declaration.
+class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>}
+                                      ^^^^^
+lib/widgets/adrig_logo.dart:929:63: Error: Expected '{' before this.
+class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>}
+                                                              ^
+lib/widgets/adrig_logo.dart:931:5: Error: Variables must be declared using the keywords 'const', 'final', 'var' or a type name.
+Try adding the name of the type of the variable or the keyword 'var'.
+    with TickerProviderStateMixin {
+    ^^^^
+lib/widgets/adrig_logo.dart:931:5: Error: 'with' can't be used as an identifier because it's a keyword.
+Try renaming this to be an identifier that isn't a keyword.
+    with TickerProviderStateMixin {
+    ^^^^
+lib/widgets/adrig_logo.dart:931:5: Error: Expected ';' after this.
+    with TickerProviderStateMixin {
+    ^^^^
+lib/widgets/adrig_logo.dart:931:10: Error: A function declaration needs an explicit list of parameters.
+Try adding a parameter list to the function declaration.
+    with TickerProviderStateMixin {
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:1073:1: Error: Expected a declaration, but got '}'.
+}
+^
+lib/widgets/adrig_logo.dart:901:8: Error: 'shouldRepaint' is already declared in this scope.
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+       ^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:897:8: Context: Previous declaration of 'shouldRepaint'.
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;  
+       ^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:515:5: Error: 'AdRigLogo.save' is already declared in this scope.
+    canvas.save();    
+    ^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:203:5: Context: Previous declaration of 'AdRigLogo.save'.
+    canvas.save();/// Custom painter with "AdRig" integrated into shield design
+    ^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:449:11: Error: 'Color' is already declared in this scope.
+          Color(0xFF0066FF).withOpacity(0.4),
+          ^^^^^
+lib/widgets/adrig_logo.dart:447:12: Context: Previous declaration of 'Color'.
+  }        Color(0xFF00F5FF).withOpacity(0.6),
+           ^^^^^
+lib/widgets/adrig_logo.dart:449:29: Error: 'withOpacity' is already declared in this scope.
+          Color(0xFF0066FF).withOpacity(0.4),
+                            ^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:447:30: Context: Previous declaration of 'withOpacity'.
+  }        Color(0xFF00F5FF).withOpacity(0.6),
+                             ^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:755:26: Error: 'canvas.drawPath' can't be used as a type because 'canvas' doesn't refer to an import prefix.
+        Offset(x, y),    canvas.drawPath(
+                         ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:927:3: Error: 'State' isn't a type.
+  State<AnimatedAdRigLogo> createState() => _AnimatedAdRigLogoState();
+  ^^^^^
+lib/widgets/adrig_logo.dart:929:39: Context: This isn't a type.
+class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>}
+                                      ^^^^^
+lib/widgets/adrig_logo.dart:13:7: Error: The non-abstract class 'AdRigLogo' is missing implementations for these members:
+ - StatelessWidget.build
+Try to either
+ - provide an implementation,
+ - inherit an implementation from a superclass or mixin,
+ - mark the class as abstract, or
+ - provide a 'noSuchMethod' implementation.
+
+class AdRigLogo extends StatelessWidget {class AdRigLogo extends StatelessWidget {
+      ^^^^^^^^^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/widgets/framework.dart:572:10: Context: 'StatelessWidget.build' is defined here.
+  Widget build(BuildContext context);
+         ^^^^^
+lib/screens/login_screen.dart:145:30: Error: Couldn't find constructor 'AdRigLogo'.
+                      child: AdRigLogo(size: 140, showText: false),
+                             ^^^^^^^^^
+lib/widgets/adrig_logo.dart:15:36: Error: 'size' is already declared in this scope.
+  final double size;  final double size;
+                                   ^^^^
+lib/widgets/adrig_logo.dart:15:16: Context: Previous declaration of 'size'.
+  final double size;  final double size;
+               ^^^^
+lib/widgets/adrig_logo.dart:17:36: Error: 'showText' is already declared in this scope.
+  final bool showText;  final bool showText;
+                                   ^^^^^^^^
+lib/widgets/adrig_logo.dart:17:14: Context: Previous declaration of 'showText'.
+  final bool showText;  final bool showText;
+             ^^^^^^^^
+lib/widgets/adrig_logo.dart:27:44: Error: Not a constant expression.
+    this.showText = true,    this.showText = true,
+                                           ^
+lib/widgets/adrig_logo.dart:27:19: Error: Not a constant expression.
+    this.showText = true,    this.showText = true,
+                  ^
+lib/widgets/adrig_logo.dart:25:35: Error: Not a constant expression.
+    this.size = 120,    this.size = 120,
+                                  ^
+lib/widgets/adrig_logo.dart:25:15: Error: Not a constant expression.
+    this.size = 120,    this.size = 120,
+              ^
+lib/widgets/adrig_logo.dart:21:28: Error: Couldn't find constructor 'AdRigLogo'.
+  const AdRigLogo({  const AdRigLogo({
+                           ^^^^^^^^^
+lib/widgets/adrig_logo.dart:29:5: Error: Expected '}' before this.
+  });  });
+    ^
+lib/widgets/adrig_logo.dart:21:9: Error: Couldn't find constructor 'AdRigLogo'.
+  const AdRigLogo({  const AdRigLogo({
+        ^^^^^^^^^
+lib/widgets/adrig_logo.dart:37:23: Error: Unexpected token 'return'.
+    return Column(    return Column(
+                      ^^^^^^
+lib/widgets/adrig_logo.dart:41:32: Error: Expected ')' before this.
+      children: [      children: [
+                               ^
+lib/widgets/adrig_logo.dart:37:18: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+    return Column(    return Column(
+                 ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/widgets/basic.dart:5850:9: Context: Found this candidate, but the arguments don't match.
+  const Column({
+        ^^^^^^
+lib/widgets/adrig_logo.dart:143:29: Error: Expected ';' after this.
+            ),              ),
+                            ^
+lib/widgets/adrig_logo.dart:143:30: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+            ),              ),
+                             ^
+lib/widgets/adrig_logo.dart:143:30: Error: Unexpected token ';'.
+            ),              ),
+                             ^
+lib/widgets/adrig_logo.dart:151:54: Error: No named parameter with the name 'width'.
+                fontSize: size * 0.1,                width: 1.5,
+                                                     ^^^^^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/painting/text_style.dart:480:9: Context: Found this candidate, but the arguments don't match.
+  const TextStyle({
+        ^^^^^^^^^
+lib/widgets/adrig_logo.dart:157:27: Error: Expected ')' before this.
+                fontWeight: FontWeight.w700,                BoxShadow(
+                          ^
+lib/widgets/adrig_logo.dart:155:17: Error: No named parameter with the name 'letterSpacing'.
+                letterSpacing: 3,              boxShadow: [
+                ^^^^^^^^^^^^^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/painting/box_border.dart:506:11: Context: Found this candidate, but the arguments don't match.
+  factory Border.all({
+          ^^^
+lib/widgets/adrig_logo.dart:145:39: Error: No named parameter with the name 'borderRadius'.
+            child: Text(              borderRadius: BorderRadius.circular(16),
+                                      ^^^^^^^^^^^^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/widgets/text.dart:496:9: Context: Found this candidate, but the arguments don't match.
+  const Text(
+        ^^^^
+lib/widgets/adrig_logo.dart:163:11: Error: Expected ';' after this.
+          ),                  spreadRadius: 2,
+          ^
+lib/widgets/adrig_logo.dart:163:12: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+          ),                  spreadRadius: 2,
+           ^
+lib/widgets/adrig_logo.dart:163:12: Error: Unexpected token ';'.
+          ),                  spreadRadius: 2,
+           ^
+lib/widgets/adrig_logo.dart:163:45: Error: Expected ';' after this.
+          ),                  spreadRadius: 2,
+                                            ^
+lib/widgets/adrig_logo.dart:163:46: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+          ),                  spreadRadius: 2,
+                                             ^
+lib/widgets/adrig_logo.dart:163:46: Error: Unexpected token ';'.
+          ),                  spreadRadius: 2,
+                                             ^
+lib/widgets/adrig_logo.dart:165:9: Error: Expected an identifier, but got ']'.
+Try inserting an identifier before ']'.
+        ],                ),
+        ^
+lib/widgets/adrig_logo.dart:163:46: Error: Expected ';' after this.
+          ),                  spreadRadius: 2,
+                                             ^
+lib/widgets/adrig_logo.dart:165:9: Error: Unexpected token ';'.
+        ],                ),
+        ^
+lib/widgets/adrig_logo.dart:165:10: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+        ],                ),
+         ^
+lib/widgets/adrig_logo.dart:165:9: Error: Expected ';' after this.
+        ],                ),
+        ^
+lib/widgets/adrig_logo.dart:165:10: Error: Unexpected token ';'.
+        ],                ),
+         ^
+lib/widgets/adrig_logo.dart:165:27: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+        ],                ),
+                          ^
+lib/widgets/adrig_logo.dart:165:10: Error: Expected ';' after this.
+        ],                ),
+         ^
+lib/widgets/adrig_logo.dart:165:27: Error: Unexpected token ';'.
+        ],                ),
+                          ^
+lib/widgets/adrig_logo.dart:165:28: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+        ],                ),
+                           ^
+lib/widgets/adrig_logo.dart:165:27: Error: Expected ';' after this.
+        ],                ),
+                          ^
+lib/widgets/adrig_logo.dart:165:28: Error: Unexpected token ';'.
+        ],                ),
+                           ^
+lib/widgets/adrig_logo.dart:167:7: Error: Expected an identifier, but got ']'.
+Try inserting an identifier before ']'.
+      ],              ],
+      ^
+lib/widgets/adrig_logo.dart:165:28: Error: Expected ';' after this.
+        ],                ),
+                           ^
+lib/widgets/adrig_logo.dart:167:7: Error: Unexpected token ';'.
+      ],              ],
+      ^
+lib/widgets/adrig_logo.dart:167:8: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      ],              ],
+       ^
+lib/widgets/adrig_logo.dart:167:7: Error: Expected ';' after this.
+      ],              ],
+      ^
+lib/widgets/adrig_logo.dart:167:8: Error: Unexpected token ';'.
+      ],              ],
+       ^
+lib/widgets/adrig_logo.dart:167:23: Error: Expected an identifier, but got ']'.
+Try inserting an identifier before ']'.
+      ],              ],
+                      ^
+lib/widgets/adrig_logo.dart:167:8: Error: Expected ';' after this.
+      ],              ],
+       ^
+lib/widgets/adrig_logo.dart:167:23: Error: Unexpected token ';'.
+      ],              ],
+                      ^
+lib/widgets/adrig_logo.dart:167:24: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      ],              ],
+                       ^
+lib/widgets/adrig_logo.dart:167:23: Error: Expected ';' after this.
+      ],              ],
+                      ^
+lib/widgets/adrig_logo.dart:167:24: Error: Unexpected token ';'.
+      ],              ],
+                       ^
+lib/widgets/adrig_logo.dart:169:5: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+    );            ),
+    ^
+lib/widgets/adrig_logo.dart:167:24: Error: Expected ';' after this.
+      ],              ],
+                       ^
+lib/widgets/adrig_logo.dart:169:5: Error: Unexpected token ';'.
+    );            ),
+    ^
+lib/widgets/adrig_logo.dart:169:19: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+    );            ),
+                  ^
+lib/widgets/adrig_logo.dart:169:6: Error: Expected ';' after this.
+    );            ),
+     ^
+lib/widgets/adrig_logo.dart:169:19: Error: Unexpected token ';'.
+    );            ),
+                  ^
+lib/widgets/adrig_logo.dart:169:20: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    );            ),
+                   ^
+lib/widgets/adrig_logo.dart:169:19: Error: Expected ';' after this.
+    );            ),
+                  ^
+lib/widgets/adrig_logo.dart:169:20: Error: Unexpected token ';'.
+    );            ),
+                   ^
+lib/widgets/adrig_logo.dart:171:27: Error: Too few positional arguments: 1 required, 0 given.
+  }            child: Text(
+                          ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/widgets/text.dart:496:9: Context: Found this candidate, but the arguments don't match.
+  const Text(
+        ^^^^
+lib/widgets/adrig_logo.dart:171:27: Error: Expected ';' after this.
+  }            child: Text(
+                          ^
+lib/widgets/adrig_logo.dart:173:16: Error: Expected ';' after this.
+}              'AI THREAT INTELLIGENCE',
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:173:40: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+}              'AI THREAT INTELLIGENCE',
+                                       ^
+lib/widgets/adrig_logo.dart:173:40: Error: Unexpected token ';'.
+}              'AI THREAT INTELLIGENCE',
+                                       ^
+lib/widgets/adrig_logo.dart:181:1: Error: 'class' can't be used as an identifier because it's a keyword.
+Try renaming this to be an identifier that isn't a keyword.
+class _InnovativeAPainter extends CustomPainter {                letterSpacing: 3,
+^^^^^
+lib/widgets/adrig_logo.dart:181:7: Error: Expected ',' before this.
+class _InnovativeAPainter extends CustomPainter {                letterSpacing: 3,
+      ^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:181:27: Error: Expected ',' before this.
+class _InnovativeAPainter extends CustomPainter {                letterSpacing: 3,
+                          ^^^^^^^
+lib/widgets/adrig_logo.dart:181:27: Error: 'extends' can't be used as an identifier because it's a keyword.
+Try renaming this to be an identifier that isn't a keyword.
+class _InnovativeAPainter extends CustomPainter {                letterSpacing: 3,
+                          ^^^^^^^
+lib/widgets/adrig_logo.dart:181:35: Error: Expected ',' before this.
+class _InnovativeAPainter extends CustomPainter {                letterSpacing: 3,
+                                  ^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:181:49: Error: Expected ',' before this.
+class _InnovativeAPainter extends CustomPainter {                letterSpacing: 3,
+                                                ^
+lib/widgets/adrig_logo.dart:183:3: Error: Expected an identifier, but got 'final'.
+Try inserting an identifier before 'final'.
+  final double size;                fontWeight: FontWeight.w800,
+  ^^^^^
+lib/widgets/adrig_logo.dart:183:3: Error: Expected '}' before this.
+  final double size;                fontWeight: FontWeight.w800,
+  ^^^^^
+lib/widgets/adrig_logo.dart:181:79: Error: Expected ',' before this.
+class _InnovativeAPainter extends CustomPainter {                letterSpacing: 3,
+                                                                              ^
+lib/widgets/adrig_logo.dart:175:31: Error: Too many positional arguments: 0 allowed, but 5 found.
+Try removing the extra positional arguments.
+              style: TextStyle(
+                              ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/painting/text_style.dart:480:9: Context: Found this candidate, but the arguments don't match.
+  const TextStyle({
+        ^^^^^^^^^
+lib/widgets/adrig_logo.dart:185:17: Error: Expected ';' after this.
+                ),
+                ^
+lib/widgets/adrig_logo.dart:185:18: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+                ),
+                 ^
+lib/widgets/adrig_logo.dart:185:18: Error: Unexpected token ';'.
+                ),
+                 ^
+lib/widgets/adrig_logo.dart:187:46: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+  _InnovativeAPainter(this.size);            ),
+                                             ^
+lib/widgets/adrig_logo.dart:187:33: Error: Expected ';' after this.
+  _InnovativeAPainter(this.size);            ),
+                                ^
+lib/widgets/adrig_logo.dart:187:46: Error: Unexpected token ';'.
+  _InnovativeAPainter(this.size);            ),
+                                             ^
+lib/widgets/adrig_logo.dart:187:47: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+  _InnovativeAPainter(this.size);            ),
+                                              ^
+lib/widgets/adrig_logo.dart:187:46: Error: Expected ';' after this.
+  _InnovativeAPainter(this.size);            ),
+                                             ^
+lib/widgets/adrig_logo.dart:187:47: Error: Unexpected token ';'.
+  _InnovativeAPainter(this.size);            ),
+                                              ^
+lib/widgets/adrig_logo.dart:189:13: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+            ),
+            ^
+lib/widgets/adrig_logo.dart:187:47: Error: Expected ';' after this.
+  _InnovativeAPainter(this.size);            ),
+                                              ^
+lib/widgets/adrig_logo.dart:189:13: Error: Unexpected token ';'.
+            ),
+            ^
+lib/widgets/adrig_logo.dart:189:14: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+            ),
+             ^
+lib/widgets/adrig_logo.dart:189:13: Error: Expected ';' after this.
+            ),
+            ^
+lib/widgets/adrig_logo.dart:189:14: Error: Unexpected token ';'.
+            ),
+             ^
+lib/widgets/adrig_logo.dart:191:20: Error: Expected an identifier, but got ']'.
+Try inserting an identifier before ']'.
+  @override        ],
+                   ^
+lib/widgets/adrig_logo.dart:193:3: Error: Expected an identifier, but got 'void'.
+Try inserting an identifier before 'void'.
+  void paint(Canvas canvas, Size canvasSize) {      ],
+  ^^^^
+lib/widgets/adrig_logo.dart:191:21: Error: Expected ';' after this.
+  @override        ],
+                    ^
+lib/widgets/adrig_logo.dart:193:53: Error: Expected an identifier, but got ']'.
+Try inserting an identifier before ']'.
+  void paint(Canvas canvas, Size canvasSize) {      ],
+                                                    ^
+lib/widgets/adrig_logo.dart:193:46: Error: Expected ';' after this.
+  void paint(Canvas canvas, Size canvasSize) {      ],
+                                             ^
+lib/widgets/adrig_logo.dart:193:53: Error: Unexpected token ';'.
+  void paint(Canvas canvas, Size canvasSize) {      ],
+                                                    ^
+lib/widgets/adrig_logo.dart:193:54: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+  void paint(Canvas canvas, Size canvasSize) {      ],
+                                                     ^
+lib/widgets/adrig_logo.dart:193:53: Error: Expected ';' after this.
+  void paint(Canvas canvas, Size canvasSize) {      ],
+                                                    ^
+lib/widgets/adrig_logo.dart:193:54: Error: Unexpected token ';'.
+  void paint(Canvas canvas, Size canvasSize) {      ],
+                                                     ^
+lib/widgets/adrig_logo.dart:195:76: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+    final center = Offset(canvasSize.width / 2, canvasSize.height / 2);    );
+                                                                           ^
+lib/widgets/adrig_logo.dart:195:71: Error: Expected ';' after this.
+    final center = Offset(canvasSize.width / 2, canvasSize.height / 2);    );
+                                                                      ^
+lib/widgets/adrig_logo.dart:195:76: Error: Unexpected token ';'.
+    final center = Offset(canvasSize.width / 2, canvasSize.height / 2);    );
+                                                                           ^
+lib/widgets/adrig_logo.dart:221:25: Error: Expected an identifier, but got 'final'.
+Try inserting an identifier before 'final'.
+    canvas.drawPath(    final radius = size * 0.42;
+                        ^^^^^
+lib/widgets/adrig_logo.dart:221:25: Error: Expected ')' before this.
+    canvas.drawPath(    final radius = size * 0.42;
+                        ^^^^^
+lib/widgets/adrig_logo.dart:237:53: Error: Expected ')' before this.
+    _drawMetallicFill(canvas, aPath, center, radius);      Paint()
+                                                    ^
+lib/widgets/adrig_logo.dart:255:57: Error: Expected ')' before this.
+    _drawHolographicEdges(canvas, aPath, center, radius);        radius,
+                                                        ^
+lib/widgets/adrig_logo.dart:251:40: Error: Too few positional arguments: 3 required, 1 given.
+          ..shader = ui.Gradient.radial(
+                                       ^
+org-dartlang-sdk:///flutter/lib/ui/painting.dart:4877:3: Context: Found this candidate, but the arguments don't match.
+  Gradient.radial(
+  ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:215:19: Error: Local variable '_createMorphingA' can't be referenced before it is declared.
+    final aPath = _createMorphingA(center, radius);  @override
+                  ^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:277:8: Context: This is the declaration of the variable '_createMorphingA'.
+  Path _createMorphingA(Offset center, double radius) {    _drawCircuitDNA(canvas, center, radius, shieldPath);
+       ^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:307:51: Error: Local variable 'cy' can't be referenced before it is declared.
+    final rightStart = Offset(cx + radius * 0.15, cy - radius * 0.9);    final cy = center.dy;
+                                                  ^^
+lib/widgets/adrig_logo.dart:307:80: Context: This is the declaration of the variable 'cy'.
+    final rightStart = Offset(cx + radius * 0.15, cy - radius * 0.9);    final cy = center.dy;
+                                                                               ^^
+lib/widgets/adrig_logo.dart:317:89: Error: Expected ';' after this.
+    final bottomLeft = Offset(cx - radius * 0.3, cy + radius * 0.9);      cx - radius * 0.3, cy - radius * 1.0,
+                                                                                        ^^^
+lib/widgets/adrig_logo.dart:317:92: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    final bottomLeft = Offset(cx - radius * 0.3, cy + radius * 0.9);      cx - radius * 0.3, cy - radius * 1.0,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:317:92: Error: Unexpected token ';'.
+    final bottomLeft = Offset(cx - radius * 0.3, cy + radius * 0.9);      cx - radius * 0.3, cy - radius * 1.0,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:317:108: Error: Expected ';' after this.
+    final bottomLeft = Offset(cx - radius * 0.3, cy + radius * 0.9);      cx - radius * 0.3, cy - radius * 1.0,
+                                                                                          ^^^
+lib/widgets/adrig_logo.dart:317:111: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    final bottomLeft = Offset(cx - radius * 0.3, cy + radius * 0.9);      cx - radius * 0.3, cy - radius * 1.0,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:317:111: Error: Unexpected token ';'.
+    final bottomLeft = Offset(cx - radius * 0.3, cy + radius * 0.9);      cx - radius * 0.3, cy - radius * 1.0,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:319:90: Error: Expected ';' after this.
+    final bottomRight = Offset(cx + radius * 0.3, cy + radius * 0.9);      cx - radius * 0.7, cy - radius * 0.95,
+                                                                                         ^^^
+lib/widgets/adrig_logo.dart:319:93: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    final bottomRight = Offset(cx + radius * 0.3, cy + radius * 0.9);      cx - radius * 0.7, cy - radius * 0.95,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:319:93: Error: Unexpected token ';'.
+    final bottomRight = Offset(cx + radius * 0.3, cy + radius * 0.9);      cx - radius * 0.7, cy - radius * 0.95,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:319:109: Error: Expected ';' after this.
+    final bottomRight = Offset(cx + radius * 0.3, cy + radius * 0.9);      cx - radius * 0.7, cy - radius * 0.95,
+                                                                                          ^^^^
+lib/widgets/adrig_logo.dart:319:113: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    final bottomRight = Offset(cx + radius * 0.3, cy + radius * 0.9);      cx - radius * 0.7, cy - radius * 0.95,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:319:113: Error: Unexpected token ';'.
+    final bottomRight = Offset(cx + radius * 0.3, cy + radius * 0.9);      cx - radius * 0.7, cy - radius * 0.95,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:321:76: Error: Expected ';' after this.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                                                                           ^^^^
+lib/widgets/adrig_logo.dart:321:80: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                                                                               ^
+lib/widgets/adrig_logo.dart:321:80: Error: Unexpected token ';'.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                                                                               ^
+lib/widgets/adrig_logo.dart:321:96: Error: Expected ';' after this.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                                                                                          ^^^
+lib/widgets/adrig_logo.dart:321:99: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:321:99: Error: Unexpected token ';'.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:323:9: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+        );
+        ^
+lib/widgets/adrig_logo.dart:321:99: Error: Expected ';' after this.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                                                                                          ^
+lib/widgets/adrig_logo.dart:323:9: Error: Unexpected token ';'.
+        );
+        ^
+lib/widgets/adrig_logo.dart:327:63: Error: Expected ';' after this.
+    path.moveTo(topPoint.dx, topPoint.dy);      cx - radius * 0.95, cy - radius * 0.2,
+                                                              ^^^^
+lib/widgets/adrig_logo.dart:327:67: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    path.moveTo(topPoint.dx, topPoint.dy);      cx - radius * 0.95, cy - radius * 0.2,
+                                                                  ^
+lib/widgets/adrig_logo.dart:327:67: Error: Unexpected token ';'.
+    path.moveTo(topPoint.dx, topPoint.dy);      cx - radius * 0.95, cy - radius * 0.2,
+                                                                  ^
+lib/widgets/adrig_logo.dart:327:83: Error: Expected ';' after this.
+    path.moveTo(topPoint.dx, topPoint.dy);      cx - radius * 0.95, cy - radius * 0.2,
+                                                                                  ^^^
+lib/widgets/adrig_logo.dart:327:86: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    path.moveTo(topPoint.dx, topPoint.dy);      cx - radius * 0.95, cy - radius * 0.2,
+                                                                                     ^
+lib/widgets/adrig_logo.dart:327:86: Error: Unexpected token ';'.
+    path.moveTo(topPoint.dx, topPoint.dy);      cx - radius * 0.95, cy - radius * 0.2,
+                                                                                     ^
+lib/widgets/adrig_logo.dart:329:25: Error: Expected ';' after this.
+          cx - radius * 0.95, cy + radius * 0.2,
+                        ^^^^
+lib/widgets/adrig_logo.dart:329:29: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+          cx - radius * 0.95, cy + radius * 0.2,
+                            ^
+lib/widgets/adrig_logo.dart:329:29: Error: Unexpected token ';'.
+          cx - radius * 0.95, cy + radius * 0.2,
+                            ^
+lib/widgets/adrig_logo.dart:329:45: Error: Expected ';' after this.
+          cx - radius * 0.95, cy + radius * 0.2,
+                                            ^^^
+lib/widgets/adrig_logo.dart:329:48: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+          cx - radius * 0.95, cy + radius * 0.2,
+                                               ^
+lib/widgets/adrig_logo.dart:329:48: Error: Unexpected token ';'.
+          cx - radius * 0.95, cy + radius * 0.2,
+                                               ^
+lib/widgets/adrig_logo.dart:335:17: Error: Expected ';' after this.
+      leftStart.dx, leftStart.dy,    path.cubicTo(
+                ^^
+lib/widgets/adrig_logo.dart:335:19: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      leftStart.dx, leftStart.dy,    path.cubicTo(
+                  ^
+lib/widgets/adrig_logo.dart:335:19: Error: Unexpected token ';'.
+      leftStart.dx, leftStart.dy,    path.cubicTo(
+                  ^
+lib/widgets/adrig_logo.dart:335:31: Error: Expected ';' after this.
+      leftStart.dx, leftStart.dy,    path.cubicTo(
+                              ^^
+lib/widgets/adrig_logo.dart:335:33: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      leftStart.dx, leftStart.dy,    path.cubicTo(
+                                ^
+lib/widgets/adrig_logo.dart:335:33: Error: Unexpected token ';'.
+      leftStart.dx, leftStart.dy,    path.cubicTo(
+                                ^
+lib/widgets/adrig_logo.dart:339:27: Error: Expected ';' after this.
+    );      cx - radius * 0.2, cy + radius * 1.0,
+                          ^^^
+lib/widgets/adrig_logo.dart:339:30: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    );      cx - radius * 0.2, cy + radius * 1.0,
+                             ^
+lib/widgets/adrig_logo.dart:339:30: Error: Unexpected token ';'.
+    );      cx - radius * 0.2, cy + radius * 1.0,
+                             ^
+lib/widgets/adrig_logo.dart:339:46: Error: Expected ';' after this.
+    );      cx - radius * 0.2, cy + radius * 1.0,
+                                             ^^^
+lib/widgets/adrig_logo.dart:339:49: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    );      cx - radius * 0.2, cy + radius * 1.0,
+                                                ^
+lib/widgets/adrig_logo.dart:339:49: Error: Unexpected token ';'.
+    );      cx - radius * 0.2, cy + radius * 1.0,
+                                                ^
+lib/widgets/adrig_logo.dart:345:18: Error: Expected ';' after this.
+      leftBottom.dx, leftBottom.dy,    path.cubicTo(
+                 ^^
+lib/widgets/adrig_logo.dart:345:20: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      leftBottom.dx, leftBottom.dy,    path.cubicTo(
+                   ^
+lib/widgets/adrig_logo.dart:345:20: Error: Unexpected token ';'.
+      leftBottom.dx, leftBottom.dy,    path.cubicTo(
+                   ^
+lib/widgets/adrig_logo.dart:345:33: Error: Expected ';' after this.
+      leftBottom.dx, leftBottom.dy,    path.cubicTo(
+                                ^^
+lib/widgets/adrig_logo.dart:345:35: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      leftBottom.dx, leftBottom.dy,    path.cubicTo(
+                                  ^
+lib/widgets/adrig_logo.dart:345:35: Error: Unexpected token ';'.
+      leftBottom.dx, leftBottom.dy,    path.cubicTo(
+                                  ^
+lib/widgets/adrig_logo.dart:347:27: Error: Expected ';' after this.
+    );      cx + radius * 0.2, cy + radius * 1.0,
+                          ^^^
+lib/widgets/adrig_logo.dart:347:30: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    );      cx + radius * 0.2, cy + radius * 1.0,
+                             ^
+lib/widgets/adrig_logo.dart:347:30: Error: Unexpected token ';'.
+    );      cx + radius * 0.2, cy + radius * 1.0,
+                             ^
+lib/widgets/adrig_logo.dart:347:46: Error: Expected ';' after this.
+    );      cx + radius * 0.2, cy + radius * 1.0,
+                                             ^^^
+lib/widgets/adrig_logo.dart:347:49: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    );      cx + radius * 0.2, cy + radius * 1.0,
+                                                ^
+lib/widgets/adrig_logo.dart:347:49: Error: Unexpected token ';'.
+    );      cx + radius * 0.2, cy + radius * 1.0,
+                                                ^
+lib/widgets/adrig_logo.dart:349:25: Error: Expected ';' after this.
+          cx + radius * 0.5, cy + radius * 0.85,
+                        ^^^
+lib/widgets/adrig_logo.dart:349:28: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+          cx + radius * 0.5, cy + radius * 0.85,
+                           ^
+lib/widgets/adrig_logo.dart:349:28: Error: Unexpected token ';'.
+          cx + radius * 0.5, cy + radius * 0.85,
+                           ^
+lib/widgets/adrig_logo.dart:349:44: Error: Expected ';' after this.
+          cx + radius * 0.5, cy + radius * 0.85,
+                                           ^^^^
+lib/widgets/adrig_logo.dart:349:48: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+          cx + radius * 0.5, cy + radius * 0.85,
+                                               ^
+lib/widgets/adrig_logo.dart:349:48: Error: Unexpected token ';'.
+          cx + radius * 0.5, cy + radius * 0.85,
+                                               ^
+lib/widgets/adrig_logo.dart:353:51: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+    path.lineTo(bottomLeft.dx, bottomLeft.dy);    );
+                                                  ^
+lib/widgets/adrig_logo.dart:353:46: Error: Expected ';' after this.
+    path.lineTo(bottomLeft.dx, bottomLeft.dy);    );
+                                             ^
+lib/widgets/adrig_logo.dart:353:51: Error: Unexpected token ';'.
+    path.lineTo(bottomLeft.dx, bottomLeft.dy);    );
+                                                  ^
+lib/widgets/adrig_logo.dart:363:43: Error: Expected ')' before this.
+      bottomPoint.dx, bottomPoint.dy,    );
+                                          ^
+lib/widgets/adrig_logo.dart:373:6: Error: Expected ')' before this.
+    );    );
+     ^
+lib/widgets/adrig_logo.dart:383:69: Error: A function expression can't have a name.
+      rightMid.dx - radius * 0.1, rightMid.dy + radius * 0.4,  void _drawCircuitDNA(Canvas canvas, Offset center, double radius, Path clipPath) {
+                                                                    ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:385:16: Error: Expected ';' after this.
+      rightMid.dx, rightMid.dy,    canvas.save();
+               ^^
+lib/widgets/adrig_logo.dart:385:18: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      rightMid.dx, rightMid.dy,    canvas.save();
+                 ^
+lib/widgets/adrig_logo.dart:385:18: Error: Unexpected token ';'.
+      rightMid.dx, rightMid.dy,    canvas.save();
+                 ^
+lib/widgets/adrig_logo.dart:385:29: Error: Expected ';' after this.
+      rightMid.dx, rightMid.dy,    canvas.save();
+                            ^^
+lib/widgets/adrig_logo.dart:385:31: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      rightMid.dx, rightMid.dy,    canvas.save();
+                              ^
+lib/widgets/adrig_logo.dart:385:31: Error: Unexpected token ';'.
+      rightMid.dx, rightMid.dy,    canvas.save();
+                              ^
+lib/widgets/adrig_logo.dart:393:36: Error: Expected an identifier, but got 'final'.
+Try inserting an identifier before 'final'.
+      topPoint.dx, topPoint.dy,    final helixPaint = Paint()
+                                   ^^^^^
+lib/widgets/adrig_logo.dart:393:36: Error: Expected ')' before this.
+      topPoint.dx, topPoint.dy,    final helixPaint = Paint()
+                                   ^^^^^
+lib/widgets/adrig_logo.dart:395:13: Error: Expected an identifier, but got '..'.
+Try inserting an identifier before '..'.
+    );      ..strokeWidth = 2.0
+            ^^
+lib/widgets/adrig_logo.dart:425:76: Error: Expected an identifier, but got 'else'.
+Try inserting an identifier before 'else'.
+  void _drawGlowAura(Canvas canvas, Offset center, double radius) {      } else {
+                                                                           ^^^^
+lib/widgets/adrig_logo.dart:425:74: Error: Expected ';' after this.
+  void _drawGlowAura(Canvas canvas, Offset center, double radius) {      } else {
+                                                                         ^
+lib/widgets/adrig_logo.dart:425:76: Error: Unexpected token 'else'.
+  void _drawGlowAura(Canvas canvas, Offset center, double radius) {      } else {
+                                                                           ^^^^
+lib/widgets/adrig_logo.dart:431:24: Error: Expected ';' after this.
+      canvas.drawCircle(      }
+                       ^
+lib/widgets/adrig_logo.dart:433:9: Error: Expected ';' after this.
+        center,    }
+        ^^^^^^
+lib/widgets/adrig_logo.dart:433:15: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+        center,    }
+              ^
+lib/widgets/adrig_logo.dart:433:15: Error: Unexpected token ','.
+        center,    }
+              ^
+lib/widgets/adrig_logo.dart:435:31: Error: Expected ';' after this.
+        radius * 1.1 + (i * 15),    
+                              ^
+lib/widgets/adrig_logo.dart:435:32: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+        radius * 1.1 + (i * 15),    
+                               ^
+lib/widgets/adrig_logo.dart:435:32: Error: Unexpected token ','.
+        radius * 1.1 + (i * 15),    
+                               ^
+lib/widgets/adrig_logo.dart:439:59: Error: Expected ';' after this.
+          ..color = Color(0xFF00F5FF).withOpacity(0.05 * i)    helixPaint.shader = ui.Gradient.linear(
+                                                          ^
+lib/widgets/adrig_logo.dart:441:11: Error: Expected an identifier, but got '..'.
+Try inserting an identifier before '..'.
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 20),      Offset(center.dx, center.dy - radius),
+          ^^
+lib/widgets/adrig_logo.dart:439:102: Error: Too few positional arguments: 3 required, 2 given.
+          ..color = Color(0xFF00F5FF).withOpacity(0.05 * i)    helixPaint.shader = ui.Gradient.linear(
+                                                                                          ^
+org-dartlang-sdk:///flutter/lib/ui/painting.dart:4822:3: Context: Found this candidate, but the arguments don't match.
+  Gradient.linear(
+  ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:443:51: Error: Expected ';' after this.
+      );      Offset(center.dx, center.dy + radius),
+                                                  ^
+lib/widgets/adrig_logo.dart:443:52: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      );      Offset(center.dx, center.dy + radius),
+                                                   ^
+lib/widgets/adrig_logo.dart:443:52: Error: Unexpected token ','.
+      );      Offset(center.dx, center.dy + radius),
+                                                   ^
+lib/widgets/adrig_logo.dart:445:12: Error: Expected ';' after this.
+    }      [
+           ^
+lib/widgets/adrig_logo.dart:209:5: Error: The method '_drawGlowAura' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_drawGlowAura'.
+    _drawGlowAura(canvas, center, radius);  
+    ^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:209:27: Error: The getter 'center' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'center'.
+    _drawGlowAura(canvas, center, radius);  
+                          ^^^^^^
+lib/widgets/adrig_logo.dart:209:35: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    _drawGlowAura(canvas, center, radius);  
+                                  ^^^^^^
+lib/widgets/adrig_logo.dart:211:7: Error: The method '_AdRigBrandPainter' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_AdRigBrandPainter'.
+      _AdRigBrandPainter(this.size);
+      ^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:211:31: Error: The getter 'size' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'size'.
+      _AdRigBrandPainter(this.size);
+                              ^^^^
+lib/widgets/adrig_logo.dart:215:19: Error: The method '_createMorphingA' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_createMorphingA'.
+    final aPath = _createMorphingA(center, radius);  @override
+                  ^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:215:36: Error: The getter 'center' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'center'.
+    final aPath = _createMorphingA(center, radius);  @override
+                                   ^^^^^^
+lib/widgets/adrig_logo.dart:215:44: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    final aPath = _createMorphingA(center, radius);  @override
+                                           ^^^^^^
+lib/widgets/adrig_logo.dart:221:20: Error: Too few positional arguments: 2 required, 1 given.
+    canvas.drawPath(    final radius = size * 0.42;
+                   ^
+lib/widgets/adrig_logo.dart:237:38: Error: The getter 'center' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'center'.
+    _drawMetallicFill(canvas, aPath, center, radius);      Paint()
+                                     ^^^^^^
+lib/widgets/adrig_logo.dart:237:46: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    _drawMetallicFill(canvas, aPath, center, radius);      Paint()
+                                             ^^^^^^
+lib/widgets/adrig_logo.dart:233:24: Error: Too few positional arguments: 2 required, 1 given.
+        canvas.drawPath(
+                       ^
+lib/widgets/adrig_logo.dart:249:5: Error: The method '_drawEnergyFlow' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_drawEnergyFlow'.
+    _drawEnergyFlow(canvas, center, radius, aPath);    final basePaint = Paint()
+    ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:249:29: Error: The getter 'center' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'center'.
+    _drawEnergyFlow(canvas, center, radius, aPath);    final basePaint = Paint()
+                            ^^^^^^
+lib/widgets/adrig_logo.dart:249:37: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    _drawEnergyFlow(canvas, center, radius, aPath);    final basePaint = Paint()
+                                    ^^^^^^
+lib/widgets/adrig_logo.dart:271:42: Error: The getter 'shieldPath' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'shieldPath'.
+    canvas.restore();    canvas.drawPath(shieldPath, basePaint);
+                                         ^^^^^^^^^^
+lib/widgets/adrig_logo.dart:277:60: Error: The method '_drawCircuitDNA' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_drawCircuitDNA'.
+  Path _createMorphingA(Offset center, double radius) {    _drawCircuitDNA(canvas, center, radius, shieldPath);
+                                                           ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:277:100: Error: The getter 'shieldPath' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'shieldPath'.
+  Path _createMorphingA(Offset center, double radius) {    _drawCircuitDNA(canvas, center, radius, shieldPath);
+                                                                                          ^^^^^^^^^^
+lib/widgets/adrig_logo.dart:283:30: Error: The method '_drawAdRigBrand' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_drawAdRigBrand'.
+    final cy = center.dy;    _drawAdRigBrand(canvas, center, radius);
+                             ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:277:3: Error: A non-null value must be returned since the return type 'Path' doesn't allow null.
+ - 'Path' is from 'dart:ui'.
+  Path _createMorphingA(Offset center, double radius) {    _drawCircuitDNA(canvas, center, radius, shieldPath);
+  ^
+lib/widgets/adrig_logo.dart:299:28: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final leftMid = Offset(cx - radius * 0.75, cy);  
+                           ^^
+lib/widgets/adrig_logo.dart:299:33: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    final leftMid = Offset(cx - radius * 0.75, cy);  
+                                ^^^^^^
+lib/widgets/adrig_logo.dart:299:48: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final leftMid = Offset(cx - radius * 0.75, cy);  
+                                               ^^
+lib/widgets/adrig_logo.dart:301:31: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final leftBottom = Offset(cx - radius * 0.65, cy + radius * 0.9);  Path _createShieldPath(Offset center, double radius) {
+                              ^^
+lib/widgets/adrig_logo.dart:301:36: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    final leftBottom = Offset(cx - radius * 0.65, cy + radius * 0.9);  Path _createShieldPath(Offset center, double radius) {
+                                   ^^^^^^
+lib/widgets/adrig_logo.dart:301:51: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final leftBottom = Offset(cx - radius * 0.65, cy + radius * 0.9);  Path _createShieldPath(Offset center, double radius) {
+                                                  ^^
+lib/widgets/adrig_logo.dart:301:56: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    final leftBottom = Offset(cx - radius * 0.65, cy + radius * 0.9);  Path _createShieldPath(Offset center, double radius) {
+                                                       ^^^^^^
+lib/widgets/adrig_logo.dart:307:31: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final rightStart = Offset(cx + radius * 0.15, cy - radius * 0.9);    final cy = center.dy;
+                              ^^
+lib/widgets/adrig_logo.dart:307:51: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final rightStart = Offset(cx + radius * 0.15, cy - radius * 0.9);    final cy = center.dy;
+                                                  ^^
+lib/widgets/adrig_logo.dart:309:29: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final rightMid = Offset(cx + radius * 0.75, cy);    
+                            ^^
+lib/widgets/adrig_logo.dart:309:49: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final rightMid = Offset(cx + radius * 0.75, cy);    
+                                                ^^
+lib/widgets/adrig_logo.dart:311:32: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final rightBottom = Offset(cx + radius * 0.65, cy + radius * 0.9);    // Modern shield
+                               ^^
+lib/widgets/adrig_logo.dart:311:52: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final rightBottom = Offset(cx + radius * 0.65, cy + radius * 0.9);    // Modern shield
+                                                   ^^
+lib/widgets/adrig_logo.dart:313:21: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+        path.moveTo(cx, cy - radius * 1.05);
+                    ^^
+lib/widgets/adrig_logo.dart:313:25: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+        path.moveTo(cx, cy - radius * 1.05);
+                        ^^
+lib/widgets/adrig_logo.dart:317:31: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final bottomLeft = Offset(cx - radius * 0.3, cy + radius * 0.9);      cx - radius * 0.3, cy - radius * 1.0,
+                              ^^
+lib/widgets/adrig_logo.dart:317:50: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final bottomLeft = Offset(cx - radius * 0.3, cy + radius * 0.9);      cx - radius * 0.3, cy - radius * 1.0,
+                                                 ^^
+lib/widgets/adrig_logo.dart:317:75: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final bottomLeft = Offset(cx - radius * 0.3, cy + radius * 0.9);      cx - radius * 0.3, cy - radius * 1.0,
+                                                                          ^^
+lib/widgets/adrig_logo.dart:317:94: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final bottomLeft = Offset(cx - radius * 0.3, cy + radius * 0.9);      cx - radius * 0.3, cy - radius * 1.0,
+                                                                                          ^^
+lib/widgets/adrig_logo.dart:319:32: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final bottomRight = Offset(cx + radius * 0.3, cy + radius * 0.9);      cx - radius * 0.7, cy - radius * 0.95,
+                               ^^
+lib/widgets/adrig_logo.dart:319:51: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final bottomRight = Offset(cx + radius * 0.3, cy + radius * 0.9);      cx - radius * 0.7, cy - radius * 0.95,
+                                                  ^^
+lib/widgets/adrig_logo.dart:319:76: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final bottomRight = Offset(cx + radius * 0.3, cy + radius * 0.9);      cx - radius * 0.7, cy - radius * 0.95,
+                                                                           ^^
+lib/widgets/adrig_logo.dart:319:95: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final bottomRight = Offset(cx + radius * 0.3, cy + radius * 0.9);      cx - radius * 0.7, cy - radius * 0.95,
+                                                                                          ^^
+lib/widgets/adrig_logo.dart:321:32: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                               ^^
+lib/widgets/adrig_logo.dart:321:36: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                                   ^^
+lib/widgets/adrig_logo.dart:321:62: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                                                             ^^
+lib/widgets/adrig_logo.dart:321:82: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final bottomPoint = Offset(cx, cy + radius * 1.05);      cx - radius * 0.85, cy - radius * 0.6,
+                                                                                 ^^
+lib/widgets/adrig_logo.dart:327:17: Error: The getter 'topPoint' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'topPoint'.
+    path.moveTo(topPoint.dx, topPoint.dy);      cx - radius * 0.95, cy - radius * 0.2,
+                ^^^^^^^^
+lib/widgets/adrig_logo.dart:327:30: Error: The getter 'topPoint' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'topPoint'.
+    path.moveTo(topPoint.dx, topPoint.dy);      cx - radius * 0.95, cy - radius * 0.2,
+                             ^^^^^^^^
+lib/widgets/adrig_logo.dart:327:49: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    path.moveTo(topPoint.dx, topPoint.dy);      cx - radius * 0.95, cy - radius * 0.2,
+                                                ^^
+lib/widgets/adrig_logo.dart:327:69: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    path.moveTo(topPoint.dx, topPoint.dy);      cx - radius * 0.95, cy - radius * 0.2,
+                                                                    ^^
+lib/widgets/adrig_logo.dart:329:11: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+          cx - radius * 0.95, cy + radius * 0.2,
+          ^^
+lib/widgets/adrig_logo.dart:329:31: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+          cx - radius * 0.95, cy + radius * 0.2,
+                              ^^
+lib/widgets/adrig_logo.dart:333:27: Error: Too few positional arguments: 4 required, 0 given.
+    path.quadraticBezierTo(    );
+                          ^
+lib/widgets/adrig_logo.dart:335:7: Error: The getter 'leftStart' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'leftStart'.
+      leftStart.dx, leftStart.dy,    path.cubicTo(
+      ^^^^^^^^^
+lib/widgets/adrig_logo.dart:335:21: Error: The getter 'leftStart' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'leftStart'.
+      leftStart.dx, leftStart.dy,    path.cubicTo(
+                    ^^^^^^^^^
+lib/widgets/adrig_logo.dart:337:36: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+      leftMid.dx, leftMid.dy,      cx - radius * 0.5, cy + radius * 0.85,
+                                   ^^
+lib/widgets/adrig_logo.dart:337:55: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+      leftMid.dx, leftMid.dy,      cx - radius * 0.5, cy + radius * 0.85,
+                                                      ^^
+lib/widgets/adrig_logo.dart:335:50: Error: Too few positional arguments: 6 required, 4 given.
+      leftStart.dx, leftStart.dy,    path.cubicTo(
+                                                 ^
+lib/widgets/adrig_logo.dart:339:13: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    );      cx - radius * 0.2, cy + radius * 1.0,
+            ^^
+lib/widgets/adrig_logo.dart:339:32: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    );      cx - radius * 0.2, cy + radius * 1.0,
+                               ^^
+lib/widgets/adrig_logo.dart:341:34: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    path.quadraticBezierTo(      cx, cy + radius * 1.12,
+                                 ^^
+lib/widgets/adrig_logo.dart:341:38: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    path.quadraticBezierTo(      cx, cy + radius * 1.12,
+                                     ^^
+lib/widgets/adrig_logo.dart:345:52: Error: Too few positional arguments: 6 required, 0 given.
+      leftBottom.dx, leftBottom.dy,    path.cubicTo(
+                                                   ^
+lib/widgets/adrig_logo.dart:347:13: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    );      cx + radius * 0.2, cy + radius * 1.0,
+            ^^
+lib/widgets/adrig_logo.dart:347:32: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    );      cx + radius * 0.2, cy + radius * 1.0,
+                               ^^
+lib/widgets/adrig_logo.dart:349:11: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+          cx + radius * 0.5, cy + radius * 0.85,
+          ^^
+lib/widgets/adrig_logo.dart:349:30: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+          cx + radius * 0.5, cy + radius * 0.85,
+                             ^^
+lib/widgets/adrig_logo.dart:359:34: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    path.quadraticBezierTo(      cx + radius * 0.95, cy - radius * 0.2,
+                                 ^^
+lib/widgets/adrig_logo.dart:359:54: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    path.quadraticBezierTo(      cx + radius * 0.95, cy - radius * 0.2,
+                                                     ^^
+lib/widgets/adrig_logo.dart:361:7: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+      cx - radius * 0.15, cy + radius * 1.0,      cx + radius * 0.85, cy - radius * 0.6,
+      ^^
+lib/widgets/adrig_logo.dart:361:27: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+      cx - radius * 0.15, cy + radius * 1.0,      cx + radius * 0.85, cy - radius * 0.6,
+                          ^^
+lib/widgets/adrig_logo.dart:361:51: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+      cx - radius * 0.15, cy + radius * 1.0,      cx + radius * 0.85, cy - radius * 0.6,
+                                                  ^^
+lib/widgets/adrig_logo.dart:361:71: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+      cx - radius * 0.15, cy + radius * 1.0,      cx + radius * 0.85, cy - radius * 0.6,
+                                                                      ^^
+lib/widgets/adrig_logo.dart:359:27: Error: Too many positional arguments: 4 allowed, but 8 found.
+Try removing the extra positional arguments.
+    path.quadraticBezierTo(      cx + radius * 0.95, cy - radius * 0.2,
+                          ^
+lib/widgets/adrig_logo.dart:355:21: Error: Too few positional arguments: 6 required, 1 given.
+        path.cubicTo(
+                    ^
+lib/widgets/adrig_logo.dart:367:34: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    path.quadraticBezierTo(      cx + radius * 0.7, cy - radius * 0.95,
+                                 ^^
+lib/widgets/adrig_logo.dart:367:53: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    path.quadraticBezierTo(      cx + radius * 0.7, cy - radius * 0.95,
+                                                    ^^
+lib/widgets/adrig_logo.dart:369:7: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+      cx + radius * 0.15, cy + radius * 1.0,      cx + radius * 0.3, cy - radius * 1.0,
+      ^^
+lib/widgets/adrig_logo.dart:369:27: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+      cx + radius * 0.15, cy + radius * 1.0,      cx + radius * 0.3, cy - radius * 1.0,
+                          ^^
+lib/widgets/adrig_logo.dart:369:51: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+      cx + radius * 0.15, cy + radius * 1.0,      cx + radius * 0.3, cy - radius * 1.0,
+                                                  ^^
+lib/widgets/adrig_logo.dart:369:70: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+      cx + radius * 0.15, cy + radius * 1.0,      cx + radius * 0.3, cy - radius * 1.0,
+                                                                     ^^
+lib/widgets/adrig_logo.dart:371:44: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+      bottomRight.dx, bottomRight.dy,      cx, cy - radius * 1.05,
+                                           ^^
+lib/widgets/adrig_logo.dart:371:48: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+      bottomRight.dx, bottomRight.dy,      cx, cy - radius * 1.05,
+                                               ^^
+lib/widgets/adrig_logo.dart:367:27: Error: Too many positional arguments: 4 allowed, but 10 found.
+Try removing the extra positional arguments.
+    path.quadraticBezierTo(      cx + radius * 0.7, cy - radius * 0.95,
+                          ^
+lib/widgets/adrig_logo.dart:365:23: Error: Too few positional arguments: 6 required, 1 given.
+    );    path.cubicTo(
+                      ^
+lib/widgets/adrig_logo.dart:301:72: Error: A non-null value must be returned since the return type 'Path' doesn't allow null.
+ - 'Path' is from 'dart:ui'.
+    final leftBottom = Offset(cx - radius * 0.65, cy + radius * 0.9);  Path _createShieldPath(Offset center, double radius) {
+                                                                       ^
+lib/widgets/adrig_logo.dart:381:5: Error: The getter 'path' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'path'.
+    path.quadraticBezierTo(  
+    ^^^^
+lib/widgets/adrig_logo.dart:383:7: Error: The getter 'rightMid' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'rightMid'.
+      rightMid.dx - radius * 0.1, rightMid.dy + radius * 0.4,  void _drawCircuitDNA(Canvas canvas, Offset center, double radius, Path clipPath) {
+      ^^^^^^^^
+lib/widgets/adrig_logo.dart:383:21: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+      rightMid.dx - radius * 0.1, rightMid.dy + radius * 0.4,  void _drawCircuitDNA(Canvas canvas, Offset center, double radius, Path clipPath) {
+                    ^^^^^^
+lib/widgets/adrig_logo.dart:383:35: Error: The getter 'rightMid' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'rightMid'.
+      rightMid.dx - radius * 0.1, rightMid.dy + radius * 0.4,  void _drawCircuitDNA(Canvas canvas, Offset center, double radius, Path clipPath) {
+                                  ^^^^^^^^
+lib/widgets/adrig_logo.dart:383:49: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+      rightMid.dx - radius * 0.1, rightMid.dy + radius * 0.4,  void _drawCircuitDNA(Canvas canvas, Offset center, double radius, Path clipPath) {
+                                                ^^^^^^
+lib/widgets/adrig_logo.dart:385:7: Error: The getter 'rightMid' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'rightMid'.
+      rightMid.dx, rightMid.dy,    canvas.save();
+      ^^^^^^^^
+lib/widgets/adrig_logo.dart:385:20: Error: The getter 'rightMid' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'rightMid'.
+      rightMid.dx, rightMid.dy,    canvas.save();
+                   ^^^^^^^^
+lib/widgets/adrig_logo.dart:387:18: Error: The method 'clipPath' isn't defined for the type 'dynamic Function()'.
+Try correcting the name to the name of an existing method, or defining a method named 'clipPath'.
+    );    canvas.clipPath(clipPath);
+                 ^^^^^^^^
+lib/widgets/adrig_logo.dart:387:27: Error: The getter 'clipPath' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'clipPath'.
+    );    canvas.clipPath(clipPath);
+                          ^^^^^^^^
+lib/widgets/adrig_logo.dart:389:5: Error: The getter 'path' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'path'.
+    path.quadraticBezierTo(    
+    ^^^^
+lib/widgets/adrig_logo.dart:391:7: Error: The getter 'rightStart' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'rightStart'.
+      rightStart.dx, rightStart.dy,    // DNA double helix circuit pattern
+      ^^^^^^^^^^
+lib/widgets/adrig_logo.dart:391:22: Error: The getter 'rightStart' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'rightStart'.
+      rightStart.dx, rightStart.dy,    // DNA double helix circuit pattern
+                     ^^^^^^^^^^
+lib/widgets/adrig_logo.dart:393:7: Error: The getter 'topPoint' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'topPoint'.
+      topPoint.dx, topPoint.dy,    final helixPaint = Paint()
+      ^^^^^^^^
+lib/widgets/adrig_logo.dart:393:20: Error: The getter 'topPoint' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'topPoint'.
+      topPoint.dx, topPoint.dy,    final helixPaint = Paint()
+                   ^^^^^^^^
+lib/widgets/adrig_logo.dart:403:20: Error: The getter 'cy' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cy'.
+    final crossY = cy + radius * 0.15;    final leftPath = Path();
+                   ^^
+lib/widgets/adrig_logo.dart:403:25: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    final crossY = cy + radius * 0.15;    final leftPath = Path();
+                        ^^^^^^
+lib/widgets/adrig_logo.dart:405:25: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    crossbarPath.moveTo(cx - radius * 0.45, crossY - radius * 0.12);    final rightPath = Path();
+                        ^^
+lib/widgets/adrig_logo.dart:405:30: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.moveTo(cx - radius * 0.45, crossY - radius * 0.12);    final rightPath = Path();
+                             ^^^^^^
+lib/widgets/adrig_logo.dart:405:54: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.moveTo(cx - radius * 0.45, crossY - radius * 0.12);    final rightPath = Path();
+                                                     ^^^^^^
+lib/widgets/adrig_logo.dart:407:25: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    crossbarPath.lineTo(cx + radius * 0.45, crossY - radius * 0.12);    
+                        ^^
+lib/widgets/adrig_logo.dart:407:30: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.lineTo(cx + radius * 0.45, crossY - radius * 0.12);    
+                             ^^^^^^
+lib/widgets/adrig_logo.dart:407:54: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.lineTo(cx + radius * 0.45, crossY - radius * 0.12);    
+                                                     ^^^^^^
+lib/widgets/adrig_logo.dart:409:25: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    crossbarPath.lineTo(cx + radius * 0.45, crossY + radius * 0.12);    for (double t = 0; t <= 1.0; t += 0.05) {
+                        ^^
+lib/widgets/adrig_logo.dart:409:30: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.lineTo(cx + radius * 0.45, crossY + radius * 0.12);    for (double t = 0; t <= 1.0; t += 0.05) {
+                             ^^^^^^
+lib/widgets/adrig_logo.dart:409:54: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.lineTo(cx + radius * 0.45, crossY + radius * 0.12);    for (double t = 0; t <= 1.0; t += 0.05) {
+                                                     ^^^^^^
+lib/widgets/adrig_logo.dart:411:25: Error: The getter 'cx' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'cx'.
+    crossbarPath.lineTo(cx - radius * 0.45, crossY + radius * 0.12);      final y = center.dy - radius * 0.8 + (t * radius * 1.6);
+                        ^^
+lib/widgets/adrig_logo.dart:411:30: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.lineTo(cx - radius * 0.45, crossY + radius * 0.12);      final y = center.dy - radius * 0.8 + (t * radius * 1.6);
+                             ^^^^^^
+lib/widgets/adrig_logo.dart:411:54: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.lineTo(cx - radius * 0.45, crossY + radius * 0.12);      final y = center.dy - radius * 0.8 + (t * radius * 1.6);
+                                                     ^^^^^^
+lib/widgets/adrig_logo.dart:411:85: Error: The getter 'center' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'center'.
+    crossbarPath.lineTo(cx - radius * 0.45, crossY + radius * 0.12);      final y = center.dy - radius * 0.8 + (t * radius * 1.6);
+                                                                                    ^^^^^^
+lib/widgets/adrig_logo.dart:411:97: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.lineTo(cx - radius * 0.45, crossY + radius * 0.12);      final y = center.dy - radius * 0.8 + (t * radius * 1.6);
+                                                                                          ^^^^^^
+lib/widgets/adrig_logo.dart:411:117: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.lineTo(cx - radius * 0.45, crossY + radius * 0.12);      final y = center.dy - radius * 0.8 + (t * radius * 1.6);
+                                                                                          ^^^^^^
+lib/widgets/adrig_logo.dart:413:46: Error: The getter 'center' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'center'.
+    crossbarPath.close();      final leftX = center.dx - radius * 0.3 * math.sin(t * math.pi * 4);
+                                             ^^^^^^
+lib/widgets/adrig_logo.dart:413:58: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+    crossbarPath.close();      final leftX = center.dx - radius * 0.3 * math.sin(t * math.pi * 4);
+                                                         ^^^^^^
+lib/widgets/adrig_logo.dart:415:26: Error: The getter 'center' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'center'.
+          final rightX = center.dx + radius * 0.3 * math.sin(t * math.pi * 4);
+                         ^^^^^^
+lib/widgets/adrig_logo.dart:415:38: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+          final rightX = center.dx + radius * 0.3 * math.sin(t * math.pi * 4);
+                                     ^^^^^^
+lib/widgets/adrig_logo.dart:419:51: Error: The getter 'path' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'path'.
+    return Path.combine(PathOperation.difference, path, crossbarPath);      if (t == 0) {
+                                                  ^^^^
+lib/widgets/adrig_logo.dart:431:14: Error: The method 'drawCircle' isn't defined for the type 'dynamic Function()'.
+Try correcting the name to the name of an existing method, or defining a method named 'drawCircle'.
+      canvas.drawCircle(      }
+             ^^^^^^^^^^
+lib/widgets/adrig_logo.dart:433:9: Error: The getter 'center' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'center'.
+        center,    }
+        ^^^^^^
+lib/widgets/adrig_logo.dart:435:9: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+        radius * 1.1 + (i * 15),    
+        ^^^^^^
+lib/widgets/adrig_logo.dart:435:25: Error: The getter 'i' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'i'.
+        radius * 1.1 + (i * 15),    
+                        ^
+lib/widgets/adrig_logo.dart:439:58: Error: The getter 'i' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'i'.
+          ..color = Color(0xFF00F5FF).withOpacity(0.05 * i)    helixPaint.shader = ui.Gradient.linear(
+                                                         ^
+lib/widgets/adrig_logo.dart:439:64: Error: The getter 'helixPaint' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'helixPaint'.
+          ..color = Color(0xFF00F5FF).withOpacity(0.05 * i)    helixPaint.shader = ui.Gradient.linear(
+                                                               ^^^^^^^^^^
+lib/widgets/adrig_logo.dart:443:22: Error: The getter 'center' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'center'.
+      );      Offset(center.dx, center.dy + radius),
+                     ^^^^^^
+lib/widgets/adrig_logo.dart:443:33: Error: The getter 'center' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'center'.
+      );      Offset(center.dx, center.dy + radius),
+                                ^^^^^^
+lib/widgets/adrig_logo.dart:443:45: Error: The getter 'radius' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'radius'.
+      );      Offset(center.dx, center.dy + radius),
+                                            ^^^^^^
+lib/widgets/adrig_logo.dart:451:90: Error: Expected an identifier, but got ']'.
+Try inserting an identifier before ']'.
+  void _drawMetallicFill(Canvas canvas, Path aPath, Offset center, double radius) {      ],
+                                                                                         ^
+lib/widgets/adrig_logo.dart:451:83: Error: Expected ';' after this.
+  void _drawMetallicFill(Canvas canvas, Path aPath, Offset center, double radius) {      ],
+                                                                                  ^
+lib/widgets/adrig_logo.dart:451:90: Error: Unexpected token ';'.
+  void _drawMetallicFill(Canvas canvas, Path aPath, Offset center, double radius) {      ],
+                                                                                         ^
+lib/widgets/adrig_logo.dart:451:91: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+  void _drawMetallicFill(Canvas canvas, Path aPath, Offset center, double radius) {      ],
+                                                                                          ^
+lib/widgets/adrig_logo.dart:451:90: Error: Expected ';' after this.
+  void _drawMetallicFill(Canvas canvas, Path aPath, Offset center, double radius) {      ],
+                                                                                         ^
+lib/widgets/adrig_logo.dart:451:91: Error: Unexpected token ';'.
+  void _drawMetallicFill(Canvas canvas, Path aPath, Offset center, double radius) {      ],
+                                                                                          ^
+lib/widgets/adrig_logo.dart:457:78: Error: Expected ')' before this.
+      ..shader = ui.Gradient.linear(    canvas.drawPath(leftPath, helixPaint);
+                                                                             ^
+lib/widgets/adrig_logo.dart:457:36: Error: Too few positional arguments: 3 required, 1 given.
+      ..shader = ui.Gradient.linear(    canvas.drawPath(leftPath, helixPaint);
+                                   ^
+org-dartlang-sdk:///flutter/lib/ui/painting.dart:4822:3: Context: Found this candidate, but the arguments don't match.
+  Gradient.linear(
+  ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:489:7: Error: Expected an identifier, but got '..'.
+Try inserting an identifier before '..'.
+      ..shader = ui.Gradient.linear(      
+      ^^
+lib/widgets/adrig_logo.dart:501:18: Error: Expected ')' before this.
+        ],      );
+                 ^
+lib/widgets/adrig_logo.dart:507:48: Error: Expected ';' after this.
+    canvas.drawPath(aPath, shinePaint);        2,
+                                               ^
+lib/widgets/adrig_logo.dart:507:49: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    canvas.drawPath(aPath, shinePaint);        2,
+                                                ^
+lib/widgets/adrig_logo.dart:507:49: Error: Unexpected token ';'.
+    canvas.drawPath(aPath, shinePaint);        2,
+                                                ^
+lib/widgets/adrig_logo.dart:495:25: Error: The getter 'leftX' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'leftX'.
+        [        Offset(leftX, y),
+                        ^^^^^
+lib/widgets/adrig_logo.dart:495:32: Error: The getter 'y' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'y'.
+        [        Offset(leftX, y),
+                               ^
+lib/widgets/adrig_logo.dart:493:91: Error: Too few positional arguments: 3 required, 1 given.
+        Offset(center.dx + radius * 0.5, center.dy - radius * 0.5),      canvas.drawCircle(
+                                                                                          ^
+lib/widgets/adrig_logo.dart:505:20: Error: The getter 'rightX' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'rightX'.
+            Offset(rightX, y),
+                   ^^^^^^
+lib/widgets/adrig_logo.dart:505:28: Error: The getter 'y' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'y'.
+            Offset(rightX, y),
+                           ^
+lib/widgets/adrig_logo.dart:507:28: Error: The getter 'shinePaint' isn't defined for the type 'AdRigLogo'.
+ - 'AdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'shinePaint'.
+    canvas.drawPath(aPath, shinePaint);        2,
+                           ^^^^^^^^^^
+lib/widgets/adrig_logo.dart:503:32: Error: Too few positional arguments: 3 required, 2 given.
+      );      canvas.drawCircle(
+                               ^
+lib/widgets/adrig_logo.dart:529:17: Error: Undefined name 'center'.
+      final x = center.dx + (random.nextDouble() - 0.5) * radius * 1.5;    // "Ad" in top half
+                ^^^^^^
+lib/widgets/adrig_logo.dart:529:59: Error: Undefined name 'radius'.
+      final x = center.dx + (random.nextDouble() - 0.5) * radius * 1.5;    // "Ad" in top half
+                                                          ^^^^^^
+lib/widgets/adrig_logo.dart:531:17: Error: Undefined name 'center'.
+      final y = center.dy + (random.nextDouble() - 0.5) * radius * 1.8;    final adTextPainter = TextPainter(
+                ^^^^^^
+lib/widgets/adrig_logo.dart:531:59: Error: Undefined name 'radius'.
+      final y = center.dy + (random.nextDouble() - 0.5) * radius * 1.8;    final adTextPainter = TextPainter(
+                                                          ^^^^^^
+lib/widgets/adrig_logo.dart:533:7: Error: Expected an identifier, but got 'final'.
+Try inserting an identifier before 'final'.
+      final particleSize = random.nextDouble() * 2 + 1;      text: TextSpan(
+      ^^^^^
+lib/widgets/adrig_logo.dart:533:7: Error: Expected ')' before this.
+      final particleSize = random.nextDouble() * 2 + 1;      text: TextSpan(
+      ^^^^^
+lib/widgets/adrig_logo.dart:531:109: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+      final y = center.dy + (random.nextDouble() - 0.5) * radius * 1.8;    final adTextPainter = TextPainter(
+                                                                                          ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/painting/text_painter.dart:596:3: Context: Found this candidate, but the arguments don't match.
+  TextPainter({
+  ^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:583:21: Error: Undefined name 'clipPath'.
+    canvas.clipPath(clipPath);    adTextPainter.layout();
+                    ^^^^^^^^
+lib/widgets/adrig_logo.dart:589:5: Error: Expected an identifier, but got 'final'.
+Try inserting an identifier before 'final'.
+    final linePaint = Paint()      Offset(
+    ^^^^^
+lib/widgets/adrig_logo.dart:589:5: Error: Expected ')' before this.
+    final linePaint = Paint()      Offset(
+    ^^^^^
+lib/widgets/adrig_logo.dart:599:22: Error: Undefined name 'center'.
+      final startX = center.dx + (i * radius * 0.2);    
+                     ^^^^^^
+lib/widgets/adrig_logo.dart:599:39: Error: Undefined name 'radius'.
+      final startX = center.dx + (i * radius * 0.2);    
+                                      ^^^^^^
+lib/widgets/adrig_logo.dart:605:9: Error: Expected an identifier, but got 'final'.
+Try inserting an identifier before 'final'.
+        final y1 = center.dy - radius * 0.8 + (t * radius * 1.6);      text: TextSpan(
+        ^^^^^
+lib/widgets/adrig_logo.dart:603:85: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+      for (double t = 0; t <= 1.0; t += 0.1) {    final rigTextPainter = TextPainter(
+                                                                                    ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/painting/text_painter.dart:596:3: Context: Found this candidate, but the arguments don't match.
+  TextPainter({
+  ^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:603:85: Error: Expected ';' after this.
+      for (double t = 0; t <= 1.0; t += 0.1) {    final rigTextPainter = TextPainter(
+                                                                                    ^
+lib/widgets/adrig_logo.dart:605:20: Error: Undefined name 'center'.
+        final y1 = center.dy - radius * 0.8 + (t * radius * 1.6);      text: TextSpan(
+                   ^^^^^^
+lib/widgets/adrig_logo.dart:605:32: Error: Undefined name 'radius'.
+        final y1 = center.dy - radius * 0.8 + (t * radius * 1.6);      text: TextSpan(
+                               ^^^^^^
+lib/widgets/adrig_logo.dart:605:52: Error: Undefined name 'radius'.
+        final y1 = center.dy - radius * 0.8 + (t * radius * 1.6);      text: TextSpan(
+                                                   ^^^^^^
+lib/widgets/adrig_logo.dart:607:9: Error: Expected an identifier, but got 'final'.
+Try inserting an identifier before 'final'.
+        final y2 = y1 + radius * 0.15;        text: 'Rig',
+        ^^^^^
+lib/widgets/adrig_logo.dart:607:9: Error: Expected ')' before this.
+        final y2 = y1 + radius * 0.15;        text: 'Rig',
+        ^^^^^
+lib/widgets/adrig_logo.dart:605:86: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        final y1 = center.dy - radius * 0.8 + (t * radius * 1.6);      text: TextSpan(
+                                                                                     ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/painting/text_span.dart:79:9: Context: Found this candidate, but the arguments don't match.
+  const TextSpan({
+        ^^^^^^^^
+lib/widgets/adrig_logo.dart:647:28: Error: Expected ';' after this.
+    canvas.restore();      ),
+                           ^
+lib/widgets/adrig_logo.dart:647:29: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    canvas.restore();      ),
+                            ^
+lib/widgets/adrig_logo.dart:647:29: Error: Unexpected token ','.
+    canvas.restore();      ),
+                            ^
+lib/widgets/adrig_logo.dart:649:39: Error: Expected ';' after this.
+  }      textDirection: TextDirection.ltr,
+                                      ^^^
+lib/widgets/adrig_logo.dart:649:42: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+  }      textDirection: TextDirection.ltr,
+                                         ^
+lib/widgets/adrig_logo.dart:649:42: Error: Unexpected token ';'.
+  }      textDirection: TextDirection.ltr,
+                                         ^
+lib/widgets/adrig_logo.dart:651:7: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+      );
+      ^
+lib/widgets/adrig_logo.dart:649:42: Error: Expected ';' after this.
+  }      textDirection: TextDirection.ltr,
+                                         ^
+lib/widgets/adrig_logo.dart:651:7: Error: Unexpected token ';'.
+      );
+      ^
+lib/widgets/adrig_logo.dart:661:20: Error: Expected ',' before this.
+      Paint()      Offset(
+                   ^^^^^^
+lib/widgets/adrig_logo.dart:663:9: Error: Expected an identifier, but got '..'.
+Try inserting an identifier before '..'.
+        ..color = Color(0xFF00F5FF).withOpacity(0.4)        center.dx - rigTextPainter.width / 2,
+        ^^
+lib/widgets/adrig_logo.dart:663:61: Error: Expected ',' before this.
+        ..color = Color(0xFF00F5FF).withOpacity(0.4)        center.dx - rigTextPainter.width / 2,
+                                                            ^^^^^^
+lib/widgets/adrig_logo.dart:663:73: Error: Undefined name 'rigTextPainter'.
+        ..color = Color(0xFF00F5FF).withOpacity(0.4)        center.dx - rigTextPainter.width / 2,
+                                                                        ^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:665:9: Error: Expected an identifier, but got '..'.
+Try inserting an identifier before '..'.
+        ..style = PaintingStyle.stroke        center.dy + radius * 0.05,
+        ^^
+lib/widgets/adrig_logo.dart:665:47: Error: Expected ',' before this.
+        ..style = PaintingStyle.stroke        center.dy + radius * 0.05,
+                                              ^^^^^^
+lib/widgets/adrig_logo.dart:667:9: Error: Expected an identifier, but got '..'.
+Try inserting an identifier before '..'.
+        ..strokeWidth = 8      ),
+        ^^
+lib/widgets/adrig_logo.dart:661:26: Error: Too many positional arguments: 2 allowed, but 5 found.
+Try removing the extra positional arguments.
+      Paint()      Offset(
+                         ^
+org-dartlang-sdk:///flutter/lib/ui/geometry.dart:118:9: Context: Found this candidate, but the arguments don't match.
+  const Offset(super.dx, super.dy);
+        ^^^^^^
+lib/widgets/adrig_logo.dart:669:9: Error: Expected an identifier, but got '..'.
+Try inserting an identifier before '..'.
+        ..maskFilter = MaskFilter.blur(BlurStyle.outer, 20),    );
+        ^^
+lib/widgets/adrig_logo.dart:657:25: Error: Undefined name 'rigTextPainter'.
+    canvas.drawPath(    rigTextPainter.paint(
+                        ^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:669:66: Error: Expected ')' before this.
+        ..maskFilter = MaskFilter.blur(BlurStyle.outer, 20),    );
+                                                                 ^
+lib/widgets/adrig_logo.dart:677:27: Error: Expected an identifier, but got '..'.
+Try inserting an identifier before '..'.
+    canvas.drawPath(      ..shader = ui.Gradient.linear(
+                          ^^
+lib/widgets/adrig_logo.dart:681:22: Error: Expected ',' before this.
+      Paint()        Offset(center.dx + radius * 0.4, center.dy),
+                     ^^^^^^
+lib/widgets/adrig_logo.dart:683:9: Error: Expected an identifier, but got '..'.
+Try inserting an identifier before '..'.
+        ..shader = ui.Gradient.sweep(        [
+        ^^
+lib/widgets/adrig_logo.dart:683:37: Error: Too few positional arguments: 2 required, 1 given.
+        ..shader = ui.Gradient.sweep(        [
+                                    ^
+org-dartlang-sdk:///flutter/lib/ui/painting.dart:4959:3: Context: Found this candidate, but the arguments don't match.
+  Gradient.sweep(
+  ^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:695:13: Error: Expected ',' before this.
+            Color(0xFF00F5FF),      ..strokeWidth = 2.0;
+            ^^^^^
+lib/widgets/adrig_logo.dart:695:37: Error: Expected an identifier, but got '..'.
+Try inserting an identifier before '..'.
+            Color(0xFF00F5FF),      ..strokeWidth = 2.0;
+                                    ^^
+lib/widgets/adrig_logo.dart:695:56: Error: Expected ')' before this.
+            Color(0xFF00F5FF),      ..strokeWidth = 2.0;
+                                                       ^
+lib/widgets/adrig_logo.dart:677:56: Error: Too many positional arguments: 6 allowed, but 7 found.
+Try removing the extra positional arguments.
+    canvas.drawPath(      ..shader = ui.Gradient.linear(
+                                                       ^
+org-dartlang-sdk:///flutter/lib/ui/painting.dart:4822:3: Context: Found this candidate, but the arguments don't match.
+  Gradient.linear(
+  ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:707:6: Error: Expected ')' before this.
+    );    );
+     ^
+lib/widgets/adrig_logo.dart:713:25: Error: Expected an identifier, but got 'for'.
+Try inserting an identifier before 'for'.
+    canvas.drawPath(    for (int i = -2; i <= 2; i++) {
+                        ^^^
+lib/widgets/adrig_logo.dart:713:25: Error: Expected ')' before this.
+    canvas.drawPath(    for (int i = -2; i <= 2; i++) {
+                        ^^^
+lib/widgets/adrig_logo.dart:735:5: Error: Expected an identifier, but got 'final'.
+Try inserting an identifier before 'final'.
+    final nodeCount = 8;        5,
+    ^^^^^
+lib/widgets/adrig_logo.dart:735:5: Error: Expected ')' before this.
+    final nodeCount = 8;        5,
+    ^^^^^
+lib/widgets/adrig_logo.dart:745:49: Error: Undefined name 'angle'.
+      final x = center.dx + distance * math.cos(angle);    }
+                                                ^^^^^
+lib/widgets/adrig_logo.dart:745:29: Error: Undefined name 'distance'.
+      final x = center.dx + distance * math.cos(angle);    }
+                            ^^^^^^^^
+lib/widgets/adrig_logo.dart:747:17: Error: Undefined name 'center'.
+      final y = center.dy + distance * math.sin(angle);  }
+                ^^^^^^
+lib/widgets/adrig_logo.dart:747:49: Error: Undefined name 'angle'.
+      final y = center.dy + distance * math.sin(angle);  }
+                                                ^^^^^
+lib/widgets/adrig_logo.dart:747:29: Error: Undefined name 'distance'.
+      final y = center.dy + distance * math.sin(angle);  }
+                            ^^^^^^^^
+lib/widgets/adrig_logo.dart:747:13: Error: 'y' is already declared in this scope.
+      final y = center.dy + distance * math.sin(angle);  }
+            ^
+lib/widgets/adrig_logo.dart:531:13: Context: Previous declaration of 'y'.
+      final y = center.dy + (random.nextDouble() - 0.5) * radius * 1.8;    final adTextPainter = TextPainter(
+            ^
+lib/widgets/adrig_logo.dart:581:12: Error: The method 'save' isn't defined for the type 'dynamic Function()'.
+Try correcting the name to the name of an existing method, or defining a method named 'save'.
+    canvas.save();    
+           ^^^^
+lib/widgets/adrig_logo.dart:583:12: Error: The method 'clipPath' isn't defined for the type 'dynamic Function()'.
+Try correcting the name to the name of an existing method, or defining a method named 'clipPath'.
+    canvas.clipPath(clipPath);    adTextPainter.layout();
+           ^^^^^^^^
+lib/widgets/adrig_logo.dart:657:20: Error: Too few positional arguments: 2 required, 1 given.
+    canvas.drawPath(    rigTextPainter.paint(
+                   ^
+lib/widgets/adrig_logo.dart:677:20: Error: Too few positional arguments: 2 required, 1 given.
+    canvas.drawPath(      ..shader = ui.Gradient.linear(
+                   ^
+lib/widgets/adrig_logo.dart:713:20: Error: Too few positional arguments: 2 required, 1 given.
+    canvas.drawPath(    for (int i = -2; i <= 2; i++) {
+                   ^
+lib/widgets/adrig_logo.dart:731:96: Error: Too few positional arguments: 3 required, 1 given.
+  void _drawSecurityNodes(Canvas canvas, Offset center, double radius) {      canvas.drawCircle(
+                                                                                          ^
+lib/widgets/adrig_logo.dart:911:30: Error: Expected an identifier, but got 'final'.
+Try inserting an identifier before 'final'.
+  const AnimatedAdRigLogo({  final double size;
+                             ^^^^^
+lib/widgets/adrig_logo.dart:911:30: Error: Expected '}' before this.
+  const AnimatedAdRigLogo({  final double size;
+                             ^^^^^
+lib/widgets/adrig_logo.dart:911:26: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+  const AnimatedAdRigLogo({  final double size;
+                         ^
+lib/widgets/adrig_logo.dart:905:7: Context: The class 'AnimatedAdRigLogo' has a constructor that takes no arguments.
+class AnimatedAdRigLogo extends StatefulWidget {
+      ^
+lib/widgets/adrig_logo.dart:923:3: Error: 'State' isn't a type.
+  State<AnimatedAdRigLogo> createState() => _AnimatedAdRigLogoState();
+  ^^^^^
+lib/widgets/adrig_logo.dart:923:45: Error: The method '_AnimatedAdRigLogoState' isn't defined for the type 'AnimatedAdRigLogo'.
+ - 'AnimatedAdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_AnimatedAdRigLogoState'.
+  State<AnimatedAdRigLogo> createState() => _AnimatedAdRigLogoState();
+                                            ^^^^^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:927:45: Error: The method '_AnimatedAdRigLogoState' isn't defined for the type 'AnimatedAdRigLogo'.
+ - 'AnimatedAdRigLogo' is from 'package:adrig/widgets/adrig_logo.dart' ('lib/widgets/adrig_logo.dart').
+Try correcting the name to the name of an existing method, or defining a method named '_AnimatedAdRigLogoState'.
+  State<AnimatedAdRigLogo> createState() => _AnimatedAdRigLogoState();
+                                            ^^^^^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:933:45: Error: 'class' can't be used as an identifier because it's a keyword.
+Try renaming this to be an identifier that isn't a keyword.
+  late AnimationController _pulseController;class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>
+                                            ^^^^^
+lib/widgets/adrig_logo.dart:933:45: Error: Expected ';' after this.
+  late AnimationController _pulseController;class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>
+                                            ^^^^^
+lib/widgets/adrig_logo.dart:933:45: Error: Undefined name 'class'.
+  late AnimationController _pulseController;class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>
+                                            ^^^^^
+lib/widgets/adrig_logo.dart:933:51: Error: Expected ';' after this.
+  late AnimationController _pulseController;class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:933:51: Error: Undefined name '_AnimatedAdRigLogoState'.
+  late AnimationController _pulseController;class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:933:75: Error: 'extends' can't be used as an identifier because it's a keyword.
+Try renaming this to be an identifier that isn't a keyword.
+  late AnimationController _pulseController;class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>
+                                                                          ^^^^^^^
+lib/widgets/adrig_logo.dart:933:75: Error: Expected ';' after this.
+  late AnimationController _pulseController;class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>
+                                                                          ^^^^^^^
+lib/widgets/adrig_logo.dart:933:75: Error: Undefined name 'extends'.
+  late AnimationController _pulseController;class _AnimatedAdRigLogoState extends State<AnimatedAdRigLogo>
+                                                                          ^^^^^^^
+lib/widgets/adrig_logo.dart:935:3: Error: Expected ';' after this.
+  late AnimationController _rotateController;    with TickerProviderStateMixin {
+  ^^^^
+lib/widgets/adrig_logo.dart:935:50: Error: 'with' can't be used as an identifier because it's a keyword.
+Try renaming this to be an identifier that isn't a keyword.
+  late AnimationController _rotateController;    with TickerProviderStateMixin {
+                                                 ^^^^
+lib/widgets/adrig_logo.dart:935:50: Error: Expected ';' after this.
+  late AnimationController _rotateController;    with TickerProviderStateMixin {
+                                                 ^^^^
+lib/widgets/adrig_logo.dart:935:55: Error: Expected ';' after this.
+  late AnimationController _rotateController;    with TickerProviderStateMixin {
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:941:26: Error: '_pulseAnimation' is already declared in this scope.
+  late Animation<double> _pulseAnimation;
+                         ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:937:26: Context: Previous declaration of '_pulseAnimation'.
+  late Animation<double> _pulseAnimation;  late AnimationController _pulseController;
+                         ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:947:5: Error: Expected identifier, but got 'super'.
+    super.initState();  @override
+    ^^^^^
+lib/widgets/adrig_logo.dart:951:48: Error: Expected identifier, but got 'super'.
+    _pulseController = AnimationController(    super.initState();
+                                               ^^^^^
+lib/widgets/adrig_logo.dart:951:43: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+    _pulseController = AnimationController(    super.initState();
+                                          ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/animation/animation_controller.dart:245:3: Context: Found this candidate, but the arguments don't match.
+  AnimationController({
+  ^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:953:50: Error: Expected ';' after this.
+      duration: const Duration(milliseconds: 2000),    
+                                                 ^
+lib/widgets/adrig_logo.dart:953:51: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      duration: const Duration(milliseconds: 2000),    
+                                                  ^
+lib/widgets/adrig_logo.dart:953:51: Error: Unexpected token ';'.
+      duration: const Duration(milliseconds: 2000),    
+                                                  ^
+lib/widgets/adrig_logo.dart:955:14: Error: Expected ';' after this.
+      vsync: this,    _pulseController = AnimationController(
+             ^^^^
+lib/widgets/adrig_logo.dart:955:14: Error: Expected identifier, but got 'this'.
+      vsync: this,    _pulseController = AnimationController(
+             ^^^^
+lib/widgets/adrig_logo.dart:955:18: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      vsync: this,    _pulseController = AnimationController(
+                 ^
+lib/widgets/adrig_logo.dart:955:18: Error: Unexpected token ';'.
+      vsync: this,    _pulseController = AnimationController(
+                 ^
+lib/widgets/adrig_logo.dart:955:61: Error: Required named parameter 'vsync' must be provided.
+      vsync: this,    _pulseController = AnimationController(
+                                                            ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/animation/animation_controller.dart:245:3: Context: Found this candidate, but the arguments don't match.
+  AnimationController({
+  ^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:957:79: Error: Expected ';' after this.
+    )..repeat(reverse: true);      duration: const Duration(milliseconds: 2500),
+                                                                              ^
+lib/widgets/adrig_logo.dart:957:80: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    )..repeat(reverse: true);      duration: const Duration(milliseconds: 2500),
+                                                                               ^
+lib/widgets/adrig_logo.dart:957:80: Error: Unexpected token ';'.
+    )..repeat(reverse: true);      duration: const Duration(milliseconds: 2500),
+                                                                               ^
+lib/widgets/adrig_logo.dart:959:14: Error: Expected ';' after this.
+      vsync: this,
+             ^^^^
+lib/widgets/adrig_logo.dart:959:14: Error: Expected identifier, but got 'this'.
+      vsync: this,
+             ^^^^
+lib/widgets/adrig_logo.dart:959:18: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      vsync: this,
+                 ^
+lib/widgets/adrig_logo.dart:959:18: Error: Unexpected token ';'.
+      vsync: this,
+                 ^
+lib/widgets/adrig_logo.dart:961:44: Error: Required named parameter 'vsync' must be provided.
+    _rotateController = AnimationController(    )..repeat(reverse: true);
+                                           ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/animation/animation_controller.dart:245:3: Context: Found this candidate, but the arguments don't match.
+  AnimationController({
+  ^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:963:43: Error: Expected ';' after this.
+      duration: const Duration(seconds: 10),
+                                          ^
+lib/widgets/adrig_logo.dart:963:44: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      duration: const Duration(seconds: 10),
+                                           ^
+lib/widgets/adrig_logo.dart:963:44: Error: Unexpected token ';'.
+      duration: const Duration(seconds: 10),
+                                           ^
+lib/widgets/adrig_logo.dart:965:14: Error: Expected ';' after this.
+      vsync: this,    _glowController = AnimationController(
+             ^^^^
+lib/widgets/adrig_logo.dart:965:14: Error: Expected identifier, but got 'this'.
+      vsync: this,    _glowController = AnimationController(
+             ^^^^
+lib/widgets/adrig_logo.dart:965:18: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      vsync: this,    _glowController = AnimationController(
+                 ^
+lib/widgets/adrig_logo.dart:965:18: Error: Unexpected token ';'.
+      vsync: this,    _glowController = AnimationController(
+                 ^
+lib/widgets/adrig_logo.dart:965:60: Error: Required named parameter 'vsync' must be provided.
+      vsync: this,    _glowController = AnimationController(
+                                                           ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/animation/animation_controller.dart:245:3: Context: Found this candidate, but the arguments don't match.
+  AnimationController({
+  ^^^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:967:66: Error: Expected ';' after this.
+    )..repeat();      duration: const Duration(milliseconds: 3000),
+                                                                 ^
+lib/widgets/adrig_logo.dart:967:67: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    )..repeat();      duration: const Duration(milliseconds: 3000),
+                                                                  ^
+lib/widgets/adrig_logo.dart:967:67: Error: Unexpected token ';'.
+    )..repeat();      duration: const Duration(milliseconds: 3000),
+                                                                  ^
+lib/widgets/adrig_logo.dart:969:14: Error: Expected ';' after this.
+      vsync: this,
+             ^^^^
+lib/widgets/adrig_logo.dart:969:14: Error: Expected identifier, but got 'this'.
+      vsync: this,
+             ^^^^
+lib/widgets/adrig_logo.dart:969:18: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      vsync: this,
+                 ^
+lib/widgets/adrig_logo.dart:969:18: Error: Unexpected token ';'.
+      vsync: this,
+                 ^
+lib/widgets/adrig_logo.dart:973:14: Error: Expected ';' after this.
+      begin: 0.96,
+             ^^^^
+lib/widgets/adrig_logo.dart:973:18: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      begin: 0.96,
+                 ^
+lib/widgets/adrig_logo.dart:973:18: Error: Unexpected token ';'.
+      begin: 0.96,
+                 ^
+lib/widgets/adrig_logo.dart:975:12: Error: Expected ';' after this.
+      end: 1.04,    _pulseAnimation = Tween<double>(
+           ^^^^
+lib/widgets/adrig_logo.dart:975:16: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      end: 1.04,    _pulseAnimation = Tween<double>(
+               ^
+lib/widgets/adrig_logo.dart:975:16: Error: Unexpected token ';'.
+      end: 1.04,    _pulseAnimation = Tween<double>(
+               ^
+lib/widgets/adrig_logo.dart:977:37: Error: No named parameter with the name 'begin'.
+    ).animate(CurvedAnimation(      begin: 0.97,
+                                    ^^^^^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/animation/animations.dart:381:3: Context: Found this candidate, but the arguments don't match.
+  CurvedAnimation({required this.parent, required this.curve, this.reverseCurve}) {
+  ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:981:60: Error: Required named parameter 'parent' must be provided.
+      curve: Curves.easeInOut,    ).animate(CurvedAnimation(
+                                                           ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/animation/animations.dart:381:3: Context: Found this candidate, but the arguments don't match.
+  CurvedAnimation({required this.parent, required this.curve, this.reverseCurve}) {
+  ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:983:7: Error: Expected ')' before this.
+    ));      parent: _pulseController,
+      ^
+lib/widgets/adrig_logo.dart:989:14: Error: Expected ';' after this.
+      begin: 0,
+             ^
+lib/widgets/adrig_logo.dart:989:15: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      begin: 0,
+              ^
+lib/widgets/adrig_logo.dart:989:15: Error: Unexpected token ';'.
+      begin: 0,
+              ^
+lib/widgets/adrig_logo.dart:991:21: Error: Expected ';' after this.
+      end: 2 * math.pi,    _glowAnimation = Tween<double>(
+                    ^^
+lib/widgets/adrig_logo.dart:991:23: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      end: 2 * math.pi,    _glowAnimation = Tween<double>(
+                      ^
+lib/widgets/adrig_logo.dart:991:23: Error: Unexpected token ';'.
+      end: 2 * math.pi,    _glowAnimation = Tween<double>(
+                      ^
+lib/widgets/adrig_logo.dart:993:47: Error: Expected ';' after this.
+    ).animate(_rotateController);      begin: 15,
+                                              ^^
+lib/widgets/adrig_logo.dart:993:49: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+    ).animate(_rotateController);      begin: 15,
+                                                ^
+lib/widgets/adrig_logo.dart:993:49: Error: Unexpected token ';'.
+    ).animate(_rotateController);      begin: 15,
+                                                ^
+lib/widgets/adrig_logo.dart:995:15: Error: Expected ';' after this.
+  }      end: 35,
+              ^^
+lib/widgets/adrig_logo.dart:995:17: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+  }      end: 35,
+                ^
+lib/widgets/adrig_logo.dart:995:17: Error: Unexpected token ';'.
+  }      end: 35,
+                ^
+lib/widgets/adrig_logo.dart:997:5: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+    ).animate(CurvedAnimation(
+    ^
+lib/widgets/adrig_logo.dart:995:17: Error: Expected ';' after this.
+  }      end: 35,
+                ^
+lib/widgets/adrig_logo.dart:997:5: Error: Unexpected token ';'.
+    ).animate(CurvedAnimation(
+    ^
+lib/widgets/adrig_logo.dart:999:3: Error: Expected an identifier, but got '@'.
+Try inserting an identifier before '@'.
+  @override      parent: _glowController,
+  ^
+lib/widgets/adrig_logo.dart:999:3: Error: Expected ')' before this.
+  @override      parent: _glowController,
+  ^
+lib/widgets/adrig_logo.dart:997:30: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+    ).animate(CurvedAnimation(
+                             ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/animation/animations.dart:381:3: Context: Found this candidate, but the arguments don't match.
+  CurvedAnimation({required this.parent, required this.curve, this.reverseCurve}) {
+  ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:997:6: Error: This requires the experimental 'dot-shorthands' language feature to be enabled.
+Try passing the '--enable-experiment=dot-shorthands' command line option.
+    ).animate(CurvedAnimation(
+     ^
+lib/widgets/adrig_logo.dart:1007:5: Error: Expected identifier, but got 'super'.
+    super.dispose();
+    ^^^^^
+lib/widgets/adrig_logo.dart:1013:16: Error: Variables must be declared using the keywords 'const', 'final', 'var' or a type name.
+Try adding the name of the type of the variable or the keyword 'var'.
+  @override    _pulseController.dispose();
+               ^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:1013:16: Error: Expected ';' after this.
+  @override    _pulseController.dispose();
+               ^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:1013:32: Error: This requires the experimental 'dot-shorthands' language feature to be enabled.
+Try passing the '--enable-experiment=dot-shorthands' command line option.
+  @override    _pulseController.dispose();
+                               ^
+lib/widgets/adrig_logo.dart:1015:43: Error: Undefined name '_glowController'.
+  Widget build(BuildContext context) {    _glowController.dispose();
+                                          ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:1017:32: Error: Expected identifier, but got 'super'.
+    return AnimatedBuilder(    super.dispose();
+                               ^^^^^
+lib/widgets/adrig_logo.dart:1017:27: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+    return AnimatedBuilder(    super.dispose();
+                          ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/widgets/transitions.dart:1203:9: Context: Found this candidate, but the arguments don't match.
+  const AnimatedBuilder({
+        ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:1019:53: Error: Undefined name '_rotateAnimation'.
+      animation: Listenable.merge([_pulseAnimation, _rotateAnimation]),  }
+                                                    ^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:1019:36: Error: Undefined name '_pulseAnimation'.
+      animation: Listenable.merge([_pulseAnimation, _rotateAnimation]),  }
+                                   ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:1019:70: Error: Expected ';' after this.
+      animation: Listenable.merge([_pulseAnimation, _rotateAnimation]),  }
+                                                                     ^
+lib/widgets/adrig_logo.dart:1019:71: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      animation: Listenable.merge([_pulseAnimation, _rotateAnimation]),  }
+                                                                      ^
+lib/widgets/adrig_logo.dart:1019:71: Error: Unexpected token ';'.
+      animation: Listenable.merge([_pulseAnimation, _rotateAnimation]),  }
+                                                                      ^
+lib/widgets/adrig_logo.dart:1023:34: Error: Expected an identifier, but got '@'.
+Try inserting an identifier before '@'.
+        return Transform.scale(  @override
+                                 ^
+lib/widgets/adrig_logo.dart:1023:34: Error: Expected ')' before this.
+        return Transform.scale(  @override
+                                 ^
+lib/widgets/adrig_logo.dart:1023:31: Error: Too many positional arguments: 0 allowed, but 1 found.
+Try removing the extra positional arguments.
+        return Transform.scale(  @override
+                              ^
+/opt/homebrew/share/flutter/packages/flutter/lib/src/widgets/basic.dart:1640:3: Context: Found this candidate, but the arguments don't match.
+  Transform.scale({
+  ^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:1065:16: Error: Expected ';' after this.
+  }            ),
+               ^
+lib/widgets/adrig_logo.dart:1065:17: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+  }            ),
+                ^
+lib/widgets/adrig_logo.dart:1065:17: Error: Unexpected token ';'.
+  }            ),
+                ^
+lib/widgets/adrig_logo.dart:1067:1: Error: Expected ';' after this.
+}          ),
+^
+lib/widgets/adrig_logo.dart:1067:12: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+}          ),
+           ^
+lib/widgets/adrig_logo.dart:1067:12: Error: Unexpected token ';'.
+}          ),
+           ^
+lib/widgets/adrig_logo.dart:1067:13: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+}          ),
+            ^
+lib/widgets/adrig_logo.dart:1067:12: Error: Expected ';' after this.
+}          ),
+           ^
+lib/widgets/adrig_logo.dart:1067:13: Error: Unexpected token ';'.
+}          ),
+            ^
+lib/widgets/adrig_logo.dart:1069:9: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+        );
+        ^
+lib/widgets/adrig_logo.dart:1067:13: Error: Expected ';' after this.
+}          ),
+            ^
+lib/widgets/adrig_logo.dart:1069:9: Error: Unexpected token ';'.
+        );
+        ^
+lib/widgets/adrig_logo.dart:1070:8: Error: Expected an identifier, but got ','.
+Try inserting an identifier before ','.
+      },
+       ^
+lib/widgets/adrig_logo.dart:1070:7: Error: Expected ';' after this.
+      },
+      ^
+lib/widgets/adrig_logo.dart:1070:8: Error: Unexpected token ';'.
+      },
+       ^
+lib/widgets/adrig_logo.dart:1071:5: Error: Expected an identifier, but got ')'.
+Try inserting an identifier before ')'.
+    );
+    ^
+lib/widgets/adrig_logo.dart:1070:8: Error: Expected ';' after this.
+      },
+       ^
+lib/widgets/adrig_logo.dart:1071:5: Error: Unexpected token ';'.
+    );
+    ^
+lib/widgets/adrig_logo.dart:971:44: Error: The method 'repeat' isn't defined for the type 'Tween<double>'.
+ - 'Tween' is from 'package:flutter/src/animation/tween.dart' ('/opt/homebrew/share/flutter/packages/flutter/lib/src/animation/tween.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'repeat'.
+    _pulseAnimation = Tween<double>(    )..repeat(reverse: true);
+                                           ^^^^^^
+lib/widgets/adrig_logo.dart:971:23: Error: A value of type 'Tween<double>' can't be assigned to a variable of type 'Animation<double>'.
+ - 'Tween' is from 'package:flutter/src/animation/tween.dart' ('/opt/homebrew/share/flutter/packages/flutter/lib/src/animation/tween.dart').
+ - 'Animation' is from 'package:flutter/src/animation/animation.dart' ('/opt/homebrew/share/flutter/packages/flutter/lib/src/animation/animation.dart').
+    _pulseAnimation = Tween<double>(    )..repeat(reverse: true);
+                      ^
+lib/widgets/adrig_logo.dart:997:7: Error: No type was provided to find the dot shorthand 'animate'.
+    ).animate(CurvedAnimation(
+      ^^^^^^^
+lib/widgets/adrig_logo.dart:1005:5: Error: Non-nullable variable '_rotateController' must be assigned before it can be used.
+    _rotateController.dispose();  }
+    ^^^^^^^^^^^^^^^^^
+lib/widgets/adrig_logo.dart:1013:33: Error: No type was provided to find the dot shorthand 'dispose'.
+  @override    _pulseController.dispose();
+                                ^^^^^^^
+lib/screens/signup_screen.dart:129:21: Error: Couldn't find constructor 'AdRigLogo'.
+                    AdRigLogo(size: 80, showText: true),
+                    ^^^^^^^^^
+lib/widgets/adrig_logo.dart:907:16: Error: Final field 'size' is not initialized.
+Try to initialize the field in the declaration or in every constructor.
+  final double size;/// Animated version with breathing glow
+               ^^^^
 Target kernel_snapshot_program failed: Exception
 
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':app:compileFlutterBuildDebug'.
+Execution failed for task ':app:compileFlutterBuildRelease'.
 > Process 'command '/opt/homebrew/share/flutter/bin/flutter'' finished with non-zero exit value 1
 
 * Try:
@@ -67,6 +2487,6 @@ Execution failed for task ':app:compileFlutterBuildDebug'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 2s
-Running Gradle task 'assembleDebug'...                           2,677ms
-Gradle task assembleDebug failed with exit code 1
+BUILD FAILED in 14s
+Running Gradle task 'assembleRelease'...                           14.6s
+Gradle task assembleRelease failed with exit code 1

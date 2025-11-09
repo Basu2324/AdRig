@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AdRig — Concept C: Compact AR monogram lockup (square badge) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="gC" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#00D9FF" />
+      <stop offset="100%" stop-color="#0066FF" />
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style><![CDATA[
+      .mono { font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-weight:900; }
+    ]]></style>
+  </defs>
+
+  <!-- Rounded square background -->
+  <g>
+    <rect x="24" y="24" rx="64" ry="64" width="464" height="464" fill="url(#gC)" filter="url(#soft)"/>
+
+    <!-- Inner subtle ring for depth -->
+    <rect x="42" y="42" rx="56" ry="56" width="428" height="428" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6"/>
+
+    <!-- AR monogram centered -->
+    <text class="mono" x="256" y="300" text-anchor="middle" font-size="220" fill="#FFFFFF">AR</text>
+  </g>
+</svg>

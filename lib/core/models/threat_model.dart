@@ -19,6 +19,7 @@ enum DetectionMethod {
   signature,
   behavioral,
   heuristic,
+  ml,
   machinelearning,
   threatintel,
   anomaly,
@@ -29,6 +30,7 @@ enum DetectionMethod {
 enum ActionType {
   quarantine,
   alert,
+  warn,
   autoblock,
   removalrequest,
   monitoronly,

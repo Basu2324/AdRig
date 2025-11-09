@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Background gradient - Blue theme -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c63d2;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Logo gradient - Light cyan to white for visibility -->
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E0F7FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8E6FF;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="512" cy="512" r="512" fill="url(#bgGradient)"/>
+  
+  <!-- Hexagonal Shield Border -->
+  <path d="M 512 150 L 750 312 L 750 636 L 512 798 L 274 636 L 274 312 Z" 
+        fill="none" 
+        stroke="url(#logoGradient)" 
+        stroke-width="8"
+        opacity="0.4"/>
+  
+  <!-- Main "A" shape - Angular, modern -->
+  <g fill="url(#logoGradient)" filter="url(#glow)">
+    <!-- Left side of A -->
+    <polygon points="370,700 405,700 480,350 435,350"/>
+    
+    <!-- Right side of A -->
+    <polygon points="545,350 590,350 655,700 620,700"/>
+    
+    <!-- Crossbar of A -->
+    <rect x="425" y="520" width="175" height="35" rx="4"/>
+    
+    <!-- Top peak of A -->
+    <polygon points="460,270 512,200 564,270 512,320"/>
+  </g>
+  
+  <!-- Circuit pattern overlay for tech feel -->
+  <g stroke="url(#logoGradient)" stroke-width="3" fill="none" opacity="0.3">
+    <!-- Top circuit lines -->
+    <path d="M 300 320 L 340 320 L 340 350"/>
+    <path d="M 685 320 L 725 320 L 725 350"/>
+    <circle cx="340" cy="350" r="5" fill="url(#logoGradient)"/>
+    <circle cx="725" cy="350" r="5" fill="url(#logoGradient)"/>
+    
+    <!-- Side circuit lines -->
+    <path d="M 290 480 L 330 480"/>
+    <path d="M 695 480 L 735 480"/>
+    <circle cx="330" cy="480" r="5" fill="url(#logoGradient)"/>
+    <circle cx="695" cy="480" r="5" fill="url(#logoGradient)"/>
+    
+    <!-- Bottom circuit lines -->
+    <path d="M 350 700 L 350 740 L 380 740"/>
+    <path d="M 675 700 L 675 740 L 645 740"/>
+    <circle cx="350" cy="700" r="5" fill="url(#logoGradient)"/>
+    <circle cx="675" cy="700" r="5" fill="url(#logoGradient)"/>
+  </g>
+  
+  <!-- Neural network nodes - AI representation -->
+  <g fill="url(#logoGradient)" opacity="0.6">
+    <circle cx="512" cy="420" r="10"/>
+    <circle cx="445" cy="490" r="8"/>
+    <circle cx="579" cy="490" r="8"/>
+    <circle cx="475" cy="600" r="7"/>
+    <circle cx="549" cy="600" r="7"/>
+  </g>
+  
+  <!-- Connecting lines between nodes -->
+  <g stroke="url(#logoGradient)" stroke-width="2.5" opacity="0.4">
+    <line x1="512" y1="420" x2="445" y2="490"/>
+    <line x1="512" y1="420" x2="579" y2="490"/>
+    <line x1="445" y1="490" x2="475" y2="600"/>
+    <line x1="579" y1="490" x2="549" y2="600"/>
+  </g>
+</svg>

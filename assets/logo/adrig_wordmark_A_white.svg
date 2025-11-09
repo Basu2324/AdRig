@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AdRig — Concept A (white monochrome) for dark backgrounds -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <style><![CDATA[
+      .wordmark { font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; font-weight:800; }
+    ]]></style>
+  </defs>
+  <g transform="translate(60,220)">
+    <text class="wordmark" x="0" y="0" font-size="160" fill="#FFFFFF" letter-spacing="6">AdRig</text>
+  </g>
+</svg>
