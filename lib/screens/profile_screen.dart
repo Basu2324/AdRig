@@ -1,7 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:adrig/services/scan_coordinator.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'dart:io';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String _deviceModel = 'Loading...';
+  String _androidVersion = '';
+  int _totalScans = 0;
+  int _totalThreatsFound = 0;
+  int _totalAppsScanned = 0;
+  int _daysProtected = 0;
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadDeviceInfo();
+    _loadScanStatistics();
+  }
+  
+  Future<void> _loadDeviceInfo() async {
+    try {
+      final deviceInfo = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        final androidInfo = await deviceInfo.androidInfo;
+        setState(() {
+          _deviceModel = '${androidInfo.manufacturer} ${androidInfo.model}';
+          _androidVersion = 'Android ${androidInfo.version.release}';
+        });
+      }
+    } catch (e) {
+      print('Error loading device info: $e');
+    }
+  }
+  
+  Future<void> _loadScanStatistics() async {
+    try {
+      final coordinator = Provider.of<ScanCoordinator>(context, listen: false);
+      final historyService = coordinator.getHistoryService();
+      
+      // Get scan history
+      final scanHistory = await historyService.getAllScanResults();
+      final totalThreats = await historyService.getTotalThreatsLast90Days();
+      
+      int totalApps = 0;
+      for (final scan in scanHistory) {
+        totalApps += (scan['totalApps'] as int?) ?? 0;
+      }
+      
+      // Calculate days protected (since first scan)
+      int daysProtected = 0;
+      if (scanHistory.isNotEmpty) {
+        final firstScan = scanHistory.last;
+        final firstScanTime = DateTime.fromMillisecondsSinceEpoch(
+          firstScan['timestamp'] as int
+        );
+        daysProtected = DateTime.now().difference(firstScanTime).inDays;
+      }
+      
+      setState(() {
+        _totalScans = scanHistory.length;
+        _totalThreatsFound = totalThreats;
+        _totalAppsScanned = totalApps;
+        _daysProtected = daysProtected;
+      });
+    } catch (e) {
+      print('Error loading scan statistics: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +111,11 @@ class ProfileScreen extends StatelessWidget {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.white24,
-                    child: Icon(Icons.person, size: 60, color: Colors.white),
+                    child: Icon(Icons.security, size: 60, color: Colors.white),
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'John Doe',
+                    _deviceModel,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -51,23 +124,25 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'john.doe@email.com',
+                    _androidVersion,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white70,
                     ),
                   ),
                   SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      // TODO: Edit profile
-                    },
-                    icon: Icon(Icons.edit, size: 18),
-                    label: Text('EDIT PROFILE'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white24,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'Protected Device',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -80,12 +155,14 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Account Status
-                  _buildSectionHeader('Account Status'),
+                  _buildSectionHeader('Protection Status'),
                   _buildInfoCard(
                     icon: Icons.verified,
-                    title: 'Premium Account',
-                    subtitle: 'Active until Dec 31, 2025',
-                    color: Color(0xFF00C853),
+                    title: 'Real-Time Protection',
+                    subtitle: _totalScans > 0 
+                        ? '$_totalScans scans completed'
+                        : 'No scans yet - tap "SCAN NOW"',
+                    color: _totalScans > 0 ? Color(0xFF00C853) : Color(0xFFFF9800),
                   ),
                   
                   SizedBox(height: 24),
@@ -157,15 +234,15 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _buildStatCard(
-                          value: '127',
-                          label: 'Threats Blocked',
+                          value: '$_totalThreatsFound',
+                          label: 'Threats Found',
                           icon: Icons.shield_outlined,
                         ),
                       ),
                       SizedBox(width: 12),
                       Expanded(
                         child: _buildStatCard(
-                          value: '89',
+                          value: '$_totalAppsScanned',
                           label: 'Apps Scanned',
                           icon: Icons.apps,
                         ),
@@ -177,7 +254,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _buildStatCard(
-                          value: '45',
+                          value: '$_daysProtected',
                           label: 'Days Protected',
                           icon: Icons.calendar_today,
                         ),
@@ -185,9 +262,9 @@ class ProfileScreen extends StatelessWidget {
                       SizedBox(width: 12),
                       Expanded(
                         child: _buildStatCard(
-                          value: '3.2GB',
-                          label: 'Data Saved',
-                          icon: Icons.data_usage,
+                          value: '$_totalScans',
+                          label: 'Total Scans',
+                          icon: Icons.scanner,
                         ),
                       ),
                     ],

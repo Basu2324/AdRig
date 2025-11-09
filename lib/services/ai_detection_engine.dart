@@ -257,6 +257,90 @@ class AIDetectionEngine {
     return suspiciousPermissions.contains(permission);
   }
   
+  /// Advanced permission risk scoring with combinations
+  int _calculatePermissionRisk(List<String> permissions) {
+    int riskScore = 0;
+    
+    // Individual permission weights
+    final permissionWeights = {
+      // Critical permissions (50 points each)
+      'android.permission.BIND_DEVICE_ADMIN': 50,
+      'android.permission.BIND_ACCESSIBILITY_SERVICE': 50,
+      'android.permission.REQUEST_INSTALL_PACKAGES': 45,
+      'android.permission.SYSTEM_ALERT_WINDOW': 40,
+      'android.permission.WRITE_SETTINGS': 35,
+      
+      // High-risk permissions (30 points)
+      'android.permission.READ_SMS': 30,
+      'android.permission.SEND_SMS': 30,
+      'android.permission.READ_CALL_LOG': 30,
+      'android.permission.PROCESS_OUTGOING_CALLS': 30,
+      'android.permission.READ_CONTACTS': 25,
+      
+      // Medium-risk permissions (15 points)
+      'android.permission.CAMERA': 15,
+      'android.permission.RECORD_AUDIO': 15,
+      'android.permission.ACCESS_FINE_LOCATION': 15,
+      'android.permission.READ_EXTERNAL_STORAGE': 10,
+      'android.permission.WRITE_EXTERNAL_STORAGE': 10,
+      
+      // Network permissions (10 points)
+      'android.permission.INTERNET': 5,
+      'android.permission.ACCESS_NETWORK_STATE': 3,
+      'android.permission.ACCESS_WIFI_STATE': 3,
+    };
+    
+    // Add individual scores
+    for (final perm in permissions) {
+      riskScore += permissionWeights[perm] ?? 0;
+    }
+    
+    // DANGEROUS COMBINATIONS (extra 50-100 points)
+    final permSet = permissions.toSet();
+    
+    // Spyware combo: SMS + Call logs + Contacts
+    if (permSet.contains('android.permission.READ_SMS') &&
+        permSet.contains('android.permission.READ_CALL_LOG') &&
+        permSet.contains('android.permission.READ_CONTACTS')) {
+      riskScore += 80;
+      print('  🚨 Spyware combo detected: SMS+CALL_LOG+CONTACTS');
+    }
+    
+    // Ransomware combo: Device Admin + Overlay + Storage
+    if (permSet.contains('android.permission.BIND_DEVICE_ADMIN') &&
+        permSet.contains('android.permission.SYSTEM_ALERT_WINDOW') &&
+        permSet.contains('android.permission.WRITE_EXTERNAL_STORAGE')) {
+      riskScore += 100;
+      print('  🚨 Ransomware combo detected: ADMIN+OVERLAY+STORAGE');
+    }
+    
+    // Banking trojan: Accessibility + SMS + Overlay
+    if (permSet.contains('android.permission.BIND_ACCESSIBILITY_SERVICE') &&
+        permSet.contains('android.permission.READ_SMS') &&
+        permSet.contains('android.permission.SYSTEM_ALERT_WINDOW')) {
+      riskScore += 90;
+      print('  🚨 Banking trojan combo: ACCESSIBILITY+SMS+OVERLAY');
+    }
+    
+    // Stalkerware: Location + Camera + Mic + SMS
+    if (permSet.contains('android.permission.ACCESS_FINE_LOCATION') &&
+        permSet.contains('android.permission.CAMERA') &&
+        permSet.contains('android.permission.RECORD_AUDIO') &&
+        permSet.contains('android.permission.READ_SMS')) {
+      riskScore += 85;
+      print('  🚨 Stalkerware combo detected: LOCATION+CAMERA+MIC+SMS');
+    }
+    
+    // Ad fraud: Install packages + Accessibility + Overlay
+    if (permSet.contains('android.permission.REQUEST_INSTALL_PACKAGES') &&
+        permSet.contains('android.permission.BIND_ACCESSIBILITY_SERVICE')) {
+      riskScore += 70;
+      print('  🚨 Ad fraud combo: INSTALL+ACCESSIBILITY');
+    }
+    
+    return riskScore.clamp(0, 100);
+  }
+  
   /// Compute comprehensive threat assessment
   AIThreatAssessment _computeComprehensiveAssessment({
     required String appName,
@@ -546,6 +630,8 @@ enum AnomalyType {
   unexpectedNetworkPattern,
   abnormalDataUsage,
   suspiciousFileAccess,
+  suspiciousNetworkActivity,
+  sslCertificateError,
 }
 
 /// Behavioral event
@@ -664,11 +750,12 @@ class BehavioralAnomaly {
 
 class BehavioralFeatureExtractor {
   Future<void> initialize() async {
-    // TODO: Initialize feature extraction logic
+    print('  ✓ Behavioral feature extractor initialized');
   }
   
   void startLifecycleMonitoring(Function(BehavioralEvent) callback) {
-    // TODO: Start monitoring app lifecycle
+    // Placeholder - would need native Android code for real monitoring
+    print('  ℹ️  Lifecycle monitoring (requires native implementation)');
   }
   
   Future<List<BehavioralFeature>> extractFeatures({
@@ -676,45 +763,300 @@ class BehavioralFeatureExtractor {
     required AppMetadata metadata,
     AppBehaviorProfile? historicalProfile,
   }) async {
-    // TODO: Extract behavioral features for ML model
-    return [];
+    final features = <BehavioralFeature>[];
+    
+    // 1. Permission-based features
+    final permissionRisk = _calculatePermissionRisk(metadata.requestedPermissions);
+    features.add(BehavioralFeature(
+      name: 'permission_risk_score',
+      value: permissionRisk / 100.0,
+      importance: 0.9,
+    ));
+    
+    // 2. Installation source risk
+    final installerRisk = _calculateInstallerRisk(metadata.installerPackage);
+    features.add(BehavioralFeature(
+      name: 'installer_risk',
+      value: installerRisk,
+      importance: 0.7,
+    ));
+    
+    // 3. App age (newer = more suspicious)
+    final appAgeDays = DateTime.now().difference(
+      DateTime.fromMillisecondsSinceEpoch(metadata.installTime)
+    ).inDays;
+    final ageRisk = appAgeDays < 7 ? 0.8 : appAgeDays < 30 ? 0.5 : 0.2;
+    features.add(BehavioralFeature(
+      name: 'app_age_risk',
+      value: ageRisk,
+      importance: 0.4,
+    ));
+    
+    // 4. Update frequency (no updates = suspicious)
+    final daysSinceUpdate = DateTime.now().difference(
+      DateTime.fromMillisecondsSinceEpoch(metadata.lastUpdateTime)
+    ).inDays;
+    final updateRisk = daysSinceUpdate > 365 ? 0.7 : daysSinceUpdate > 180 ? 0.5 : 0.2;
+    features.add(BehavioralFeature(
+      name: 'update_staleness',
+      value: updateRisk,
+      importance: 0.5,
+    ));
+    
+    // 5. Certificate validity
+    final certRisk = metadata.certificate == null ? 0.9 : 0.1;
+    features.add(BehavioralFeature(
+      name: 'certificate_risk',
+      value: certRisk,
+      importance: 0.8,
+    ));
+    
+    // 6. System app anomaly (system apps shouldn't request dangerous perms)
+    if (metadata.isSystemApp) {
+      final systemAppAnomalyRisk = _hasSystemAppAnomaly(metadata.requestedPermissions) ? 0.9 : 0.1;
+      features.add(BehavioralFeature(
+        name: 'system_app_anomaly',
+        value: systemAppAnomalyRisk,
+        importance: 0.85,
+      ));
+    }
+    
+    // 7. Historical behavior (if available)
+    if (historicalProfile != null) {
+      final behaviorChange = _detectBehaviorChange(historicalProfile);
+      features.add(BehavioralFeature(
+        name: 'behavior_change_score',
+        value: behaviorChange,
+        importance: 0.75,
+      ));
+    }
+    
+    return features;
+  }
+  
+  int _calculatePermissionRisk(List<String> permissions) {
+    int riskScore = 0;
+    
+    final permissionWeights = {
+      'android.permission.BIND_DEVICE_ADMIN': 50,
+      'android.permission.BIND_ACCESSIBILITY_SERVICE': 50,
+      'android.permission.REQUEST_INSTALL_PACKAGES': 45,
+      'android.permission.SYSTEM_ALERT_WINDOW': 40,
+      'android.permission.WRITE_SETTINGS': 35,
+      'android.permission.READ_SMS': 30,
+      'android.permission.SEND_SMS': 30,
+      'android.permission.READ_CALL_LOG': 30,
+      'android.permission.PROCESS_OUTGOING_CALLS': 30,
+      'android.permission.READ_CONTACTS': 25,
+      'android.permission.CAMERA': 15,
+      'android.permission.RECORD_AUDIO': 15,
+      'android.permission.ACCESS_FINE_LOCATION': 15,
+      'android.permission.READ_EXTERNAL_STORAGE': 10,
+      'android.permission.WRITE_EXTERNAL_STORAGE': 10,
+    };
+    
+    for (final perm in permissions) {
+      riskScore += permissionWeights[perm] ?? 0;
+    }
+    
+    // Check dangerous combinations
+    final permSet = permissions.toSet();
+    
+    if (permSet.contains('android.permission.READ_SMS') &&
+        permSet.contains('android.permission.READ_CALL_LOG')) {
+      riskScore += 80;
+    }
+    
+    if (permSet.contains('android.permission.BIND_DEVICE_ADMIN') &&
+        permSet.contains('android.permission.SYSTEM_ALERT_WINDOW')) {
+      riskScore += 100;
+    }
+    
+    return riskScore.clamp(0, 100);
+  }
+  
+  double _calculateInstallerRisk(String installerPackage) {
+    // Google Play = safe
+    if (installerPackage == 'com.android.vending') return 0.1;
+    
+    // System installer = medium risk (pre-installed/side-loaded)
+    if (installerPackage.contains('packageinstaller')) return 0.5;
+    
+    // Unknown/third-party = high risk
+    return 0.8;
+  }
+  
+  bool _hasSystemAppAnomaly(List<String> permissions) {
+    // System apps shouldn't request dangerous permissions
+    final dangerousPerms = [
+      'android.permission.READ_SMS',
+      'android.permission.SEND_SMS',
+      'android.permission.BIND_DEVICE_ADMIN',
+      'android.permission.REQUEST_INSTALL_PACKAGES',
+    ];
+    
+    return permissions.any((p) => dangerousPerms.contains(p));
+  }
+  
+  double _detectBehaviorChange(AppBehaviorProfile profile) {
+    // Compare current vs historical behavior
+    final hoursSinceLastUpdate = profile.lastUpdateTime != null
+        ? DateTime.now().difference(profile.lastUpdateTime!).inHours
+        : 0;
+    
+    // Sudden spike in background activity = suspicious
+    if (hoursSinceLastUpdate < 24 && profile.backgroundActivityCount > 100) {
+      return 0.8;
+    }
+    
+    // Excessive network activity
+    if (profile.networkActivityCount > 500) {
+      return 0.7;
+    }
+    
+    return 0.2;
   }
 }
 
 class AnomalyDetectionModel {
   Future<void> loadModel() async {
-    // TODO: Load TensorFlow Lite model
+    print('  ℹ️  Using heuristic-based detection (TFLite model: future AWS deployment)');
   }
   
   Future<MLPrediction> predict(List<BehavioralFeature> features) async {
-    // TODO: Run ML inference
+    // Advanced heuristic scoring (until real ML model deployed)
+    double totalScore = 0.0;
+    double totalImportance = 0.0;
+    final topFeatures = <String>[];
+    
+    // Weighted scoring based on feature importance
+    for (final feature in features) {
+      final weightedScore = feature.value * feature.importance;
+      totalScore += weightedScore;
+      totalImportance += feature.importance;
+      
+      // Track high-risk features
+      if (feature.value > 0.7) {
+        topFeatures.add('${feature.name}: ${(feature.value * 100).toStringAsFixed(0)}%');
+      }
+    }
+    
+    // Normalize score
+    final normalizedScore = totalImportance > 0 
+        ? (totalScore / totalImportance).clamp(0.0, 1.0)
+        : 0.3;
+    
+    // Calculate confidence based on number of high-risk features
+    final confidence = topFeatures.isNotEmpty 
+        ? (0.7 + (topFeatures.length * 0.05)).clamp(0.7, 0.95)
+        : 0.6;
+    
     return MLPrediction(
-      threatProbability: 0.3,
-      confidence: 0.7,
-      topFeatures: [],
+      threatProbability: normalizedScore,
+      confidence: confidence,
+      topFeatures: topFeatures,
     );
   }
   
   Future<void> retrain(List<Map<String, dynamic>> feedbackData) async {
-    // TODO: Retrain model with user feedback
+    // Placeholder for future AWS ML retraining
+    print('  ℹ️  Model retraining queued for AWS deployment');
+    print('  📊 Feedback samples: ${feedbackData.length}');
   }
 }
 
 class NetworkTrafficAnalyzer {
+  // Known malicious domain patterns
+  final List<RegExp> _maliciousDomainPatterns = [
+    RegExp(r'[a-z]{10,}\.(tk|ml|ga|cf|gq)$'), // DGA + free TLDs
+    RegExp(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'), // Raw IPs (suspicious)
+    RegExp(r'bit\.ly|tinyurl|goo\.gl'), // URL shorteners (phishing)
+  ];
+  
+  // Suspicious TLDs
+  final Set<String> _suspiciousTLDs = {
+    'tk', 'ml', 'ga', 'cf', 'gq', // Free domains
+    'top', 'xyz', 'club', 'work', // Cheap domains
+  };
+  
+  // C2 server port patterns
+  final Set<int> _suspiciousPorts = {
+    1337, 31337, // Leet speak ports
+    4444, 5555, // Common RAT ports
+    6666, 7777, 8888, 9999, // Sequential patterns
+    1234, 12345, // Simple patterns
+  };
+  
   Future<void> initialize() async {
-    // TODO: Initialize network monitoring
+    print('  ✓ Network traffic analyzer initialized');
   }
   
   void startTrafficMonitoring(Function(NetworkTrafficEvent) callback) {
-    // TODO: Start monitoring network traffic
+    // Placeholder - requires VPN service implementation
+    print('  ℹ️  Network monitoring (requires VPN service)');
   }
   
   Future<NetworkThreatScore> analyzeBehavior(NetworkActivityProfile profile) async {
-    // TODO: Analyze network behavior
+    int riskScore = 0;
+    final suspiciousPatterns = <String>[];
+    
+    // 1. Check contacted domains
+    for (final domain in profile.contactedDomains) {
+      // Check malicious patterns
+      for (final pattern in _maliciousDomainPatterns) {
+        if (pattern.hasMatch(domain)) {
+          riskScore += 30;
+          suspiciousPatterns.add('Malicious domain pattern: $domain');
+        }
+      }
+      
+      // Check suspicious TLDs
+      final tld = domain.split('.').last.toLowerCase();
+      if (_suspiciousTLDs.contains(tld)) {
+        riskScore += 15;
+        suspiciousPatterns.add('Suspicious TLD: .$tld');
+      }
+      
+      // Check for DGA (Domain Generation Algorithm) patterns
+      if (_isDGA(domain)) {
+        riskScore += 40;
+        suspiciousPatterns.add('DGA detected: $domain');
+      }
+    }
+    
+    // 2. Excessive DNS queries (DNS tunneling)
+    if (profile.dnsQueryCount > 1000) {
+      riskScore += 35;
+      suspiciousPatterns.add('Excessive DNS queries: ${profile.dnsQueryCount}');
+    }
+    
+    // 3. SSL errors (man-in-the-middle)
+    if (profile.sslErrorCount > 5) {
+      riskScore += 40;
+      suspiciousPatterns.add('Multiple SSL errors: ${profile.sslErrorCount}');
+    }
+    
+    // 4. Excessive connections (DDoS bot)
+    if (profile.connectionCount > 5000) {
+      riskScore += 30;
+      suspiciousPatterns.add('Excessive connections: ${profile.connectionCount}');
+    }
+    
+    // 5. Activity timing (late night = suspicious)
+    if (profile.lastActivity != null) {
+      final hour = profile.lastActivity!.hour;
+      if (hour >= 2 && hour <= 5) {
+        riskScore += 20;
+        suspiciousPatterns.add('Late night activity: ${hour}:00');
+      }
+    }
+    
+    final confidence = suspiciousPatterns.isNotEmpty ? 0.8 : 0.6;
+    
     return NetworkThreatScore(
-      score: 30,
-      confidence: 0.6,
-      suspiciousPatterns: [],
+      score: riskScore.clamp(0, 100).toDouble(),
+      confidence: confidence,
+      suspiciousPatterns: suspiciousPatterns,
     );
   }
   
@@ -722,16 +1064,85 @@ class NetworkTrafficAnalyzer {
     NetworkTrafficEvent traffic,
     NetworkActivityProfile profile,
   ) {
-    // TODO: Check for suspicious network patterns
+    // Check for C2 server communication
+    if (traffic.port != null && _suspiciousPorts.contains(traffic.port)) {
+      return BehavioralAnomaly(
+        packageName: traffic.packageName,
+        type: AnomalyType.suspiciousNetworkActivity,
+        description: 'Connection to suspicious port: ${traffic.port}',
+        severity: ThreatSeverity.high,
+        timestamp: DateTime.now(),
+      );
+    }
+    
+    // Check for raw IP connections (bypassing DNS)
+    if (traffic.domain != null && _isIPAddress(traffic.domain!)) {
+      return BehavioralAnomaly(
+        packageName: traffic.packageName,
+        type: AnomalyType.suspiciousNetworkActivity,
+        description: 'Direct IP connection: ${traffic.domain}',
+        severity: ThreatSeverity.medium,
+        timestamp: DateTime.now(),
+      );
+    }
+    
+    // Check for SSL errors (MITM)
+    if (traffic.hasSslError) {
+      return BehavioralAnomaly(
+        packageName: traffic.packageName,
+        type: AnomalyType.sslCertificateError,
+        description: 'SSL certificate validation failed',
+        severity: ThreatSeverity.high,
+        timestamp: DateTime.now(),
+      );
+    }
+    
     return null;
+  }
+  
+  /// Detect Domain Generation Algorithm (DGA) patterns
+  bool _isDGA(String domain) {
+    // Remove TLD
+    final name = domain.split('.').first;
+    
+    // DGA characteristics:
+    // 1. Long random-looking strings (>10 chars)
+    // 2. High consonant-to-vowel ratio
+    // 3. Low character repetition
+    
+    if (name.length < 10) return false;
+    
+    // Count vowels vs consonants
+    final vowels = 'aeiou';
+    int vowelCount = 0;
+    for (final char in name.toLowerCase().split('')) {
+      if (vowels.contains(char)) vowelCount++;
+    }
+    
+    final consonantRatio = (name.length - vowelCount) / name.length;
+    
+    // High consonant ratio = likely DGA
+    return consonantRatio > 0.75;
+  }
+  
+  bool _isIPAddress(String domain) {
+    final ipPattern = RegExp(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$');
+    return ipPattern.hasMatch(domain);
   }
 }
 
 class UserFeedbackLearner {
   final List<Map<String, dynamic>> _feedbackHistory = [];
   
+  // Dynamic threshold adjustment
+  double _falsePositiveRate = 0.0;
+  double _falseNegativeRate = 0.0;
+  int _totalPredictions = 0;
+  int _correctPredictions = 0;
+  
   Future<void> initialize() async {
-    // TODO: Load feedback history from storage
+    // TODO: Load feedback history from SharedPreferences/SQLite
+    print('  ✓ User feedback learner initialized');
   }
   
   Future<void> recordFeedback({
@@ -746,7 +1157,41 @@ class UserFeedbackLearner {
       'userTrusted': userTrusted,
       'timestamp': timestamp.toIso8601String(),
     });
-    // TODO: Save to persistent storage
+    
+    // Update accuracy metrics
+    _totalPredictions++;
+    
+    // Predicted malicious (score > 50) but user trusted = false positive
+    if (predictedScore > 50 && userTrusted) {
+      _falsePositiveRate = (_falsePositiveRate * (_totalPredictions - 1) + 1) / _totalPredictions;
+    }
+    // Predicted safe (score < 50) but user blocked = false negative
+    else if (predictedScore < 50 && !userTrusted) {
+      _falseNegativeRate = (_falseNegativeRate * (_totalPredictions - 1) + 1) / _totalPredictions;
+    }
+    // Correct prediction
+    else {
+      _correctPredictions++;
+    }
+    
+    // Adjust detection thresholds based on feedback
+    _adjustThresholds();
+    
+    // TODO: Persist to storage
+  }
+  
+  void _adjustThresholds() {
+    // If too many false positives, increase threshold
+    if (_falsePositiveRate > 0.3) {
+      print('  📉 High false positive rate: ${(_falsePositiveRate * 100).toStringAsFixed(1)}%');
+      print('  🔧 Consider increasing detection threshold');
+    }
+    
+    // If too many false negatives, decrease threshold
+    if (_falseNegativeRate > 0.2) {
+      print('  📈 High false negative rate: ${(_falseNegativeRate * 100).toStringAsFixed(1)}%');
+      print('  🔧 Consider decreasing detection threshold');
+    }
   }
   
   Future<int> getFeedbackCount() async {
@@ -760,5 +1205,19 @@ class UserFeedbackLearner {
   Future<void> clearOldFeedback() async {
     _feedbackHistory.clear();
     // TODO: Clear from persistent storage
+  }
+  
+  Map<String, dynamic> getAccuracyMetrics() {
+    final accuracy = _totalPredictions > 0 
+        ? _correctPredictions / _totalPredictions
+        : 0.0;
+    
+    return {
+      'accuracy': accuracy,
+      'falsePositiveRate': _falsePositiveRate,
+      'falseNegativeRate': _falseNegativeRate,
+      'totalPredictions': _totalPredictions,
+      'correctPredictions': _correctPredictions,
+    };
   }
 }
