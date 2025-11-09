@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../core/models/threat_model.dart';
 import '../services/quarantine_service.dart';
+import '../services/threat_history_service.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:android_intent_plus/android_intent.dart';
 
 class ThreatDetailScreen extends StatefulWidget {
   final DetectedThreat threat;
@@ -15,6 +17,7 @@ class ThreatDetailScreen extends StatefulWidget {
 
 class _ThreatDetailScreenState extends State<ThreatDetailScreen> {
   final QuarantineService _quarantineService = QuarantineService();
+  final ThreatHistoryService _historyService = ThreatHistoryService();
   bool _isProcessing = false;
 
   @override
@@ -645,10 +648,47 @@ class _ThreatDetailScreenState extends State<ThreatDetailScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Color(0xFF1A1F3A),
-        title: Text('Quarantine App?', style: TextStyle(color: Colors.white)),
-        content: Text(
-          'This will disable the app and block its network access. The app will not be able to run until you restore it from quarantine.',
-          style: TextStyle(color: Colors.white70),
+        title: Row(
+          children: [
+            Icon(Icons.lock, color: Color(0xFFFF4757)),
+            SizedBox(width: 12),
+            Text('Quarantine App?', style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'This will:',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            _buildBulletPoint('Remove from threat history'),
+            _buildBulletPoint('Add to quarantine list'),
+            _buildBulletPoint('Mark as handled'),
+            SizedBox(height: 12),
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.orange.withOpacity(0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'To fully remove the threat, uninstall the app from Android settings.',
+                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -671,6 +711,9 @@ class _ThreatDetailScreenState extends State<ThreatDetailScreen> {
     setState(() => _isProcessing = true);
 
     try {
+      print('🔒 Starting quarantine for: ${widget.threat.appName}');
+      print('   Threat ID: ${widget.threat.id}');
+      
       // Create AppMetadata from threat
       final appMetadata = AppMetadata(
         packageName: widget.threat.packageName,
@@ -687,12 +730,20 @@ class _ThreatDetailScreenState extends State<ThreatDetailScreen> {
       );
 
       // Quarantine the app
+      print('📦 Calling quarantine service...');
       final success = await _quarantineService.quarantineApp(
         appMetadata,
         [widget.threat],
       );
 
       if (success) {
+        print('✅ Quarantine successful, removing from history...');
+        
+        // Remove from threat history
+        await _historyService.removeThreat(widget.threat.id);
+        
+        print('✅ Threat removed from history, returning to list...');
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -709,6 +760,7 @@ class _ThreatDetailScreenState extends State<ThreatDetailScreen> {
               behavior: SnackBarBehavior.floating,
             ),
           );
+          // Return true to signal dashboard needs refresh
           Navigator.pop(context, true);
         }
       } else {
@@ -757,17 +809,18 @@ class _ThreatDetailScreenState extends State<ThreatDetailScreen> {
             ElevatedButton(
               onPressed: () async {
                 Navigator.pop(context);
-                // Try to open app settings for disable option
+                // Open app settings for disable option
                 try {
-                  final uri = Uri.parse('package:${widget.threat.packageName}');
-                  if (await canLaunchUrl(uri)) {
-                    await launchUrl(uri);
-                  }
+                  final intent = AndroidIntent(
+                    action: 'android.settings.APPLICATION_DETAILS_SETTINGS',
+                    data: 'package:${widget.threat.packageName}',
+                  );
+                  await intent.launch();
                 } catch (e) {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Failed to open app settings'),
+                        content: Text('Failed to open app settings: $e'),
                         backgroundColor: Color(0xFFD32F2F),
                       ),
                     );
@@ -816,23 +869,22 @@ class _ThreatDetailScreenState extends State<ThreatDetailScreen> {
     setState(() => _isProcessing = true);
 
     try {
-      // Open app settings for uninstall
-      final uri = Uri.parse('package:${widget.threat.packageName}');
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-        
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Opening app settings for ${widget.threat.appName}'),
-              backgroundColor: Color(0xFF00C853),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-          Navigator.pop(context, true);
-        }
-      } else {
-        throw Exception('Cannot open app settings');
+      // Open app details settings for uninstall
+      final intent = AndroidIntent(
+        action: 'android.settings.APPLICATION_DETAILS_SETTINGS',
+        data: 'package:${widget.threat.packageName}',
+      );
+      await intent.launch();
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Opening app settings for ${widget.threat.appName}'),
+            backgroundColor: Color(0xFF00C853),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        // Don't pop immediately - user might come back
       }
     } catch (e) {
       if (mounted) {
@@ -918,6 +970,24 @@ class _ThreatDetailScreenState extends State<ThreatDetailScreen> {
         setState(() => _isProcessing = false);
       }
     }
+  }
+
+  Widget _buildBulletPoint(String text) {
+    return Padding(
+      padding: EdgeInsets.only(left: 8, bottom: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('• ', style: TextStyle(color: Colors.white70, fontSize: 16)),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(color: Colors.white70, fontSize: 13),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Color _getSeverityColor(ThreatSeverity severity) {

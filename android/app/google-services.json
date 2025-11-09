@@ -1,0 +1,28 @@
+{
+  "INSTRUCTIONS": "Replace this file with your actual google-services.json from Firebase Console",
+  "STEPS": [
+    "1. Go to https://console.firebase.google.com",
+    "2. Create a new project or select existing",
+    "3. Add Android app with package name: com.autoguard.malware_scanner",
+    "4. Download google-services.json",
+    "5. Replace THIS file with the downloaded one",
+    "6. Run: flutter clean && flutter pub get && flutter build apk"
+  ],
+  "project_info": {
+    "project_number": "YOUR_PROJECT_NUMBER",
+    "firebase_url": "https://YOUR-PROJECT.firebaseio.com",
+    "project_id": "YOUR-PROJECT-ID",
+    "storage_bucket": "YOUR-PROJECT.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "YOUR_APP_ID",
+        "android_client_info": {
+          "package_name": "com.autoguard.malware_scanner"
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -143,6 +143,75 @@ class ThreatHistoryService {
     return total;
   }
 
+  /// Remove a specific threat from history (e.g., when quarantined)
+  Future<void> removeThreat(String threatId) async {
+    print('🗑️ ThreatHistoryService: Removing threat $threatId');
+    
+    final prefs = await SharedPreferences.getInstance();
+    final historyJson = prefs.getString(_historyKey);
+    
+    if (historyJson == null) {
+      print('⚠️ No history found to remove threat from');
+      return;
+    }
+    
+    final List<Map<String, dynamic>> history = 
+        List<Map<String, dynamic>>.from(jsonDecode(historyJson));
+    
+    print('📊 History has ${history.length} scan(s)');
+    
+    // Remove threat from all scans
+    bool modified = false;
+    int totalThreatsRemoved = 0;
+    
+    for (final scan in history) {
+      final threats = scan['threats'] as List<dynamic>;
+      final originalLength = threats.length;
+      
+      threats.removeWhere((t) => t['id'] == threatId);
+      
+      if (threats.length != originalLength) {
+        totalThreatsRemoved += (originalLength - threats.length);
+        modified = true;
+        print('✓ Removed threat from scan, ${originalLength} → ${threats.length}');
+        
+        // Update threat count for this scan
+        scan['threatsFound'] = threats.length;
+        
+        // Recalculate severity counts
+        int critical = 0, high = 0, medium = 0, low = 0;
+        for (final threat in threats) {
+          final severity = threat['severity'] as String;
+          if (severity.contains('critical')) critical++;
+          else if (severity.contains('high')) high++;
+          else if (severity.contains('medium')) medium++;
+          else if (severity.contains('low')) low++;
+        }
+        
+        scan['criticalCount'] = critical;
+        scan['highCount'] = high;
+        scan['mediumCount'] = medium;
+        scan['lowCount'] = low;
+      }
+    }
+    
+    if (modified) {
+      print('✅ Removed $totalThreatsRemoved threat(s), saving updated history...');
+      
+      // Save updated history
+      await prefs.setString(_historyKey, jsonEncode(history));
+      
+      // Recalculate category counts
+      await _updateCategoryCounts(history);
+      
+      // Verify the new counts
+      final newCounts = await getLast90DaysThreats();
+      print('📈 Updated threat counts: $newCounts');
+    } else {
+      print('⚠️ Threat ID $threatId not found in history');
+    }
+  }
+
   /// Clear all history
   Future<void> clearHistory() async {
     final prefs = await SharedPreferences.getInstance();

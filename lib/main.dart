@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'core/theme/scanx_colors.dart';
 import 'services/scan_coordinator.dart';
 import 'services/app_telemetry_collector.dart';
+import 'services/auth_service.dart';
 import 'core/models/threat_model.dart';
 import 'screens/dashboard_screen.dart';
+import 'screens/login_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Firebase (optional - app works without it)
+  try {
+    await Firebase.initializeApp();
+    print('✅ Firebase initialized');
+  } catch (e) {
+    print('⚠️ Firebase not configured - using local storage mode');
+    print('ℹ️ To enable cloud sync, follow FIREBASE_SETUP.md');
+  }
+  
   runApp(const AdRigApp());
 }
 
@@ -19,9 +33,17 @@ class AdRigApp extends StatelessWidget {
       providers: [
         Provider(create: (_) => AppTelemetryCollector()),
         Provider(create: (_) => ScanCoordinator()),
+        Provider(create: (_) {
+          try {
+            return AuthService();
+          } catch (e) {
+            print('⚠️ AuthService initialization error: $e');
+            return AuthService();
+          }
+        }),
       ],
       child: MaterialApp(
-        title: 'AdRig - Advanced Malware Detection',
+        title: 'Malware Scanner - Secure Your Device',
         theme: ThemeData(
           brightness: Brightness.dark,
           scaffoldBackgroundColor: Color(0xFF0A0E27),
@@ -38,8 +60,39 @@ class AdRigApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: const DashboardScreen(),
+        home: const AuthGate(),
       ),
+    );
+  }
+}
+
+/// Auth gate - checks if user is logged in
+class AuthGate extends StatelessWidget {
+  const AuthGate({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    
+    return FutureBuilder<bool>(
+      future: authService.isLoggedIn(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        
+        final isLoggedIn = snapshot.data ?? false;
+        
+        if (isLoggedIn) {
+          return const DashboardScreen();
+        } else {
+          return const LoginScreen();
+        }
+      },
     );
   }
 }

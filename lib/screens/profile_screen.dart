@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:adrig/services/scan_coordinator.dart';
+import 'package:adrig/services/auth_service.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
+import 'subscription_screen.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -18,12 +21,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _totalThreatsFound = 0;
   int _totalAppsScanned = 0;
   int _daysProtected = 0;
+  String _userName = 'Loading...';
+  String _userEmail = 'Loading...';
+  SubscriptionType _subscriptionType = SubscriptionType.free;
+  DateTime? _subscriptionExpiry;
   
   @override
   void initState() {
     super.initState();
     _loadDeviceInfo();
     _loadScanStatistics();
+    _loadUserInfo();
+  }
+  
+  Future<void> _loadUserInfo() async {
+    try {
+      final authService = AuthService();
+      final name = await authService.getUserName();
+      final email = await authService.getUserEmail();
+      final subType = await authService.getSubscriptionType();
+      final expiry = await authService.getSubscriptionExpiry();
+      
+      setState(() {
+        _userName = name ?? 'User';
+        _userEmail = email ?? 'No email';
+        _subscriptionType = subType;
+        _subscriptionExpiry = expiry;
+      });
+    } catch (e) {
+      print('Error loading user info: $e');
+    }
   }
   
   Future<void> _loadDeviceInfo() async {
@@ -91,6 +118,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'User Profile',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
+        actions: [
+          // Sign Out Button
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.white),
+            tooltip: 'Sign Out',
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('Sign Out'),
+                  content: Text('Are you sure you want to sign out?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text('CANCEL'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text('SIGN OUT'),
+                    ),
+                  ],
+                ),
+              );
+              
+              if (confirmed == true && mounted) {
+                final authService = AuthService();
+                await authService.signOut();
+                
+                // Navigate to login screen
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -111,34 +175,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.white24,
-                    child: Icon(Icons.security, size: 60, color: Colors.white),
+                    child: Icon(Icons.person, size: 60, color: Colors.white),
                   ),
                   SizedBox(height: 16),
                   Text(
-                    _deviceModel,
+                    _userName,
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    _androidVersion,
+                    _userEmail,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white70,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    _deviceModel,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.white60,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    _androidVersion,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white60,
                     ),
                   ),
                   SizedBox(height: 16),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white24,
+                      color: _subscriptionType == SubscriptionType.free
+                          ? Colors.grey.shade700
+                          : _subscriptionType == SubscriptionType.premium
+                              ? Colors.blue.shade700
+                              : Colors.purple.shade700,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      'Protected Device',
+                      '${_subscriptionType.name.toUpperCase()} PLAN',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -171,12 +255,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildSectionHeader('Subscription'),
                   _buildInfoCard(
                     icon: Icons.workspace_premium,
-                    title: 'AdRig Premium',
-                    subtitle: '\$9.99/month',
+                    title: '${_subscriptionType.name.toUpperCase()} Plan',
+                    subtitle: _subscriptionExpiry != null
+                        ? 'Expires: ${_formatDate(_subscriptionExpiry!)}'
+                        : 'No expiration',
                     color: Color(0xFF6C63FF),
                     trailing: TextButton(
                       onPressed: () {
-                        // TODO: Manage subscription
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const SubscriptionScreen(),
+                          ),
+                        ).then((_) => _loadUserInfo()); // Refresh after returning
                       },
                       child: Text('MANAGE'),
                     ),
@@ -205,24 +296,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // Devices
                   _buildSectionHeader('Protected Devices'),
                   _buildDeviceCard(
-                    deviceName: 'Samsung Galaxy S23',
-                    deviceType: 'Android 14',
-                    lastScan: 'Today at 10:14 AM',
+                    deviceName: _deviceModel,
+                    deviceType: _androidVersion,
+                    lastScan: _totalScans > 0 ? 'Today' : 'Never',
                     isActive: true,
-                  ),
-                  _buildDeviceCard(
-                    deviceName: 'Google Pixel 7',
-                    deviceType: 'Android 13',
-                    lastScan: '2 days ago',
-                    isActive: false,
                   ),
                   
                   _buildNavigationTile(
                     icon: Icons.add_circle_outline,
                     title: 'Add Device',
-                    subtitle: '2 of 5 devices used',
+                    subtitle: '1 device protected',
                     onTap: () {
-                      // TODO: Add device
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Install AdRig on other devices to add them')),
+                      );
                     },
                   ),
                   
@@ -568,10 +655,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Text('CANCEL'),
           ),
           ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-              // TODO: Sign out
+            onPressed: () async {
+              Navigator.pop(context); // Close dialog
+              
+              final authService = AuthService();
+              await authService.signOut();
+              
+              if (mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFFFF4757),
@@ -581,6 +676,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+  
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
   }
 
   void _showDeleteAccountDialog(BuildContext context) {

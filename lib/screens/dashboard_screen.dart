@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/scan_coordinator.dart';
 import '../services/app_telemetry_collector.dart';
+import '../services/auth_service.dart';
 import 'scan_results_screen.dart';
 import 'settings_screen.dart';
 import 'profile_screen.dart';
 import 'help_support_screen.dart';
 import 'about_screen.dart';
+import 'threat_list_screen.dart';
 import 'dart:math' as math;
 
 class DashboardScreen extends StatefulWidget {
@@ -22,6 +24,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
   int _scannedApps = 0;
   int _totalApps = 0;
   String _currentApp = '';
+  String _userName = 'Loading...';
+  String _userEmail = '';
+  String _subscriptionType = 'Free';
   
   late AnimationController _pulseController;
   late AnimationController _rotateController;
@@ -51,21 +56,46 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     
     // Load real threat data from history
     _loadThreatHistory();
+    _loadUserInfo();
   }
   
   Future<void> _loadThreatHistory() async {
+    print('📊 Dashboard: Loading threat history...');
     try {
       final coordinator = Provider.of<ScanCoordinator>(context, listen: false);
       final historyService = coordinator.getHistoryService();
       final threatCounts = await historyService.getLast90DaysThreats();
       
+      print('   Threat counts: $threatCounts');
+      
       if (mounted) {
         setState(() {
           _last90DaysThreats = threatCounts;
         });
+        print('✅ Dashboard updated with new counts');
       }
     } catch (e) {
       print('Error loading threat history: $e');
+    }
+  }
+  
+  Future<void> _loadUserInfo() async {
+    try {
+      final authService = AuthService();
+      final name = await authService.getUserName();
+      final email = await authService.getUserEmail();
+      final subType = await authService.getSubscriptionType();
+      
+      if (mounted) {
+        setState(() {
+          _userName = name ?? 'User';
+          _userEmail = email ?? '';
+          _subscriptionType = subType == SubscriptionType.free ? 'Free Account' : 
+                             subType == SubscriptionType.premium ? 'Premium Account' : 'Pro Account';
+        });
+      }
+    } catch (e) {
+      print('Error loading user info: $e');
     }
   }
 
@@ -234,7 +264,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 ),
                 SizedBox(height: 12),
                 Text(
-                  'User Name',
+                  _userName,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -242,7 +272,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   ),
                 ),
                 Text(
-                  'Premium Account',
+                  _subscriptionType,
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 12,
@@ -463,41 +493,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               );
             }).toList(),
             
-            SizedBox(height: 24),
-            
-            // Detection Features
-            Text(
-              'Protection Features',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            
-            SizedBox(height: 16),
-            
-            _buildFeatureCard(
-              icon: Icons.bug_report,
-              title: 'YARA Pattern Detection',
-              description: '102 malware signatures including banking trojans, spyware & RATs',
-              color: Color(0xFFFF4757),
-            ),
-            
-            _buildFeatureCard(
-              icon: Icons.cloud_outlined,
-              title: 'Cloud Reputation Check',
-              description: 'Real-time threat intelligence from VirusTotal & SafeBrowsing',
-              color: Color(0xFF00D9FF),
-            ),
-            
-            _buildFeatureCard(
-              icon: Icons.psychology,
-              title: 'AI Behavioral Analysis',
-              description: 'Monitor app permissions, network activity & file operations',
-              color: Color(0xFF6C63FF),
-            ),
-            
             SizedBox(height: 20),
           ],
         ),
@@ -510,63 +505,80 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     required int count,
     required IconData icon,
   }) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Color(0xFF151933),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: count > 0 ? Color(0xFFFF4757).withOpacity(0.3) : Colors.white10,
-          width: 1,
+    return InkWell(
+      onTap: () async {
+        print('📱 Dashboard: User tapped category: $category');
+        
+        // Navigate and wait for result
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ThreatListScreen(category: category),
+          ),
+        );
+        
+        print('⬅️ Dashboard: Returned from threat list, reloading counts...');
+        
+        // Reload threat counts when returning
+        _loadThreatHistory();
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        margin: EdgeInsets.only(bottom: 12),
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Color(0xFF151933),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: count > 0 ? Color(0xFFFF4757).withOpacity(0.3) : Colors.white10,
+            width: 1,
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: count > 0 
-                  ? Color(0xFFFF4757).withOpacity(0.2) 
-                  : Color(0xFF00C853).withOpacity(0.2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              icon,
-              color: count > 0 ? Color(0xFFFF4757) : Color(0xFF00C853),
-              size: 24,
-            ),
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  category,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  count == 0 ? 'No threats detected' : '$count threat${count > 1 ? 's' : ''} blocked',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white60,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (count > 0)
+        child: Row(
+          children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              width: 48,
+              height: 48,
               decoration: BoxDecoration(
-                color: Color(0xFFFF4757),
+                color: count > 0 
+                    ? Color(0xFFFF4757).withOpacity(0.2) 
+                    : Color(0xFF00C853).withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                icon,
+                color: count > 0 ? Color(0xFFFF4757) : Color(0xFF00C853),
+                size: 24,
+              ),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    category,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    count == 0 ? 'No threats detected' : '$count threat${count > 1 ? 's' : ''} blocked',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white60,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: count > 0 ? Color(0xFFFF4757) : Color(0xFF00C853).withOpacity(0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -577,68 +589,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   color: Colors.white,
                 ),
               ),
-            )
-          else
-            Icon(
-              Icons.check_circle,
-              color: Color(0xFF00C853),
-              size: 20,
             ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureCard({
-    required IconData icon,
-    required String title,
-    required String description,
-    required Color color,
-  }) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Color(0xFF151933),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white10, width: 1),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  description,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white60,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
