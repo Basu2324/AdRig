@@ -15,23 +15,37 @@ class AntiEvasionEngine {
   // Sandbox execution state
   final Map<String, SandboxSession> _sandboxSessions = {};
   
-  // Hardware fingerprint randomization
-  final HardwareFingerprintManager _fingerprintManager = HardwareFingerprintManager();
+  // Hardware fingerprint randomization (lazy initialization)
+  late final HardwareFingerprintManager _fingerprintManager;
   
-  // Model integrity validation
-  final ModelIntegrityValidator _modelValidator = ModelIntegrityValidator();
+  // Model integrity validation (lazy initialization)
+  late final ModelIntegrityValidator _modelValidator;
+  
+  bool _initialized = false;
   
   /// Initialize anti-evasion engine
   Future<void> initialize() async {
+    if (_initialized) return;
+    
     print('🛡️ Initializing Anti-Evasion Engine...');
     
-    // Initialize hardware fingerprint randomization
-    await _fingerprintManager.initialize();
-    
-    // Initialize model integrity checks
-    await _modelValidator.initialize();
-    
-    print('✅ Anti-Evasion Engine ready');
+    try {
+      // Initialize managers
+      _fingerprintManager = HardwareFingerprintManager();
+      _modelValidator = ModelIntegrityValidator();
+      
+      // Initialize hardware fingerprint randomization
+      await _fingerprintManager.initialize();
+      
+      // Initialize model integrity checks
+      await _modelValidator.initialize();
+      
+      _initialized = true;
+      print('✅ Anti-Evasion Engine ready');
+    } catch (e) {
+      print('⚠️ Anti-Evasion Engine initialization error: $e');
+      _initialized = true; // Mark as initialized to prevent retry loops
+    }
   }
   
   // ==================== PACKING & ENCRYPTION DETECTION ====================

@@ -14,18 +14,39 @@ import 'package:adrig/services/anti_evasion_engine.dart';
 /// Production-grade malware scanner
 /// Integrates all detection engines into unified scanning pipeline
 class ProductionScanner {
-  final APKScannerService _apkScanner = APKScannerService();
-  final SignatureDatabase _signatureDB = SignatureDatabase();
-  final CloudReputationService _reputationService = CloudReputationService();
-  final DecisionEngine _decisionEngine = DecisionEngine();
-  final YaraRuleEngine _yaraEngine = YaraRuleEngine();
-  final AIDetectionEngine _aiEngine = AIDetectionEngine();
-  final BehavioralSequenceEngine _sequenceEngine = BehavioralSequenceEngine();
-  final AdvancedMLEngine _mlEngine = AdvancedMLEngine();
-  final CrowdsourcedIntelligenceService _crowdIntel = CrowdsourcedIntelligenceService();
-  final AntiEvasionEngine _antiEvasion = AntiEvasionEngine();
+  late final APKScannerService _apkScanner;
+  late final SignatureDatabase _signatureDB;
+  late final CloudReputationService _reputationService;
+  late final DecisionEngine _decisionEngine;
+  late final YaraRuleEngine _yaraEngine;
+  late final AIDetectionEngine _aiEngine;
+  late final BehavioralSequenceEngine _sequenceEngine;
+  late final AdvancedMLEngine _mlEngine;
+  late final CrowdsourcedIntelligenceService _crowdIntel;
+  late final AntiEvasionEngine _antiEvasion;
   
   bool _initialized = false;
+  
+  ProductionScanner() {
+    try {
+      // Initialize all services lazily to avoid constructor errors
+      _apkScanner = APKScannerService();
+      _signatureDB = SignatureDatabase();
+      _reputationService = CloudReputationService();
+      _decisionEngine = DecisionEngine();
+      _yaraEngine = YaraRuleEngine();
+      _aiEngine = AIDetectionEngine();
+      _sequenceEngine = BehavioralSequenceEngine();
+      _mlEngine = AdvancedMLEngine();
+      _crowdIntel = CrowdsourcedIntelligenceService();
+      _antiEvasion = AntiEvasionEngine();
+      print('✅ ProductionScanner services initialized');
+    } catch (e, stackTrace) {
+      print('❌ ProductionScanner constructor failed: $e');
+      print('Stack trace: $stackTrace');
+      rethrow;
+    }
+  }
   
   /// Initialize scanner (download signatures, etc.)
   Future<void> initialize() async {

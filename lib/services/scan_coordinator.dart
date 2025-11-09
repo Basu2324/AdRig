@@ -19,9 +19,17 @@ class ScanCoordinator {
   final Map<String, ScanResult> _scanHistory = {};
   final _uuid = const Uuid();
   bool _isInitialized = false;
+  bool _initializationFailed = false;
 
   ScanCoordinator() {
-    _initializeEngines();
+    try {
+      _initializeEngines();
+    } catch (e, stackTrace) {
+      print('❌ CRITICAL: ScanCoordinator constructor failed: $e');
+      print('Stack trace: $stackTrace');
+      _initializationFailed = true;
+      rethrow;
+    }
   }
 
   /// Initialize all detection engines and services
@@ -59,11 +67,21 @@ class ScanCoordinator {
   }
 
   void _initializeEngines() {
-    _productionScanner = ProductionScanner();
-    _quarantineService = QuarantineService();
-    _privacyService = PrivacyService();
-    _updateService = UpdateService();
-    _historyService = ThreatHistoryService();
+    try {
+      _productionScanner = ProductionScanner();
+      _quarantineService = QuarantineService();
+      _privacyService = PrivacyService();
+      _updateService = UpdateService();
+      _historyService = ThreatHistoryService();
+    } catch (e) {
+      print('⚠️ Error initializing engines: $e');
+      // Create fallback instances to prevent null errors
+      _productionScanner = ProductionScanner();
+      _quarantineService = QuarantineService();
+      _privacyService = PrivacyService();
+      _updateService = UpdateService();
+      _historyService = ThreatHistoryService();
+    }
   }
 
   /// Execute PRODUCTION scan on installed apps

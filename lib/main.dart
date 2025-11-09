@@ -32,7 +32,15 @@ class AdRigApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(create: (_) => AppTelemetryCollector()),
-        Provider(create: (_) => ScanCoordinator()),
+        Provider(create: (_) {
+          try {
+            return ScanCoordinator();
+          } catch (e) {
+            print('⚠️ ScanCoordinator initialization error: $e');
+            print('Stack trace: ${StackTrace.current}');
+            rethrow;
+          }
+        }),
         Provider(create: (_) {
           try {
             return AuthService();

@@ -5,7 +5,8 @@ import 'package:adrig/core/models/threat_model.dart';
 /// Crowdsourced Threat Intelligence Service
 /// Collects, aggregates, and correlates threat data across user base
 class CrowdsourcedIntelligenceService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore? _firestore;
+  bool _firebaseAvailable = false;
   
   // Collection references
   late final CollectionReference _globalThreatsRef;
@@ -17,12 +18,18 @@ class CrowdsourcedIntelligenceService {
   Future<void> initialize() async {
     print('🌐 Initializing Crowdsourced Intelligence Service...');
     
-    _globalThreatsRef = _firestore.collection('global_threats');
-    _communityReportsRef = _firestore.collection('community_reports');
-    _deviceTelemetryRef = _firestore.collection('device_telemetry');
-    _threatCorrelationsRef = _firestore.collection('threat_correlations');
-    
-    print('✅ Crowdsourced Intelligence initialized');
+    try {
+      _firestore = FirebaseFirestore.instance;
+      _globalThreatsRef = _firestore!.collection('global_threats');
+      _communityReportsRef = _firestore!.collection('community_reports');
+      _deviceTelemetryRef = _firestore!.collection('device_telemetry');
+      _threatCorrelationsRef = _firestore!.collection('threat_correlations');
+      _firebaseAvailable = true;
+      print('✅ Crowdsourced Intelligence initialized (Firebase enabled)');
+    } catch (e) {
+      print('⚠️ Firebase not available, running in offline mode: $e');
+      _firebaseAvailable = false;
+    }
   }
   
   /// Submit threat detection to global database (privacy-preserving)
@@ -34,6 +41,11 @@ class CrowdsourcedIntelligenceService {
     required Map<String, dynamic> indicators,
     String? deviceId, // Anonymous device ID
   }) async {
+    if (!_firebaseAvailable) {
+      print('⚠️ Firebase not available, cannot submit threat report');
+      return;
+    }
+    
     try {
       // Privacy-preserving submission (no PII)
       final report = {
@@ -61,6 +73,19 @@ class CrowdsourcedIntelligenceService {
   
   /// Query global threat reputation
   Future<GlobalThreatReputation> queryGlobalReputation(String fileHash) async {
+    if (!_firebaseAvailable) {
+      return GlobalThreatReputation(
+        fileHash: fileHash,
+        isThreat: false,
+        reportCount: 0,
+        confidence: 0.0,
+        firstSeen: null,
+        lastSeen: null,
+        severityBreakdown: {},
+        detectionEngines: [],
+      );
+    }
+    
     try {
       // Query all reports for this hash
       final snapshot = await _communityReportsRef
@@ -308,9 +333,11 @@ class CrowdsourcedIntelligenceService {
     String fileHash,
     ThreatSeverity severity,
   ) async {
+    if (!_firebaseAvailable || _firestore == null) return;
+    
     final docRef = _globalThreatsRef.doc(fileHash);
     
-    await _firestore.runTransaction((transaction) async {
+    await _firestore!.runTransaction((transaction) async {
       final doc = await transaction.get(docRef);
       
       if (doc.exists) {
