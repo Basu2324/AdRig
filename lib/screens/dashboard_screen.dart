@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:async';
 import 'package:provider/provider.dart';
 import '../services/scan_coordinator.dart';
 import '../services/app_telemetry_collector.dart';
 import '../services/auth_service.dart';
+import '../services/permission_service.dart';
 import '../widgets/adrig_logo.dart';
 import 'scan_results_screen.dart';
 import 'settings_screen.dart';
@@ -10,6 +13,7 @@ import 'profile_screen.dart';
 import 'help_support_screen.dart';
 import 'about_screen.dart';
 import 'threat_list_screen.dart';
+import 'permission_request_screen.dart';
 import 'dart:math' as math;
 
 class DashboardScreen extends StatefulWidget {
@@ -22,6 +26,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isScanning = false;
+  bool _cancelScan = false;
   int _scannedApps = 0;
   int _totalApps = 0;
   String _currentApp = '';
@@ -107,9 +112,69 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     super.dispose();
   }
 
-  Future<void> _startScan() async {
+  Future<void> _performScan() async {
+    print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    print('� Dashboard: _performScan() called');
+    print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    
+    // Check permissions first!
+    final permissionService = Provider.of<PermissionService>(context, listen: false);
+    final hasPermissions = await permissionService.hasAllCriticalPermissions();
+    
+    if (!hasPermissions) {
+      // Show permission dialog
+      final shouldRequestPermissions = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          backgroundColor: const Color(0xFF151933),
+          title: const Text('Permissions Required', style: TextStyle(color: Colors.white)),
+          content: const Text(
+            'AdRig needs storage and app access permissions to scan your device for malware.\n\nWithout these permissions, the scanner cannot function.',
+            style: TextStyle(color: Colors.white70),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white70,
+              ),
+              child: const Text('Cancel', style: TextStyle(fontSize: 16)),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6C63FF),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: const Text('Grant Permissions', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+      
+      if (shouldRequestPermissions == true) {
+        // Navigate to permission request screen
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const PermissionRequestScreen()),
+        );
+      }
+      return;
+    }
+    
+    // Show immediate feedback
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('🔍 Starting scan...'),
+        backgroundColor: Colors.blue,
+        duration: Duration(seconds: 2),
+      ),
+    );
+    
     setState(() {
       _isScanning = true;
+      _cancelScan = false;
       _scannedApps = 0;
       _totalApps = 0;
       _currentApp = '';
@@ -118,17 +183,83 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     _rotateController.repeat();
 
     try {
+      print('Step 1: Getting providers...');
       final coordinator = Provider.of<ScanCoordinator>(context, listen: false);
       final telemetryCollector = Provider.of<AppTelemetryCollector>(context, listen: false);
+      print('✅ Step 1 complete: Providers obtained');
       
-      final apps = await telemetryCollector.collectAllAppsTelemetry();
+      print('Step 2: Calling collectAllAppsTelemetry()...');
       
-      // Don't set _totalApps here - we'll get the actual scanned count from result
-      // because whitelist filtering happens inside scanInstalledApps
+      // TEST: Try direct platform call first
+      try {
+        print('🧪 TEST: Direct platform channel call...');
+        const platform = MethodChannel('com.adrig.security/telemetry');
+        final List<dynamic> directResult = await platform
+            .invokeMethod('getInstalledApps')
+            .timeout(Duration(seconds: 10));
+        print('🧪 DIRECT CALL SUCCESS: Got ${directResult.length} apps');
+        
+        if (directResult.isEmpty) {
+          print('⚠️  DIRECT CALL returned EMPTY LIST');
+        } else {
+          print('✅ Sample app: ${directResult.first}');
+        }
+      } catch (e) {
+        print('❌ DIRECT CALL FAILED: $e');
+      }
+      
+      // Check if scan was cancelled
+      if (_cancelScan) {
+        print('⚠️ Scan cancelled by user');
+        if (mounted) {
+          setState(() => _isScanning = false);
+          _rotateController.stop();
+        }
+        return;
+      }
+      
+      print('Step 3: Calling via telemetryCollector...');
+      final apps = await telemetryCollector.collectAllAppsTelemetry()
+          .timeout(Duration(seconds: 15));
+      print('✅ Step 3 complete: Got ${apps.length} apps from telemetry');
+      
+      if (apps.isEmpty) {
+        print('⚠️  NO APPS FOUND - Showing error to user');
+        if (mounted) {
+          setState(() => _isScanning = false);
+          _rotateController.stop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('❌ No apps found!\n\nThis could mean:\n- Permission issue\n- Native code error\n\nCheck adb logcat for details.'),
+              backgroundColor: Color(0xFFFF6B6B),
+              duration: Duration(seconds: 8),
+            ),
+          );
+        }
+        return;
+      }
+      
+      // Check if scan was cancelled
+      if (_cancelScan) {
+        print('⚠️ Scan cancelled by user');
+        if (mounted) {
+          setState(() => _isScanning = false);
+          _rotateController.stop();
+        }
+        return;
+      }
+      
+      print('Step 4: Starting scan of ${apps.length} apps...');
 
       final result = await coordinator.scanInstalledApps(
         apps,
         onProgress: (scanned, total, appName) {
+          // Check for cancellation during scan
+          if (_cancelScan) {
+            print('⚠️ Scan cancelled at $scanned/$total apps');
+            return;
+          }
+          
           if (mounted) {
             setState(() {
               _scannedApps = scanned;
@@ -139,11 +270,29 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         },
       );
 
+      // Check if scan was cancelled
+      if (_cancelScan) {
+        print('⚠️ Scan cancelled - not showing results');
+        if (mounted) {
+          setState(() => _isScanning = false);
+          _rotateController.stop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('🛑 Scan cancelled'),
+              backgroundColor: Color(0xFFFF9800),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        return;
+      }
+
+      print('✅ Scan complete!');
+
       if (mounted) {
         setState(() => _isScanning = false);
         _rotateController.stop();
         
-        // Reload threat history to show updated counts
         await _loadThreatHistory();
         
         Navigator.push(
@@ -153,14 +302,31 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           ),
         );
       }
-    } catch (e) {
+    } on TimeoutException catch (e) {
+      print('❌ TIMEOUT: $e');
       if (mounted) {
         setState(() => _isScanning = false);
         _rotateController.stop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Scan failed: $e'),
+            content: Text('⏱️ Scan timed out!\n\nThe app is taking too long to respond. Check adb logcat.'),
+            backgroundColor: Color(0xFFFF9800),
+            duration: Duration(seconds: 8),
+          ),
+        );
+      }
+    } catch (e, stackTrace) {
+      print('❌ Dashboard: Scan failed with error: $e');
+      print('Stack trace: $stackTrace');
+      
+      if (mounted) {
+        setState(() => _isScanning = false);
+        _rotateController.stop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Scan failed: $e\n\nCheck logs for details.'),
             backgroundColor: Color(0xFFD32F2F),
+            duration: Duration(seconds: 8),
           ),
         );
       }
@@ -438,7 +604,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: _startScan,
+                            onTap: _performScan,
                             borderRadius: BorderRadius.circular(100),
                             splashColor: Colors.white.withOpacity(0.3),
                             child: Container(
@@ -762,6 +928,40 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+          ),
+          
+          SizedBox(height: 40),
+          
+          // Cancel/Stop Button
+          ElevatedButton.icon(
+            onPressed: () {
+              setState(() {
+                _cancelScan = true;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('🛑 Stopping scan...'),
+                  backgroundColor: Color(0xFFFF9800),
+                  duration: Duration(seconds: 1),
+                ),
+              );
+            },
+            icon: Icon(Icons.stop_circle_outlined, color: Colors.white),
+            label: Text(
+              'Stop Scan',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFFFF4757),
+              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
         ],
       ),

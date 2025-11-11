@@ -1,16 +1,20 @@
 import 'package:adrig/core/models/threat_model.dart';
 import 'expanded_yara_rules.dart';
+import 'yara_rules_2025.dart';
 
 /// YARA-style rule engine for pattern-based detection
-/// Now includes 100+ rules covering all major threat categories
+/// Now includes 150+ rules covering all major threat categories (Updated Nov 2025)
 class YaraRuleEngine {
   final Map<String, DetectionRule> _rules = {};
   final Map<String, RegExp> _compiledPatterns = {};
 
-  /// Initialize with built-in detection rules (35 baseline + 67 expanded = 102 total)
+  /// Initialize with built-in detection rules (35 baseline + 67 expanded + 50 new 2025 = 152 total)
   void initializeRules() {
-    // Load expanded YARA rules first (67 new rules)
+    // Load expanded YARA rules first (67 rules)
     _loadExpandedRules();
+    
+    // Load latest 2025 malware patterns (50+ new rules)
+    _load2025Rules();
     
     // ============= BANKING TROJANS (Baseline 7 rules) =============
     
@@ -512,6 +516,15 @@ class YaraRuleEngine {
     }
     
     print('✅ Expanded rules loaded successfully');
+  }
+
+  /// Load latest 2025 malware detection rules
+  void _load2025Rules() {
+    final rules2025 = YaraRules2025.getAll2025Rules();
+    for (final rule in rules2025) {
+      _addRule(rule);
+    }
+    print('✅ Loaded ${rules2025.length} latest 2025 malware patterns');
   }
 
   /// Add custom rule at runtime

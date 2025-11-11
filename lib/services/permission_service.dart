@@ -1,0 +1,301 @@
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
+
+/// Manages all runtime permissions required for malware scanning
+class PermissionService {
+  /// Request all critical permissions needed for malware scanning
+  Future<bool> requestAllPermissions() async {
+    if (!Platform.isAndroid) {
+      return true; // Only needed on Android
+    }
+
+    // First, request standard permissions (excluding manageExternalStorage)
+    final Map<Permission, String> standardPermissions = {
+      Permission.storage: 'Storage access to scan files and APKs',
+      Permission.phone: 'Phone state for detecting suspicious calls',
+      Permission.sms: 'SMS access for detecting phishing messages',
+      Permission.contacts: 'Contacts access for threat correlation',
+      Permission.location: 'Location tracking for network-based threats',
+      Permission.camera: 'Camera for QR code scanning and phishing detection',
+      Permission.notification: 'Notifications for real-time threat alerts',
+    };
+
+    List<Permission> deniedPermissions = [];
+    
+    // Check current status for standard permissions
+    for (var permission in standardPermissions.keys) {
+      try {
+        final status = await permission.status;
+        if (!status.isGranted) {
+          deniedPermissions.add(permission);
+        }
+      } catch (e) {
+        print('⚠️ Error checking permission ${permission}: $e');
+      }
+    }
+
+    // Request denied standard permissions
+    if (deniedPermissions.isNotEmpty) {
+      try {
+        final Map<Permission, PermissionStatus> statuses = 
+            await deniedPermissions.request();
+
+        for (var entry in statuses.entries) {
+          if (!entry.value.isGranted) {
+            print('⚠️ Permission denied: ${entry.key}');
+          }
+        }
+      } catch (e) {
+        print('⚠️ Error requesting permissions: $e');
+      }
+    }
+
+    // Separately handle MANAGE_EXTERNAL_STORAGE for Android 11+
+    final androidInfo = await _getAndroidVersion();
+    if (androidInfo >= 30) {
+      try {
+        final manageStorageStatus = await Permission.manageExternalStorage.status;
+        if (!manageStorageStatus.isGranted) {
+          // This requires special settings access
+          print('ℹ️ MANAGE_EXTERNAL_STORAGE needs to be granted in settings');
+          // We'll show a dialog to the user instead of auto-opening settings
+          return false;
+        }
+      } catch (e) {
+        print('⚠️ Error with manageExternalStorage: $e');
+      }
+    }
+
+    // Check final status of critical permissions
+    final hasStorage = await hasPermission(Permission.storage);
+    final hasNotification = await hasPermission(Permission.notification);
+    
+    return hasStorage && hasNotification;
+  }
+
+  /// Request storage permissions (critical for scanning)
+  Future<bool> requestStoragePermission() async {
+    print('🔵 requestStoragePermission() called');
+    if (!Platform.isAndroid) return true;
+
+    // For Android 11+ (API 30+), we need MANAGE_EXTERNAL_STORAGE
+    final androidInfo = await _getAndroidVersion();
+    print('🔵 Android version: $androidInfo');
+    
+    if (androidInfo >= 30) {
+      print('🔵 Android 11+, checking MANAGE_EXTERNAL_STORAGE...');
+      // Check if already granted
+      final currentStatus = await Permission.manageExternalStorage.status;
+      print('🔵 Current status: $currentStatus');
+      
+      if (currentStatus.isGranted) {
+        print('✅ MANAGE_EXTERNAL_STORAGE already granted!');
+        return true;
+      }
+      
+      // Request All Files Access for Android 11+
+      print('🔵 Requesting MANAGE_EXTERNAL_STORAGE...');
+      final status = await Permission.manageExternalStorage.request();
+      print('🔵 Request result: $status');
+      
+      if (!status.isGranted) {
+        // This permission cannot be granted via dialog, must use Settings
+        print('⚠️ MANAGE_EXTERNAL_STORAGE denied - need to open Settings');
+        return false;
+      }
+      return true;
+    } else {
+      print('🔵 Android 10 or below, requesting standard storage...');
+      // For Android 10 and below
+      final status = await Permission.storage.request();
+      print('🔵 Storage permission result: $status');
+      return status.isGranted;
+    }
+  }
+
+  /// Request package query permission (to scan installed apps)
+  Future<bool> requestPackagePermission() async {
+    if (!Platform.isAndroid) return true;
+    
+    // This is a manifest permission, automatically granted
+    // But we verify app can query packages
+    return true;
+  }
+
+  /// Request phone state permission
+  Future<bool> requestPhonePermission() async {
+    final status = await Permission.phone.request();
+    return status.isGranted;
+  }
+
+  /// Request SMS permission
+  Future<bool> requestSmsPermission() async {
+    final status = await Permission.sms.request();
+    return status.isGranted;
+  }
+
+  /// Request location permission
+  Future<bool> requestLocationPermission() async {
+    final status = await Permission.location.request();
+    return status.isGranted;
+  }
+
+  /// Request contacts permission
+  Future<bool> requestContactsPermission() async {
+    final status = await Permission.contacts.request();
+    return status.isGranted;
+  }
+
+  /// Request camera permission
+  Future<bool> requestCameraPermission() async {
+    final status = await Permission.camera.request();
+    return status.isGranted;
+  }
+
+  /// Request notification permission (Android 13+)
+  Future<bool> requestNotificationPermission() async {
+    if (!Platform.isAndroid) return true;
+    
+    final androidInfo = await _getAndroidVersion();
+    if (androidInfo >= 33) {
+      final status = await Permission.notification.request();
+      return status.isGranted;
+    }
+    return true; // Not needed for older Android versions
+  }
+
+  /// Check if all critical permissions are granted
+  Future<bool> hasAllCriticalPermissions() async {
+    if (!Platform.isAndroid) return true;
+
+    final criticalPermissions = [
+      Permission.storage,
+      Permission.manageExternalStorage,
+    ];
+
+    for (var permission in criticalPermissions) {
+      final status = await permission.status;
+      if (!status.isGranted) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /// Check specific permission status
+  Future<bool> hasPermission(Permission permission) async {
+    final status = await permission.status;
+    return status.isGranted;
+  }
+
+  /// Get detailed permission status report
+  Future<Map<String, bool>> getPermissionReport() async {
+    if (!Platform.isAndroid) {
+      return {'all_granted': true};
+    }
+
+    final report = <String, bool>{};
+    
+    final permissions = {
+      'storage': Permission.storage,
+      'manage_storage': Permission.manageExternalStorage,
+      'phone': Permission.phone,
+      'sms': Permission.sms,
+      'contacts': Permission.contacts,
+      'location': Permission.location,
+      'camera': Permission.camera,
+      'notification': Permission.notification,
+    };
+
+    for (var entry in permissions.entries) {
+      final status = await entry.value.status;
+      report[entry.key] = status.isGranted;
+    }
+
+    return report;
+  }
+
+  /// Open app settings for manual permission grant
+  Future<void> openSettings() async {
+    await openAppSettings();
+  }
+
+  /// Get Android version
+  Future<int> _getAndroidVersion() async {
+    if (!Platform.isAndroid) return 0;
+    
+    try {
+      // Try to get Android SDK version
+      // This is a simplified version - you might want to use device_info_plus
+      return 30; // Default to Android 11 for safety
+    } catch (e) {
+      return 30;
+    }
+  }
+
+  /// Show permission rationale dialog
+  String getPermissionRationale(Permission permission) {
+    final rationales = {
+      Permission.storage: 
+        'Storage access is required to scan files, APKs, and detect malware on your device.',
+      Permission.manageExternalStorage: 
+        'Full storage access enables deep scanning of all files and folders for comprehensive malware detection.',
+      Permission.phone: 
+        'Phone permission helps detect suspicious call activities and SIM-based attacks.',
+      Permission.sms: 
+        'SMS access allows scanning for phishing messages and malicious links.',
+      Permission.contacts: 
+        'Contacts permission helps identify potential data leak attempts.',
+      Permission.location: 
+        'Location permission helps detect location-based tracking malware.',
+      Permission.camera: 
+        'Camera permission enables QR code scanning for security verification.',
+      Permission.notification: 
+        'Notification permission enables real-time threat alerts and scan updates.',
+    };
+
+    return rationales[permission] ?? 'This permission is needed for malware scanning.';
+  }
+
+  /// Check if permission is permanently denied
+  Future<bool> isPermissionPermanentlyDenied(Permission permission) async {
+    final status = await permission.status;
+    return status.isPermanentlyDenied;
+  }
+
+  /// Request essential permissions in order
+  Future<Map<String, dynamic>> requestEssentialPermissionsSequentially() async {
+    final results = <String, dynamic>{
+      'granted': <String>[],
+      'denied': <String>[],
+      'permanently_denied': <String>[],
+    };
+
+    // 1. Storage (most critical)
+    final storageStatus = await requestStoragePermission();
+    if (storageStatus) {
+      results['granted'].add('storage');
+    } else {
+      results['denied'].add('storage');
+    }
+
+    // 2. Notification
+    final notificationStatus = await requestNotificationPermission();
+    if (notificationStatus) {
+      results['granted'].add('notification');
+    }
+
+    // 3. Phone state
+    final phoneStatus = await Permission.phone.request();
+    if (phoneStatus.isGranted) {
+      results['granted'].add('phone');
+    } else if (phoneStatus.isPermanentlyDenied) {
+      results['permanently_denied'].add('phone');
+    } else {
+      results['denied'].add('phone');
+    }
+
+    return results;
+  }
+}

@@ -5,9 +5,11 @@ import 'core/theme/scanx_colors.dart';
 import 'services/scan_coordinator.dart';
 import 'services/app_telemetry_collector.dart';
 import 'services/auth_service.dart';
+import 'services/permission_service.dart';
 import 'core/models/threat_model.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/permission_request_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +33,7 @@ class AdRigApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider(create: (_) => PermissionService()),
         Provider(create: (_) => AppTelemetryCollector()),
         Provider(create: (_) {
           try {
@@ -74,27 +77,47 @@ class AdRigApp extends StatelessWidget {
   }
 }
 
-/// Auth gate - checks if user is logged in
+/// Auth gate - checks permissions and login status
 class AuthGate extends StatelessWidget {
   const AuthGate({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
+    final permissionService = Provider.of<PermissionService>(context, listen: false);
     
-    return FutureBuilder<bool>(
-      future: authService.isLoggedIn(),
+    return FutureBuilder<Map<String, dynamic>>(
+      future: _checkPermissionsAndAuth(permissionService, authService),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
+            backgroundColor: const Color(0xFF0A0E27),
             body: Center(
-              child: CircularProgressIndicator(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircularProgressIndicator(color: Color(0xFF6C63FF)),
+                  SizedBox(height: 24),
+                  Text(
+                    'Initializing AdRig Security...',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ],
+              ),
             ),
           );
         }
         
-        final isLoggedIn = snapshot.data ?? false;
+        final data = snapshot.data ?? {};
+        final hasPermissions = data['hasPermissions'] as bool? ?? false;
+        final isLoggedIn = data['isLoggedIn'] as bool? ?? false;
         
+        // Priority 1: Check permissions first
+        if (!hasPermissions) {
+          return const PermissionRequestScreen();
+        }
+        
+        // Priority 2: Check authentication
         if (isLoggedIn) {
           return const DashboardScreen();
         } else {
@@ -102,6 +125,20 @@ class AuthGate extends StatelessWidget {
         }
       },
     );
+  }
+  
+  Future<Map<String, dynamic>> _checkPermissionsAndAuth(
+    PermissionService permissionService,
+    AuthService authService,
+  ) async {
+    // Check critical permissions (storage is most important)
+    final hasPermissions = await permissionService.hasAllCriticalPermissions();
+    final isLoggedIn = await authService.isLoggedIn();
+    
+    return {
+      'hasPermissions': hasPermissions,
+      'isLoggedIn': isLoggedIn,
+    };
   }
 }
 

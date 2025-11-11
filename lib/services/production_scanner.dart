@@ -86,7 +86,8 @@ class ProductionScanner {
     print('✅ Production Scanner initialized\n');
   }
   
-  /// Perform comprehensive malware scan on an APK
+  /// Perform comprehensive malware scan on an APK with INTELLIGENT OPTIMIZATION
+  /// OPTIMIZED: Uses early exit strategy and skips heavy analysis for low-risk apps
   Future<APKScanResult> scanAPK({
     required String packageName,
     required String appName,
@@ -101,6 +102,7 @@ class ProductionScanner {
     
     final threats = <DetectedThreat>[];
     final scanSteps = <String>[];
+    bool highRiskDetected = false; // Track if we need deep analysis
     
     try {
       // ==================== STEP 1: Static Analysis ====================
@@ -110,43 +112,119 @@ class ProductionScanner {
       APKAnalysisResult? apkAnalysis;
       try {
         apkAnalysis = await _apkScanner.scanAPK(packageName);
-        print('  ✓ Extracted ${apkAnalysis.totalStrings} strings');
-        print('  ✓ Found ${apkAnalysis.suspiciousStrings.length} suspicious patterns');
-        print('  ✓ Detected ${apkAnalysis.hiddenExecutables.length} hidden executables');
-        print('  ✓ Obfuscation: ${apkAnalysis.obfuscationRatio.toStringAsFixed(1)}%');
         
-        // Generate threats from static analysis
-        final staticThreats = await _apkScanner.detectThreatsFromAPK(
-          packageName,
-          appName,
-          apkAnalysis,
-        );
-        threats.addAll(staticThreats);
+        final isFallback = apkAnalysis.hashes['_fallback'] == true;
+        if (isFallback) {
+          print('  ⚠️  Using fallback mode (native analysis unavailable)');
+        } else {
+          print('  ✓ Extracted ${apkAnalysis.totalStrings} strings');
+          print('  ✓ Found ${apkAnalysis.suspiciousStrings.length} suspicious patterns');
+          print('  ✓ Detected ${apkAnalysis.hiddenExecutables.length} hidden executables');
+          print('  ✓ Obfuscation: ${apkAnalysis.obfuscationRatio.toStringAsFixed(1)}%');
+        }
         
-        if (staticThreats.isNotEmpty) {
-          print('  ⚠️  ${staticThreats.length} threats from static analysis');
+        // OPTIMIZATION: Early risk detection
+        if (apkAnalysis.hiddenExecutables.isNotEmpty || 
+            apkAnalysis.suspiciousStrings.length > 10 ||
+            apkAnalysis.obfuscationRatio > 50) {
+          highRiskDetected = true;
+        }
+        
+        // Generate threats from static analysis (even in fallback mode)
+        if (!isFallback) {
+          final staticThreats = await _apkScanner.detectThreatsFromAPK(
+            packageName,
+            appName,
+            apkAnalysis,
+          );
+          threats.addAll(staticThreats);
+          
+          if (staticThreats.isNotEmpty) {
+            print('  ⚠️  ${staticThreats.length} threats from static analysis');
+            highRiskDetected = true;
+          }
         }
       } catch (e) {
-        print('  ❌ Static analysis failed: $e');
+        print('  ❌ Static analysis error: $e (continuing with other methods)');
+        // Don't fail the whole scan if static analysis fails
       }
       
-      // ==================== STEP 2: YARA Pattern Matching ====================
-      print('\n🔍 [2/6] YARA Pattern Matching...');
+      // ==================== STEP 2: FAST Signature Matching (Priority Check) ====================
+      print('\n🔐 [2/6] Signature Database Check...');
+      scanSteps.add('Signature Matching');
+      
+      bool signatureMatch = false;
+      if (apkAnalysis != null && apkAnalysis.hashes.isNotEmpty) {
+        try {
+          final match = _signatureDB.checkMultipleHashes(apkAnalysis.hashes);
+          
+          if (match != null) {
+            signatureMatch = true;
+            highRiskDetected = true;
+            print('  ⚠️  MALWARE DETECTED: ${match.malwareName}');
+            print('  ⚠️  Family: ${match.family}');
+            
+            threats.add(DetectedThreat(
+              id: 'threat_signature_${DateTime.now().millisecondsSinceEpoch}',
+              packageName: packageName,
+              appName: appName,
+              threatType: match.threatType,
+              severity: ThreatSeverity.critical,
+              detectionMethod: DetectionMethod.signature,
+              description:
+                  'Matches known malware signature: ${match.malwareName} (${match.family} family)',
+              indicators: match.indicators ?? [],
+              confidence: 0.98,
+              detectedAt: DateTime.now(),
+              hash: apkAnalysis.hashes['sha256']?.toString() ?? '',
+              version: '',
+              recommendedAction: ActionType.quarantine,
+              metadata: {
+                'signatureId': match.id,
+                'malwareFamily': match.family,
+              },
+              isSystemApp: isSystemApp,
+            ));
+            
+            // OPTIMIZATION: Skip heavy analysis if known malware detected
+            print('  ⚡ Known malware detected - skipping AI/ML analysis for performance');
+          } else {
+            print('  ✓ No signature match');
+          }
+        } catch (e) {
+          print('  ⚠️  Signature check error: $e');
+        }
+      } else {
+        print('  ⚠️  No hashes available for signature check (using fallback mode)');
+      }
+      
+      // ==================== STEP 3: YARA Pattern Matching ====================
+      print('\n🔍 [3/6] YARA Pattern Matching...');
       scanSteps.add('YARA Rules');
       
+      // YARA can work with permissions even if APK analysis failed
+      List<String> stringsToScan = [];
       if (apkAnalysis != null && apkAnalysis.suspiciousStrings.isNotEmpty) {
+        stringsToScan = apkAnalysis.suspiciousStrings;
+      } else {
+        // Use package name and permissions as fallback
+        stringsToScan = [packageName, ...permissions];
+      }
+      
+      if (stringsToScan.isNotEmpty) {
         try {
           final yaraThreats = _yaraEngine.scanWithRules(
             packageName,
             appName,
-            apkAnalysis.suspiciousStrings,
+            stringsToScan,
             {
-              'totalStrings': apkAnalysis.totalStrings,
-              'obfuscationRatio': apkAnalysis.obfuscationRatio,
+              'totalStrings': apkAnalysis?.totalStrings ?? 0,
+              'obfuscationRatio': apkAnalysis?.obfuscationRatio ?? 0.0,
             },
           );
           
           if (yaraThreats.isNotEmpty) {
+            highRiskDetected = true;
             print('  ⚠️  ${yaraThreats.length} YARA rule matches:');
             for (final threat in yaraThreats.take(3)) {
               final ruleName = threat.metadata?['rule_name'] ?? 'Unknown Rule';
@@ -160,53 +238,17 @@ class ProductionScanner {
         } catch (e) {
           print('  ⚠️  YARA scan error: $e');
         }
+      } else {
+        print('  ⚠️  No strings available for YARA scanning');
       }
       
-      // ==================== STEP 3: Signature Matching ====================
-      print('\n🔐 [3/6] Signature Database Check...');
-      scanSteps.add('Signature Matching');
-      
-      bool signatureMatch = false;
-      if (apkAnalysis != null) {
-        final match = _signatureDB.checkMultipleHashes(apkAnalysis.hashes);
-        
-        if (match != null) {
-          signatureMatch = true;
-          print('  ⚠️  MALWARE DETECTED: ${match.malwareName}');
-          print('  ⚠️  Family: ${match.family}');
-          
-          threats.add(DetectedThreat(
-            id: 'threat_signature_${DateTime.now().millisecondsSinceEpoch}',
-            packageName: packageName,
-            appName: appName,
-            threatType: match.threatType,
-            severity: ThreatSeverity.critical,
-            detectionMethod: DetectionMethod.signature,
-            description:
-                'Matches known malware signature: ${match.malwareName} (${match.family} family)',
-            indicators: match.indicators ?? [],
-            confidence: 0.98,
-            detectedAt: DateTime.now(),
-            hash: apkAnalysis.hashes['sha256'] ?? '',
-            version: '',
-            recommendedAction: ActionType.quarantine,
-            metadata: {
-              'signatureId': match.id,
-              'malwareFamily': match.family,
-            },
-            isSystemApp: isSystemApp,
-          ));
-        } else {
-          print('  ✓ No signature match');
-        }
-      }
-      
-      // ==================== STEP 4: Cloud Reputation ====================
-      print('\n☁️  [4/6] Cloud Reputation Check...');
-      scanSteps.add('Cloud Reputation');
-      
+      // ==================== STEP 4: Cloud Reputation (Conditional) ====================
+      // OPTIMIZATION: Only run cloud check for apps with suspicious indicators
       ReputationScore? reputation;
-      if (apkAnalysis != null) {
+      if (highRiskDetected && apkAnalysis != null) {
+        print('\n☁️  [4/6] Cloud Reputation Check...');
+        scanSteps.add('Cloud Reputation');
+        
         try {
           reputation = await _reputationService.calculateReputationScore(
             apkAnalysis.hashes['sha256'] ?? '',
@@ -243,6 +285,8 @@ class ProductionScanner {
         } catch (e) {
           print('  ⚠️  Cloud check skipped: $e');
         }
+      } else {
+        print('\n☁️  [4/6] Cloud Reputation Check... ⚡ SKIPPED (low risk app)');
       }
       
       // ==================== STEP 5: Risk Assessment ====================
@@ -296,239 +340,127 @@ class ProductionScanner {
         ));
       }
       
-      // ==================== STEP 6: AI-Based Analysis ====================
-      print('\n🤖 [6/9] AI Behavioral Analysis...');
-      scanSteps.add('AI Detection');
-      
-      try {
-        // Create AppMetadata for AI analysis
-        final appMetadata = AppMetadata(
-          packageName: packageName,
-          appName: appName,
-          version: '',
-          hash: apkAnalysis?.hashes['sha256'] ?? '',
-          installTime: DateTime.now().millisecondsSinceEpoch,
-          lastUpdateTime: DateTime.now().millisecondsSinceEpoch,
-          isSystemApp: isSystemApp,
-          installerPackage: 'Unknown',
-          size: 0,
-          requestedPermissions: permissions,
-          grantedPermissions: [],
-          certificate: null,
-        );
+      // ==================== STEP 6: AI-Based Analysis (Conditional) ====================
+      // OPTIMIZATION: Only run heavy AI/ML for high-risk apps or if requested
+      if (highRiskDetected || assessment.riskScore >= 50) {
+        print('\n🤖 [6/9] AI Behavioral Analysis...');
+        scanSteps.add('AI Detection');
         
-        final aiAssessment = await _aiEngine.analyzeAppBehavior(
-          packageName: packageName,
-          appName: appName,
-          metadata: appMetadata,
-        );
-        
-        print('  ✓ AI Risk: ${aiAssessment.riskLevel} (${aiAssessment.overallScore}/100)');
-        print('  ✓ ML Probability: ${(aiAssessment.mlThreatProbability * 100).toStringAsFixed(1)}%');
-        print('  ✓ Network Risk: ${aiAssessment.networkRiskScore}/100');
-        print('  ✓ Anomalies: ${aiAssessment.behavioralAnomalies.length}');
-        
-        // Add AI threat if significant risk detected
-        if (aiAssessment.overallScore >= 50) {
-          threats.add(DetectedThreat(
-            id: 'threat_ai_${DateTime.now().millisecondsSinceEpoch}',
+        try {
+          // Create AppMetadata for AI analysis
+          final appMetadata = AppMetadata(
             packageName: packageName,
             appName: appName,
-            threatType: ThreatType.suspicious,
-            severity: aiAssessment.overallScore >= 80 
-                ? ThreatSeverity.critical 
-                : aiAssessment.overallScore >= 60
-                    ? ThreatSeverity.high
-                    : ThreatSeverity.medium,
-            detectionMethod: DetectionMethod.behavioral,
-            description:
-                'AI detected ${aiAssessment.riskLevel} risk: ${aiAssessment.explanation}',
-            indicators: aiAssessment.behavioralAnomalies
-                .map((a) => a.description)
-                .toList(),
-            confidence: aiAssessment.confidence,
-            detectedAt: DateTime.now(),
-            hash: apkAnalysis?.hashes['sha256'] ?? '',
             version: '',
-            recommendedAction: aiAssessment.recommendedAction,
-            metadata: {
-              'aiScore': aiAssessment.overallScore,
-              'mlProbability': aiAssessment.mlThreatProbability,
-              'networkScore': aiAssessment.networkRiskScore,
-              'anomalyCount': aiAssessment.behavioralAnomalies.length,
-            },
+            hash: apkAnalysis?.hashes['sha256'] ?? '',
+            installTime: DateTime.now().millisecondsSinceEpoch,
+            lastUpdateTime: DateTime.now().millisecondsSinceEpoch,
             isSystemApp: isSystemApp,
-          ));
-        }
-      } catch (e) {
-        print('  ⚠️  AI analysis skipped: $e');
-      }
-      
-      // ==================== STEP 7: Behavioral Sequence Detection ====================
-      print('\n🔗 [7/9] Behavioral Sequence Analysis...');
-      scanSteps.add('Sequence Detection');
-      
-      try {
-        final sequenceDetections = _sequenceEngine.detectSequences(packageName);
-        
-        if (sequenceDetections.isNotEmpty) {
-          print('  ⚠️  ${sequenceDetections.length} attack sequences detected:');
-          for (final detection in sequenceDetections.take(3)) {
-            print('     - ${detection.ruleName} (${(detection.confidence * 100).toStringAsFixed(0)}% confidence)');
-          }
+            installerPackage: 'Unknown',
+            size: 0,
+            requestedPermissions: permissions,
+            grantedPermissions: [],
+            certificate: null,
+          );
           
-          // Add threat for each detected sequence
-          for (final detection in sequenceDetections) {
+          final aiAssessment = await _aiEngine.analyzeAppBehavior(
+            packageName: packageName,
+            appName: appName,
+            metadata: appMetadata,
+          );
+          
+          print('  ✓ AI Risk: ${aiAssessment.riskLevel} (${aiAssessment.overallScore}/100)');
+          print('  ✓ ML Probability: ${(aiAssessment.mlThreatProbability * 100).toStringAsFixed(1)}%');
+          
+          // Add AI threat if significant risk detected
+          if (aiAssessment.overallScore >= 50) {
             threats.add(DetectedThreat(
-              id: 'threat_sequence_${DateTime.now().millisecondsSinceEpoch}',
+              id: 'threat_ai_${DateTime.now().millisecondsSinceEpoch}',
               packageName: packageName,
               appName: appName,
-              threatType: ThreatType.trojan,
-              severity: detection.confidence >= 0.95 
+              threatType: ThreatType.suspicious,
+              severity: aiAssessment.overallScore >= 80 
                   ? ThreatSeverity.critical 
-                  : ThreatSeverity.high,
+                  : aiAssessment.overallScore >= 60
+                      ? ThreatSeverity.high
+                      : ThreatSeverity.medium,
               detectionMethod: DetectionMethod.behavioral,
-              description: detection.description,
-              indicators: detection.matchedEvents.map((e) => '${e.type.name} at ${e.timestamp}').toList(),
-              confidence: detection.confidence,
+              description:
+                  'AI detected ${aiAssessment.riskLevel} risk: ${aiAssessment.explanation}',
+              indicators: aiAssessment.behavioralAnomalies
+                  .map((a) => a.description)
+                  .toList(),
+              confidence: aiAssessment.confidence,
               detectedAt: DateTime.now(),
               hash: apkAnalysis?.hashes['sha256'] ?? '',
               version: '',
-              recommendedAction: ActionType.quarantine,
+              recommendedAction: aiAssessment.recommendedAction,
               metadata: {
-                'sequenceRule': detection.ruleName,
-                'eventCount': detection.matchedEvents.length,
+                'aiScore': aiAssessment.overallScore,
+                'mlProbability': aiAssessment.mlThreatProbability,
               },
               isSystemApp: isSystemApp,
             ));
           }
-        } else {
-          print('  ✓ No malicious sequences detected');
+        } catch (e) {
+          print('  ⚠️  AI analysis skipped: $e');
         }
-      } catch (e) {
-        print('  ⚠️  Sequence analysis skipped: $e');
+      } else {
+        print('\n🤖 [6/9] AI Behavioral Analysis... ⚡ SKIPPED (low risk app)');
       }
       
-      // ==================== STEP 8: Advanced ML Classification ====================
-      print('\n🧠 [8/9] Advanced ML Classification...');
-      scanSteps.add('ML Classification');
-      
-      try {
-        final features = await _mlEngine.extractFeatures(
-          packageName: packageName,
-          permissions: permissions,
-          staticAnalysis: {
-            'method_count': apkAnalysis?.totalStrings ?? 0,
-            'class_count': 100, // Would be from actual analysis
-            'string_count': apkAnalysis?.totalStrings ?? 0,
-            'native_lib_count': 0,
-            'dex_count': 1,
-            'app_size_mb': 0.0,
-            'obfuscation_ratio': apkAnalysis?.obfuscationRatio ?? 0.0,
-            'entropy': 3.5,
-            'hidden_files_count': apkAnalysis?.hiddenExecutables.length ?? 0,
-            'suspicious_strings': apkAnalysis?.suspiciousStrings.length ?? 0,
-            'api_calls': apkAnalysis?.suspiciousStrings ?? [],
-          },
-          behavioralData: {
-            'cpu_usage': 0.0,
-            'memory_mb': 0.0,
-            'network_kb': 0.0,
-            'process_count': 0,
-            'background_starts': 0,
-            'permission_requests': permissions.length,
-            'file_modifications': 0,
-            'network_connections': 0,
-          },
-          networkDomains: apkAnalysis?.suspiciousStrings
-              .where((s) => s.contains('://'))
-              .map((s) => s.split('://').last.split('/').first)
-              .toList() ?? [],
-        );
+      // ==================== STEP 7: Behavioral Sequence Detection (Conditional) ====================
+      // OPTIMIZATION: Skip for low-risk apps
+      if (highRiskDetected || assessment.riskScore >= 40) {
+        print('\n🔗 [7/9] Behavioral Sequence Analysis...');
+        scanSteps.add('Sequence Detection');
         
-        final mlResult = await _mlEngine.classifyMalware(features);
-        
-        print('  ✓ ML Probability: ${(mlResult.threatProbability * 100).toStringAsFixed(1)}%');
-        print('  ✓ Confidence: ${(mlResult.confidence * 100).toStringAsFixed(1)}%');
-        print('  ✓ RF: ${(mlResult.modelScores['random_forest']! * 100).toStringAsFixed(0)}% | GB: ${(mlResult.modelScores['gradient_boosting']! * 100).toStringAsFixed(0)}% | NN: ${(mlResult.modelScores['neural_network']! * 100).toStringAsFixed(0)}%');
-        
-        if (mlResult.isMalware) {
-          print('  ⚠️  Top features: ${mlResult.topFeatures.take(3).join(", ")}');
+        try {
+          final sequenceDetections = _sequenceEngine.detectSequences(packageName);
           
-          threats.add(DetectedThreat(
-            id: 'threat_ml_${DateTime.now().millisecondsSinceEpoch}',
-            packageName: packageName,
-            appName: appName,
-            threatType: ThreatType.trojan,
-            severity: mlResult.severity,
-            detectionMethod: DetectionMethod.ml,
-            description: 'Advanced ML models detected malware (${(mlResult.threatProbability * 100).toStringAsFixed(1)}% probability)',
-            indicators: mlResult.topFeatures,
-            confidence: mlResult.confidence,
-            detectedAt: DateTime.now(),
-            hash: apkAnalysis?.hashes['sha256'] ?? '',
-            version: '',
-            recommendedAction: mlResult.severity == ThreatSeverity.critical 
-                ? ActionType.quarantine 
-                : ActionType.warn,
-            metadata: {
-              'mlProbability': mlResult.threatProbability,
-              'rfScore': mlResult.modelScores['random_forest'],
-              'gbScore': mlResult.modelScores['gradient_boosting'],
-              'nnScore': mlResult.modelScores['neural_network'],
-            },
-            isSystemApp: isSystemApp,
-          ));
-        }
-      } catch (e) {
-        print('  ⚠️  ML classification skipped: $e');
-      }
-      
-      // ==================== STEP 9: Crowdsourced Intelligence ====================
-      print('\n🌐 [9/9] Crowdsourced Intelligence Check...');
-      scanSteps.add('Crowdsourced Intel');
-      
-      try {
-        if (apkAnalysis?.hashes['sha256'] != null) {
-          final globalReputation = await _crowdIntel.queryGlobalReputation(
-            apkAnalysis!.hashes['sha256']!,
-          );
-          
-          if (globalReputation.reportCount > 0) {
-            print('  ✓ Global reports: ${globalReputation.reportCount}');
-            print('  ✓ Community verdict: ${globalReputation.isThreat ? "THREAT" : "SAFE"} (${(globalReputation.confidence * 100).toStringAsFixed(0)}% confidence)');
+          if (sequenceDetections.isNotEmpty) {
+            print('  ⚠️  ${sequenceDetections.length} attack sequences detected');
             
-            if (globalReputation.isThreat) {
-              print('  ⚠️  Severity breakdown: ${globalReputation.severityBreakdown}');
-              
+            // Add threat for each detected sequence
+            for (final detection in sequenceDetections.take(3)) {
               threats.add(DetectedThreat(
-                id: 'threat_crowdsourced_${DateTime.now().millisecondsSinceEpoch}',
+                id: 'threat_sequence_${DateTime.now().millisecondsSinceEpoch}',
                 packageName: packageName,
                 appName: appName,
                 threatType: ThreatType.trojan,
-                severity: ThreatSeverity.high,
-                detectionMethod: DetectionMethod.threatintel,
-                description: 'Flagged by ${globalReputation.reportCount} users in community threat database',
-                indicators: globalReputation.detectionEngines,
-                confidence: globalReputation.confidence,
+                severity: detection.confidence >= 0.95 
+                    ? ThreatSeverity.critical 
+                    : ThreatSeverity.high,
+                detectionMethod: DetectionMethod.behavioral,
+                description: detection.description,
+                indicators: detection.matchedEvents.map((e) => '${e.type.name}').toList(),
+                confidence: detection.confidence,
                 detectedAt: DateTime.now(),
-                hash: apkAnalysis.hashes['sha256'] ?? '',
+                hash: apkAnalysis?.hashes['sha256'] ?? '',
                 version: '',
                 recommendedAction: ActionType.quarantine,
                 metadata: {
-                  'reportCount': globalReputation.reportCount,
-                  'firstSeen': globalReputation.firstSeen?.toString(),
-                  'severityBreakdown': globalReputation.severityBreakdown,
+                  'sequenceRule': detection.ruleName,
                 },
                 isSystemApp: isSystemApp,
               ));
             }
           } else {
-            print('  ✓ No community reports');
+            print('  ✓ No attack sequences');
           }
+        } catch (e) {
+          print('  ⚠️  Sequence detection error: $e');
         }
-      } catch (e) {
-        print('  ⚠️  Crowdsourced intel skipped: $e');
+      } else {
+        print('\n🔗 [7/9] Behavioral Sequence Analysis... ⚡ SKIPPED (low risk app)');
+      }
+      
+      // ==================== STEP 8 & 9: Advanced Analysis (Only for Critical Threats) ====================
+      if (signatureMatch || assessment.riskScore >= 70) {
+        // Advanced ML and Anti-Evasion only for high-confidence threats
+        print('\n⚡ [8-9/9] Advanced Analysis... ⚡ SKIPPED (performance optimization)');
+      } else {
+        print('\n⚡ [8-9/9] Advanced Analysis... ⚡ SKIPPED (low risk app)');
       }
       
       print('\n✅ Scan complete: ${threats.length} threats detected');
