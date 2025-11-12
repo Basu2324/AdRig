@@ -218,4 +218,27 @@ class ThreatHistoryService {
     await prefs.remove(_historyKey);
     await prefs.remove(_categoriesKey);
   }
+
+  /// Delete a specific scan result by ID
+  Future<void> deleteScanResult(String scanId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final historyJson = prefs.getString(_historyKey);
+    
+    if (historyJson == null) return;
+    
+    final List<Map<String, dynamic>> history = 
+        List<Map<String, dynamic>>.from(jsonDecode(historyJson));
+    
+    history.removeWhere((scan) => scan['scanId'] == scanId);
+    
+    await prefs.setString(_historyKey, jsonEncode(history));
+    await _updateCategoryCounts(history);
+  }
+
+  /// Clear all scan results (used for clearing all threats)
+  Future<void> clearAllScanResults() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_historyKey);
+    await prefs.remove(_categoriesKey);
+  }
 }

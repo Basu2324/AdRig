@@ -9,7 +9,6 @@ import 'services/permission_service.dart';
 import 'core/models/threat_model.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/permission_request_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,10 +83,9 @@ class AuthGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
-    final permissionService = Provider.of<PermissionService>(context, listen: false);
     
-    return FutureBuilder<Map<String, dynamic>>(
-      future: _checkPermissionsAndAuth(permissionService, authService),
+    return FutureBuilder<bool>(
+      future: authService.isLoggedIn(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -108,16 +106,9 @@ class AuthGate extends StatelessWidget {
           );
         }
         
-        final data = snapshot.data ?? {};
-        final hasPermissions = data['hasPermissions'] as bool? ?? false;
-        final isLoggedIn = data['isLoggedIn'] as bool? ?? false;
+        final isLoggedIn = snapshot.data ?? false;
         
-        // Priority 1: Check permissions first
-        if (!hasPermissions) {
-          return const PermissionRequestScreen();
-        }
-        
-        // Priority 2: Check authentication
+        // Show Login or Dashboard - permissions will be requested when needed
         if (isLoggedIn) {
           return const DashboardScreen();
         } else {
@@ -125,20 +116,6 @@ class AuthGate extends StatelessWidget {
         }
       },
     );
-  }
-  
-  Future<Map<String, dynamic>> _checkPermissionsAndAuth(
-    PermissionService permissionService,
-    AuthService authService,
-  ) async {
-    // Check critical permissions (storage is most important)
-    final hasPermissions = await permissionService.hasAllCriticalPermissions();
-    final isLoggedIn = await authService.isLoggedIn();
-    
-    return {
-      'hasPermissions': hasPermissions,
-      'isLoggedIn': isLoggedIn,
-    };
   }
 }
 

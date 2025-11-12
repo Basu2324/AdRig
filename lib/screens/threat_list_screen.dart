@@ -221,6 +221,14 @@ class _ThreatListScreenState extends State<ThreatListScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          if (_threats.isNotEmpty)
+            IconButton(
+              icon: Icon(Icons.delete_sweep, color: Colors.red),
+              tooltip: 'Clear All Threats',
+              onPressed: _showClearAllConfirmation,
+            ),
+        ],
       ),
       body: _isLoading
           ? const Center(
@@ -231,6 +239,14 @@ class _ThreatListScreenState extends State<ThreatListScreen> {
           : _threats.isEmpty
               ? _buildEmptyState()
               : _buildThreatsList(),
+      floatingActionButton: _threats.isNotEmpty
+          ? FloatingActionButton.extended(
+              backgroundColor: Color(0xFFFF4757),
+              onPressed: _showClearAllConfirmation,
+              icon: Icon(Icons.delete_forever),
+              label: Text('Clear All (${_threats.length})'),
+            )
+          : null,
     );
   }
 
@@ -557,6 +573,96 @@ class _ThreatListScreenState extends State<ThreatListScreen> {
       return '${(diff.inDays / 7).floor()}w ago';
     } else {
       return '${date.day}/${date.month}/${date.year}';
+    }
+  }
+
+  void _showClearAllConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Color(0xFF151933),
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.orange),
+            SizedBox(width: 12),
+            Text('Clear All Threats?', style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        content: Text(
+          'This will permanently delete all ${_threats.length} threat records in this category.\n\nThis action cannot be undone.',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('CANCEL', style: TextStyle(color: Colors.white70)),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context); // Close dialog
+              await _clearAllThreats();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFFFF4757),
+            ),
+            child: Text('DELETE ALL'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _clearAllThreats() async {
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: Container(
+          padding: EdgeInsets.all(32),
+          decoration: BoxDecoration(
+            color: Color(0xFF151933),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(color: Color(0xFF6C63FF)),
+              SizedBox(height: 16),
+              Text(
+                'Clearing ${_threats.length} threats...',
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    try {
+      // Delete all scan results (which contain threats)
+      await _historyService.clearAllScanResults();
+      
+      Navigator.pop(context); // Close loading
+      Navigator.pop(context); // Go back to dashboard
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('✅ All threats cleared successfully'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      Navigator.pop(context); // Close loading
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('❌ Failed to clear threats: $e'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
   }
 }

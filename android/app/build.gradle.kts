@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.autoguard.malware_scanner"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

@@ -17,12 +17,17 @@ class _PrivacyConsentDialogState extends State<PrivacyConsentDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
       child: Container(
         constraints: BoxConstraints(maxWidth: 500, maxHeight: 600),
         padding: EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +37,7 @@ class _PrivacyConsentDialogState extends State<PrivacyConsentDialog> {
               children: [
                 Icon(
                   Icons.privacy_tip,
-                  color: Colors.blue,
+                  color: Colors.blue.shade700,
                   size: 32,
                 ),
                 SizedBox(width: 12),
@@ -42,6 +47,7 @@ class _PrivacyConsentDialogState extends State<PrivacyConsentDialog> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
                 ),
@@ -60,6 +66,7 @@ class _PrivacyConsentDialogState extends State<PrivacyConsentDialog> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
                     ),
                     SizedBox(height: 12),
@@ -231,7 +238,7 @@ class _PrivacyConsentDialogState extends State<PrivacyConsentDialog> {
             color: Colors.blue.shade50,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: Colors.blue, size: 20),
+          child: Icon(icon, color: Colors.blue.shade700, size: 20),
         ),
         SizedBox(width: 12),
         Expanded(
@@ -243,6 +250,7 @@ class _PrivacyConsentDialogState extends State<PrivacyConsentDialog> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
               ),
               SizedBox(height: 4),
@@ -250,7 +258,7 @@ class _PrivacyConsentDialogState extends State<PrivacyConsentDialog> {
                 description,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey.shade600,
+                  color: Colors.grey.shade700,
                 ),
               ),
             ],

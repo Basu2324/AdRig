@@ -1,4 +1,5 @@
 import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
 
 /// Manages all runtime permissions required for malware scanning
@@ -9,68 +10,116 @@ class PermissionService {
       return true; // Only needed on Android
     }
 
-    // First, request standard permissions (excluding manageExternalStorage)
-    final Map<Permission, String> standardPermissions = {
-      Permission.storage: 'Storage access to scan files and APKs',
-      Permission.phone: 'Phone state for detecting suspicious calls',
-      Permission.sms: 'SMS access for detecting phishing messages',
-      Permission.contacts: 'Contacts access for threat correlation',
-      Permission.location: 'Location tracking for network-based threats',
-      Permission.camera: 'Camera for QR code scanning and phishing detection',
-      Permission.notification: 'Notifications for real-time threat alerts',
-    };
+    print('🔵 Starting COMPREHENSIVE permission request...');
 
-    List<Permission> deniedPermissions = [];
-    
-    // Check current status for standard permissions
-    for (var permission in standardPermissions.keys) {
-      try {
-        final status = await permission.status;
-        if (!status.isGranted) {
-          deniedPermissions.add(permission);
-        }
-      } catch (e) {
-        print('⚠️ Error checking permission ${permission}: $e');
-      }
-    }
-
-    // Request denied standard permissions
-    if (deniedPermissions.isNotEmpty) {
-      try {
-        final Map<Permission, PermissionStatus> statuses = 
-            await deniedPermissions.request();
-
-        for (var entry in statuses.entries) {
-          if (!entry.value.isGranted) {
-            print('⚠️ Permission denied: ${entry.key}');
-          }
-        }
-      } catch (e) {
-        print('⚠️ Error requesting permissions: $e');
-      }
-    }
-
-    // Separately handle MANAGE_EXTERNAL_STORAGE for Android 11+
     final androidInfo = await _getAndroidVersion();
-    if (androidInfo >= 30) {
+    print('🔵 Android SDK version: $androidInfo');
+
+    // Track permission results
+    Map<String, bool> permissionResults = {};
+
+    // ==================== STORAGE PERMISSIONS ====================
+    bool storageGranted = false;
+
+    if (androidInfo >= 33) {
+      // Android 13+: Use MANAGE_EXTERNAL_STORAGE for full access
+      print('🔵 Android 13+: Requesting MANAGE_EXTERNAL_STORAGE...');
+      
+      final manageStorageStatus = await Permission.manageExternalStorage.request();
+      print('🔵 MANAGE_EXTERNAL_STORAGE result: $manageStorageStatus');
+      storageGranted = manageStorageStatus.isGranted;
+      permissionResults['MANAGE_EXTERNAL_STORAGE'] = storageGranted;
+      
+      // Also request media permissions for Android 13+
       try {
-        final manageStorageStatus = await Permission.manageExternalStorage.status;
-        if (!manageStorageStatus.isGranted) {
-          // This requires special settings access
-          print('ℹ️ MANAGE_EXTERNAL_STORAGE needs to be granted in settings');
-          // We'll show a dialog to the user instead of auto-opening settings
-          return false;
-        }
+        final photos = await Permission.photos.request();
+        final videos = await Permission.videos.request();
+        final audio = await Permission.audio.request();
+        permissionResults['photos'] = photos.isGranted;
+        permissionResults['videos'] = videos.isGranted;
+        permissionResults['audio'] = audio.isGranted;
+        print('🔵 Media permissions: photos=${photos.isGranted}, videos=${videos.isGranted}, audio=${audio.isGranted}');
       } catch (e) {
-        print('⚠️ Error with manageExternalStorage: $e');
+        print('⚠️ Media permissions error: $e');
+      }
+      
+    } else if (androidInfo >= 30) {
+      // Android 11-12: Use MANAGE_EXTERNAL_STORAGE
+      print('🔵 Android 11-12: Requesting MANAGE_EXTERNAL_STORAGE...');
+      
+      final manageStorageStatus = await Permission.manageExternalStorage.request();
+      print('🔵 MANAGE_EXTERNAL_STORAGE result: $manageStorageStatus');
+      storageGranted = manageStorageStatus.isGranted;
+      permissionResults['MANAGE_EXTERNAL_STORAGE'] = storageGranted;
+      
+    } else {
+      // Android 10 and below: Use legacy storage permission
+      print('🔵 Android 10-: Requesting legacy storage...');
+      
+      final storageStatus = await Permission.storage.request();
+      print('🔵 Storage result: $storageStatus');
+      storageGranted = storageStatus.isGranted;
+      permissionResults['storage'] = storageGranted;
+    }
+
+    // ==================== NOTIFICATION PERMISSIONS (Android 13+) ====================
+    if (androidInfo >= 33) {
+      try {
+        final notification = await Permission.notification.request();
+        permissionResults['notification'] = notification.isGranted;
+        print('🔵 Notification permission: ${notification.isGranted}');
+      } catch (e) {
+        print('⚠️ Notification permission error: $e');
       }
     }
 
-    // Check final status of critical permissions
-    final hasStorage = await hasPermission(Permission.storage);
-    final hasNotification = await hasPermission(Permission.notification);
+    // ==================== OPTIONAL BUT RECOMMENDED PERMISSIONS ====================
+    // Request these to enable advanced threat detection features
     
-    return hasStorage && hasNotification;
+    // Phone state (for detecting suspicious call activity)
+    try {
+      final phone = await Permission.phone.request();
+      permissionResults['phone'] = phone.isGranted;
+      print('🔵 Phone permission: ${phone.isGranted}');
+    } catch (e) {
+      print('⚠️ Phone permission not available: $e');
+    }
+
+    // SMS (for phishing message detection)
+    try {
+      final sms = await Permission.sms.request();
+      permissionResults['sms'] = sms.isGranted;
+      print('🔵 SMS permission: ${sms.isGranted}');
+    } catch (e) {
+      print('⚠️ SMS permission not available: $e');
+    }
+
+    // Contacts (for data leak detection)
+    try {
+      final contacts = await Permission.contacts.request();
+      permissionResults['contacts'] = contacts.isGranted;
+      print('🔵 Contacts permission: ${contacts.isGranted}');
+    } catch (e) {
+      print('⚠️ Contacts permission not available: $e');
+    }
+
+    // Location (for network threat correlation)
+    try {
+      final location = await Permission.location.request();
+      permissionResults['location'] = location.isGranted;
+      print('🔵 Location permission: ${location.isGranted}');
+    } catch (e) {
+      print('⚠️ Location permission not available: $e');
+    }
+
+    print('🔵 ==================== PERMISSION SUMMARY ====================');
+    permissionResults.forEach((key, value) {
+      print('🔵 $key: ${value ? "✅ GRANTED" : "❌ DENIED"}');
+    });
+    print('🔵 ==========================================================');
+
+    print('🔵 Final storage permission status: $storageGranted');
+    return storageGranted; // Storage is CRITICAL - must be granted
   }
 
   /// Request storage permissions (critical for scanning)
@@ -168,19 +217,35 @@ class PermissionService {
   Future<bool> hasAllCriticalPermissions() async {
     if (!Platform.isAndroid) return true;
 
-    final criticalPermissions = [
-      Permission.storage,
-      Permission.manageExternalStorage,
-    ];
-
-    for (var permission in criticalPermissions) {
-      final status = await permission.status;
-      if (!status.isGranted) {
+    print('🔵 Checking critical permissions...');
+    
+    final androidInfo = await _getAndroidVersion();
+    print('🔵 Android SDK: $androidInfo');
+    
+    if (androidInfo >= 30) {
+      // Android 11+ needs MANAGE_EXTERNAL_STORAGE
+      final manageStorageStatus = await Permission.manageExternalStorage.status;
+      print('🔵 MANAGE_EXTERNAL_STORAGE: $manageStorageStatus');
+      
+      if (manageStorageStatus.isGranted) {
+        return true;
+      }
+      
+      // Fallback: check if regular storage is granted (shouldn't happen but just in case)
+      try {
+        final storageStatus = await Permission.storage.status;
+        print('🔵 Legacy STORAGE (fallback): $storageStatus');
+        return storageStatus.isGranted;
+      } catch (e) {
+        print('⚠️ Legacy storage check failed: $e');
         return false;
       }
+    } else {
+      // Android 10 and below need regular storage permission
+      final storageStatus = await Permission.storage.status;
+      print('🔵 STORAGE: $storageStatus');
+      return storageStatus.isGranted;
     }
-
-    return true;
   }
 
   /// Check specific permission status
@@ -226,11 +291,14 @@ class PermissionService {
     if (!Platform.isAndroid) return 0;
     
     try {
-      // Try to get Android SDK version
-      // This is a simplified version - you might want to use device_info_plus
-      return 30; // Default to Android 11 for safety
+      final deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
+      final sdkInt = androidInfo.version.sdkInt;
+      print('🔵 Android SDK version: $sdkInt');
+      return sdkInt;
     } catch (e) {
-      return 30;
+      print('⚠️ Error getting Android version: $e');
+      return 30; // Default to Android 11 for safety
     }
   }
 

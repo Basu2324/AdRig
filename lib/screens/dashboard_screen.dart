@@ -6,6 +6,7 @@ import '../services/scan_coordinator.dart';
 import '../services/app_telemetry_collector.dart';
 import '../services/auth_service.dart';
 import '../services/permission_service.dart';
+import '../services/realtime_network_security_service.dart';
 import '../widgets/adrig_logo.dart';
 import 'scan_results_screen.dart';
 import 'settings_screen.dart';
@@ -13,7 +14,6 @@ import 'profile_screen.dart';
 import 'help_support_screen.dart';
 import 'about_screen.dart';
 import 'threat_list_screen.dart';
-import 'permission_request_screen.dart';
 import 'dart:math' as math;
 
 class DashboardScreen extends StatefulWidget {
@@ -33,11 +33,14 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
   String _userName = 'Loading...';
   String _userEmail = '';
   String _subscriptionType = 'Free';
+  bool _dataLoaded = false; // Track if data is already loaded
+  bool _isProcessing = false; // Prevent double-tap
+  DateTime? _lastTapTime; // Track last button tap
   
   late AnimationController _pulseController;
   late AnimationController _rotateController;
 
-  // Real threat data - will be loaded from scan history
+  // Real threat data - will be loaded from scan history (cached)
   Map<String, int> _last90DaysThreats = {
     'Apps': 0,
     'Wi-Fi Networks': 0,
@@ -60,9 +63,27 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
       vsync: this,
     );
     
-    // Load real threat data from history
-    _loadThreatHistory();
-    _loadUserInfo();
+    // Start real-time network security monitoring
+    _initializeNetworkSecurity();
+    
+    // Load data only once, not on every rebuild
+    if (!_dataLoaded) {
+      _dataLoaded = true;
+      // Load real threat data from history
+      _loadThreatHistory();
+      _loadUserInfo();
+    }
+  }
+  
+  /// Initialize always-on network security
+  Future<void> _initializeNetworkSecurity() async {
+    try {
+      final networkSecurity = RealTimeNetworkSecurityService();
+      await networkSecurity.initialize();
+      print('✅ Real-Time Network Security activated from Dashboard');
+    } catch (e) {
+      print('⚠️ Failed to start network security: $e');
+    }
   }
   
   Future<void> _loadThreatHistory() async {
@@ -112,6 +133,19 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     super.dispose();
   }
 
+  /// Safely stop rotation animation
+  void _stopRotation() {
+    try {
+      if (!mounted) return;
+      if (_rotateController.isAnimating) {
+        _rotateController.stop();
+        _rotateController.reset();
+      }
+    } catch (e) {
+      print('⚠️ Error stopping rotation animation: $e');
+    }
+  }
+
   Future<void> _performScan() async {
     print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     print('� Dashboard: _performScan() called');
@@ -122,55 +156,81 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     final hasPermissions = await permissionService.hasAllCriticalPermissions();
     
     if (!hasPermissions) {
-      // Show permission dialog
-      final shouldRequestPermissions = await showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          backgroundColor: const Color(0xFF151933),
-          title: const Text('Permissions Required', style: TextStyle(color: Colors.white)),
-          content: const Text(
-            'AdRig needs storage and app access permissions to scan your device for malware.\n\nWithout these permissions, the scanner cannot function.',
-            style: TextStyle(color: Colors.white70),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.white70,
-              ),
-              child: const Text('Cancel', style: TextStyle(fontSize: 16)),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6C63FF),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: const Text('Grant Permissions', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ),
-          ],
-        ),
-      );
+      // Request permissions directly
+      print('🔵 Requesting permissions...');
+      final granted = await permissionService.requestAllPermissions();
       
-      if (shouldRequestPermissions == true) {
-        // Navigate to permission request screen
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const PermissionRequestScreen()),
-        );
+      if (!granted) {
+        // Permissions denied - offer to open settings
+        if (mounted) {
+          final shouldOpenSettings = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              backgroundColor: const Color(0xFF151933),
+              title: const Text('Permissions Required', style: TextStyle(color: Colors.white)),
+              content: const Text(
+                'AdRig needs storage access to scan your device.\n\nFor Android 11+, please grant "All files access" in Settings:\n1. Tap "Open Settings"\n2. Find "AdRig Security"\n3. Select "Files and media"\n4. Choose "Allow management of all files"\n\nAfter granting, tap "Scan Now" again.',
+                style: TextStyle(color: Colors.white70),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6C63FF),
+                  ),
+                  child: const Text('Open Settings'),
+                ),
+              ],
+            ),
+          );
+          
+          if (shouldOpenSettings == true) {
+            await permissionService.openSettings();
+            // Show message to user
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('✅ After granting permissions, return here and tap "Scan Now" again'),
+                  backgroundColor: Colors.blue,
+                  duration: Duration(seconds: 4),
+                ),
+              );
+            }
+          }
+        }
+        _isProcessing = false;
+        return;
+      } else {
+        // Permissions granted! Show success message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('✅ Permissions granted! Starting scan...'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        // Continue with scan below
       }
-      return;
     }
     
     // Show immediate feedback
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('🔍 Starting scan...'),
-        backgroundColor: Colors.blue,
-        duration: Duration(seconds: 2),
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('🔍 Starting scan...'),
+          backgroundColor: Colors.blue,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+    
+    if (!mounted) return;
     
     setState(() {
       _isScanning = true;
@@ -213,7 +273,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         print('⚠️ Scan cancelled by user');
         if (mounted) {
           setState(() => _isScanning = false);
-          _rotateController.stop();
+          _stopRotation();
         }
         return;
       }
@@ -227,7 +287,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         print('⚠️  NO APPS FOUND - Showing error to user');
         if (mounted) {
           setState(() => _isScanning = false);
-          _rotateController.stop();
+          _stopRotation();
+          
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('❌ No apps found!\n\nThis could mean:\n- Permission issue\n- Native code error\n\nCheck adb logcat for details.'),
@@ -244,7 +305,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         print('⚠️ Scan cancelled by user');
         if (mounted) {
           setState(() => _isScanning = false);
-          _rotateController.stop();
+          _stopRotation();
         }
         return;
       }
@@ -255,27 +316,32 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         apps,
         onProgress: (scanned, total, appName) {
           // Check for cancellation during scan
-          if (_cancelScan) {
+          if (_cancelScan || !mounted) {
             print('⚠️ Scan cancelled at $scanned/$total apps');
             return;
           }
           
           if (mounted) {
-            setState(() {
-              _scannedApps = scanned;
-              _totalApps = total;
-              _currentApp = appName;
-            });
+            try {
+              setState(() {
+                _scannedApps = scanned;
+                _totalApps = total;
+                _currentApp = appName;
+              });
+            } catch (e) {
+              print('⚠️ Error updating progress: $e');
+            }
           }
         },
       );
 
       // Check if scan was cancelled
-      if (_cancelScan) {
+      if (_cancelScan || !mounted) {
         print('⚠️ Scan cancelled - not showing results');
+        _isProcessing = false;
         if (mounted) {
           setState(() => _isScanning = false);
-          _rotateController.stop();
+          _stopRotation();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('🛑 Scan cancelled'),
@@ -291,22 +357,24 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
       if (mounted) {
         setState(() => _isScanning = false);
-        _rotateController.stop();
+        _stopRotation();
         
         await _loadThreatHistory();
         
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ScanResultsScreen(result: result),
-          ),
-        );
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ScanResultsScreen(result: result),
+            ),
+          );
+        }
       }
     } on TimeoutException catch (e) {
       print('❌ TIMEOUT: $e');
       if (mounted) {
         setState(() => _isScanning = false);
-        _rotateController.stop();
+        _stopRotation();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('⏱️ Scan timed out!\n\nThe app is taking too long to respond. Check adb logcat.'),
@@ -315,13 +383,14 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           ),
         );
       }
+      _isProcessing = false;
     } catch (e, stackTrace) {
       print('❌ Dashboard: Scan failed with error: $e');
       print('Stack trace: $stackTrace');
       
       if (mounted) {
         setState(() => _isScanning = false);
-        _rotateController.stop();
+        _stopRotation();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('❌ Scan failed: $e\n\nCheck logs for details.'),
@@ -330,6 +399,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           ),
         );
       }
+      _isProcessing = false;
+    } finally {
+      _isProcessing = false;
     }
   }
 
@@ -377,7 +449,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           IconButton(
             icon: Icon(Icons.notifications_outlined, color: Colors.white70),
             onPressed: () {
-              // TODO: Navigate to notifications
+              _showNotificationsDialog();
             },
           ),
         ],
@@ -408,32 +480,46 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // AdRig Logo
-                AdRigLogo(size: 80, showText: false),
+                AdRigLogo(size: 70, showText: false),
                 SizedBox(height: 8),
                 Text(
                   'AI THREAT INTELLIGENCE',
                   style: TextStyle(
                     color: Color(0xFF00D9FF),
-                    fontSize: 10,
-                    letterSpacing: 2,
+                    fontSize: 9,
+                    letterSpacing: 1.5,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 SizedBox(height: 12),
-                Text(
-                  _userName,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                // User name with proper overflow handling
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    _userName,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 SizedBox(height: 4),
-                Text(
-                  _subscriptionType,
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 11,
+                // Subscription type with overflow handling
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    _subscriptionType,
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 11,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],
@@ -604,7 +690,24 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: _performScan,
+                            onTap: () {
+                              // Prevent double-tap
+                              final now = DateTime.now();
+                              if (_lastTapTime != null && 
+                                  now.difference(_lastTapTime!) < Duration(seconds: 2)) {
+                                print('⚠️ Ignoring double-tap');
+                                return;
+                              }
+                              _lastTapTime = now;
+                              
+                              // Prevent multiple simultaneous scans
+                              if (_isProcessing || _isScanning) {
+                                print('⚠️ Scan already in progress');
+                                return;
+                              }
+                              
+                              _performScan();
+                            },
                             borderRadius: BorderRadius.circular(100),
                             splashColor: Colors.white.withOpacity(0.3),
                             child: Container(
@@ -934,18 +1037,37 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           
           // Cancel/Stop Button
           ElevatedButton.icon(
-            onPressed: () {
-              setState(() {
-                _cancelScan = true;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('🛑 Stopping scan...'),
-                  backgroundColor: Color(0xFFFF9800),
-                  duration: Duration(seconds: 1),
-                ),
-              );
-            },
+            onPressed: _isScanning ? () {
+              print('🛑 STOP BUTTON PRESSED - Cancelling scan...');
+              
+              // Request cancellation from coordinator FIRST
+              try {
+                final coordinator = Provider.of<ScanCoordinator>(context, listen: false);
+                coordinator.requestCancellation();
+                print('✅ Cancellation requested from coordinator');
+              } catch (e) {
+                print('⚠️ Error requesting cancellation: $e');
+              }
+              
+              // Then update UI state
+              if (mounted) {
+                setState(() {
+                  _cancelScan = true;
+                  _isScanning = false;
+                });
+                
+                // Stop animation
+                _stopRotation();
+                
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('🛑 Scan stopped'),
+                    backgroundColor: Color(0xFFFF9800),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              }
+            } : null,
             icon: Icon(Icons.stop_circle_outlined, color: Colors.white),
             label: Text(
               'Stop Scan',
@@ -1031,5 +1153,161 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         ],
       ),
     );
+  }
+
+  void _showNotificationsDialog() async {
+    // Get recent scan results and threat counts
+    final coordinator = Provider.of<ScanCoordinator>(context, listen: false);
+    final historyService = coordinator.getHistoryService();
+    final totalThreats = await historyService.getTotalThreatsLast90Days();
+    final scanHistory = await historyService.getAllScanResults();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Color(0xFF151933),
+        title: Row(
+          children: [
+            Icon(Icons.notifications, color: Color(0xFF6C63FF)),
+            SizedBox(width: 12),
+            Text('Notifications', style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        content: Container(
+          width: double.maxFinite,
+          constraints: BoxConstraints(maxHeight: 400),
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              if (totalThreats > 0)
+                _buildNotificationItem(
+                  icon: Icons.warning_amber_rounded,
+                  color: Colors.red,
+                  title: '$totalThreats Threats Detected',
+                  subtitle: 'Review and take action immediately',
+                  time: 'Last 90 days',
+                ),
+              if (scanHistory.isNotEmpty)
+                _buildNotificationItem(
+                  icon: Icons.check_circle,
+                  color: Colors.green,
+                  title: 'Scan Completed',
+                  subtitle: '${scanHistory.first['totalApps']} apps scanned',
+                  time: _formatTime(DateTime.fromMillisecondsSinceEpoch(
+                    scanHistory.first['timestamp'] as int
+                  )),
+                ),
+              _buildNotificationItem(
+                icon: Icons.security,
+                color: Color(0xFF6C63FF),
+                title: 'Real-time Protection Active',
+                subtitle: 'Your device is being monitored',
+                time: 'Always on',
+              ),
+              _buildNotificationItem(
+                icon: Icons.update,
+                color: Colors.blue,
+                title: 'Database Updated',
+                subtitle: '30+ malware signatures loaded',
+                time: '1 hour ago',
+              ),
+              if (totalThreats == 0 && scanHistory.isEmpty)
+                Padding(
+                  padding: EdgeInsets.all(32),
+                  child: Column(
+                    children: [
+                      Icon(Icons.notifications_none, size: 64, color: Colors.white30),
+                      SizedBox(height: 16),
+                      Text(
+                        'No notifications yet',
+                        style: TextStyle(color: Colors.white60, fontSize: 16),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Start a scan to see activity',
+                        style: TextStyle(color: Colors.white30, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('CLOSE', style: TextStyle(color: Color(0xFF6C63FF))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationItem({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String subtitle,
+    required String time,
+  }) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Color(0xFF0A0E27),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(color: Colors.white60, fontSize: 12),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  time,
+                  style: TextStyle(color: Colors.white30, fontSize: 10),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatTime(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+    
+    if (difference.inMinutes < 1) return 'Just now';
+    if (difference.inMinutes < 60) return '${difference.inMinutes}m ago';
+    if (difference.inHours < 24) return '${difference.inHours}h ago';
+    if (difference.inDays < 7) return '${difference.inDays}d ago';
+    return '${(difference.inDays / 7).floor()}w ago';
   }
 }

@@ -111,6 +111,21 @@ class AppWhitelistService {
     return _userWhitelist.contains(packageName);
   }
   
+  /// Get user whitelist
+  static Set<String> getUserWhitelist() {
+    return Set.from(_userWhitelist);
+  }
+  
+  /// Add to whitelist (public method)
+  static void addToWhitelist(String packageName) {
+    _userWhitelist.add(packageName);
+  }
+  
+  /// Remove from whitelist (public method)
+  static void removeFromWhitelist(String packageName) {
+    _userWhitelist.remove(packageName);
+  }
+  
   // Helper: Check if certificate is from trusted publisher
   static bool _isTrustedPublisher(String? certificate) {
     if (certificate == null || certificate.isEmpty) return false;

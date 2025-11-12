@@ -365,7 +365,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                           ),
                                   ),
                                 ),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 24),
+                                
+                                // Info text
+                                Center(
+                                  child: Text(
+                                    'Don\'t have an account?',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
                                 
                                 // Create Account Button - Outline style
                                 Container(

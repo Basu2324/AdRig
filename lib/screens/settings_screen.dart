@@ -1,4 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import '../services/signature_database.dart';
+import 'threat_list_screen.dart';
+import 'scan_history_screen.dart';
+import 'network_activity_screen.dart';
+import 'quarantine_management_screen.dart';
+import 'whitelist_management_screen.dart';
+import 'data_collection_screen.dart';
+import 'privacy_policy_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -16,6 +28,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
   
   String _scanFrequency = 'Daily';
   String _threatLevel = 'Medium';
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+  
+  /// Load settings from SharedPreferences
+  Future<void> _loadSettings() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      setState(() {
+        _realTimeProtection = prefs.getBool('realTimeProtection') ?? true;
+        _autoScan = prefs.getBool('autoScan') ?? false;
+        _notifications = prefs.getBool('notifications') ?? true;
+        _cloudSync = prefs.getBool('cloudSync') ?? true;
+        _biometricLock = prefs.getBool('biometricLock') ?? false;
+        _scanFrequency = prefs.getString('scanFrequency') ?? 'Daily';
+        _threatLevel = prefs.getString('threatLevel') ?? 'Medium';
+      });
+    } catch (e) {
+      print('Error loading settings: $e');
+    }
+  }
+  
+  /// Save settings to SharedPreferences
+  Future<void> _saveSettings() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('realTimeProtection', _realTimeProtection);
+      await prefs.setBool('autoScan', _autoScan);
+      await prefs.setBool('notifications', _notifications);
+      await prefs.setBool('cloudSync', _cloudSync);
+      await prefs.setBool('biometricLock', _biometricLock);
+      await prefs.setString('scanFrequency', _scanFrequency);
+      await prefs.setString('threatLevel', _threatLevel);
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('✅ Settings saved'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 1),
+        ),
+      );
+    } catch (e) {
+      print('Error saving settings: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,19 +102,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: 'Real-Time Protection',
             subtitle: 'Monitor apps and files continuously',
             value: _realTimeProtection,
-            onChanged: (value) => setState(() => _realTimeProtection = value),
+            onChanged: (value) {
+              setState(() => _realTimeProtection = value);
+              _saveSettings();
+            },
           ),
           _buildSwitchTile(
             title: 'Auto Scan',
             subtitle: 'Automatically scan new apps on install',
             value: _autoScan,
-            onChanged: (value) => setState(() => _autoScan = value),
+            onChanged: (value) {
+              setState(() => _autoScan = value);
+              _saveSettings();
+            },
           ),
           _buildSwitchTile(
             title: 'Notifications',
             subtitle: 'Get alerts about threats and updates',
             value: _notifications,
-            onChanged: (value) => setState(() => _notifications = value),
+            onChanged: (value) {
+              setState(() => _notifications = value);
+              _saveSettings();
+            },
           ),
           
           _buildDropdownTile(
@@ -62,7 +131,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: 'How often to run automatic scans',
             value: _scanFrequency,
             items: ['Daily', 'Weekly', 'Monthly'],
-            onChanged: (value) => setState(() => _scanFrequency = value!),
+            onChanged: (value) {
+              setState(() => _scanFrequency = value!);
+              _saveSettings();
+            },
           ),
           
           SizedBox(height: 24),
@@ -73,7 +145,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: 'Biometric Lock',
             subtitle: 'Require fingerprint to open app',
             value: _biometricLock,
-            onChanged: (value) => setState(() => _biometricLock = value),
+            onChanged: (value) {
+              setState(() => _biometricLock = value);
+              _saveSettings();
+            },
           ),
           
           _buildDropdownTile(
@@ -81,7 +156,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: 'Sensitivity of malware detection',
             value: _threatLevel,
             items: ['Low', 'Medium', 'High', 'Paranoid'],
-            onChanged: (value) => setState(() => _threatLevel = value!),
+            onChanged: (value) {
+              setState(() => _threatLevel = value!);
+              _saveSettings();
+            },
           ),
           
           _buildNavigationTile(
@@ -110,7 +188,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: 'Cloud Sync',
             subtitle: 'Sync threat data across devices',
             value: _cloudSync,
-            onChanged: (value) => setState(() => _cloudSync = value),
+            onChanged: (value) {
+              setState(() => _cloudSync = value);
+              _saveSettings();
+            },
           ),
           
           _buildNavigationTile(
@@ -118,7 +199,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: 'Manage what data is shared',
             icon: Icons.analytics_outlined,
             onTap: () {
-              // TODO: Navigate to data collection screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DataCollectionScreen(),
+                ),
+              );
             },
           ),
           
@@ -127,7 +213,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: 'View our privacy policy',
             icon: Icons.policy_outlined,
             onTap: () {
-              // TODO: Show privacy policy
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PrivacyPolicyScreen(),
+                ),
+              );
             },
           ),
           
@@ -140,7 +231,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: 'View past scans and results',
             icon: Icons.history,
             onTap: () {
-              // TODO: Navigate to scan history
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ScanHistoryScreen(),
+                ),
+              );
             },
           ),
           
@@ -149,7 +245,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: 'View all detected threats',
             icon: Icons.warning_amber_outlined,
             onTap: () {
-              // TODO: Navigate to threat log
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ThreatListScreen(category: 'high'),
+                ),
+              );
             },
           ),
           
@@ -158,7 +259,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: 'View network monitoring logs',
             icon: Icons.network_check,
             onTap: () {
-              // TODO: Navigate to network log
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NetworkActivityScreen(),
+                ),
+              );
             },
           ),
           
@@ -166,6 +272,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
           
           // Advanced Settings
           _buildSectionHeader('Advanced'),
+          _buildNavigationTile(
+            title: 'Quarantine',
+            subtitle: 'Manage quarantined apps',
+            icon: Icons.lock_outline,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => QuarantineManagementScreen(),
+                ),
+              );
+            },
+          ),
+          
+          _buildNavigationTile(
+            title: 'Whitelist',
+            subtitle: 'Manage trusted apps',
+            icon: Icons.verified_user,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WhitelistManagementScreen(),
+                ),
+              );
+            },
+          ),
+          
           _buildNavigationTile(
             title: 'Update Database',
             subtitle: 'Update malware signatures',
@@ -189,7 +323,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: 'Backup your configuration',
             icon: Icons.download,
             onTap: () {
-              // TODO: Export settings
+              _exportSettings();
             },
           ),
           
@@ -326,31 +460,99 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showUpdateDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Color(0xFF151933),
-        title: Text('Update Database', style: TextStyle(color: Colors.white)),
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text('Update Database', style: TextStyle(color: Colors.black87)),
         content: Text(
           'Download the latest malware signatures?\n\nSize: ~15 MB',
-          style: TextStyle(color: Colors.white70),
+          style: TextStyle(color: Colors.black87),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('CANCEL'),
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text('CANCEL', style: TextStyle(color: Colors.grey.shade700)),
           ),
           ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // TODO: Start update
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Database updated successfully'),
-                  backgroundColor: Color(0xFF00C853),
+            onPressed: () async {
+              // Close confirmation dialog first
+              Navigator.pop(dialogContext);
+              
+              // Show loading dialog with its own context
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (loadingContext) => WillPopScope(
+                  onWillPop: () async => false,
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(color: Colors.blue.shade700),
+                          SizedBox(height: 16),
+                          Text(
+                            'Updating database...',
+                            style: TextStyle(color: Colors.black87),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               );
+              
+              try {
+                // Update the signature database
+                final signatureDB = SignatureDatabase();
+                await signatureDB.initialize();
+                final success = await signatureDB.manualUpdate();
+                
+                // Close loading dialog using Navigator.of(context).pop()
+                if (mounted) {
+                  Navigator.of(context).pop();
+                  
+                  if (success) {
+                    final stats = await signatureDB.getDatabaseStats();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('✅ Database updated!\n${stats['totalSignatures']} signatures loaded'),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('ℹ️ Database is already up to date'),
+                        backgroundColor: Colors.blue,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                }
+              } catch (e) {
+                // Close loading dialog
+                if (mounted) {
+                  Navigator.of(context).pop();
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('❌ Update failed: $e'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                }
+              }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF6C63FF),
+              backgroundColor: Colors.blue.shade700,
+              foregroundColor: Colors.white,
             ),
             child: Text('UPDATE'),
           ),
@@ -362,36 +564,220 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showClearCacheDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Color(0xFF151933),
-        title: Text('Clear Cache', style: TextStyle(color: Colors.white)),
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text('Clear Cache', style: TextStyle(color: Colors.black87)),
         content: Text(
           'This will clear temporary files and logs.\n\nEstimated space: 45 MB',
-          style: TextStyle(color: Colors.white70),
+          style: TextStyle(color: Colors.black87),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('CANCEL'),
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text('CANCEL', style: TextStyle(color: Colors.grey.shade700)),
           ),
           ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // TODO: Clear cache
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Cache cleared successfully'),
-                  backgroundColor: Color(0xFF00C853),
+            onPressed: () async {
+              // Close confirmation dialog first
+              Navigator.pop(dialogContext);
+              
+              // Show loading dialog with its own context
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (loadingContext) => WillPopScope(
+                  onWillPop: () async => false,
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(color: Colors.blue.shade700),
+                          SizedBox(height: 16),
+                          Text(
+                            'Clearing cache...',
+                            style: TextStyle(color: Colors.black87),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               );
+              
+              try {
+                // Clear cache (simulate delay for processing)
+                await Future.delayed(Duration(seconds: 1));
+                
+                // Clear SharedPreferences cache (except settings)
+                final prefs = await SharedPreferences.getInstance();
+                final keysToKeep = [
+                  'realTimeProtection',
+                  'autoScan',
+                  'notifications',
+                  'cloudSync',
+                  'biometricLock',
+                  'scanFrequency',
+                  'threatLevel',
+                  'isLoggedIn',
+                  'userId',
+                  'userName',
+                  'userEmail',
+                ];
+                
+                final allKeys = prefs.getKeys();
+                int clearedCount = 0;
+                for (final key in allKeys) {
+                  if (!keysToKeep.contains(key)) {
+                    await prefs.remove(key);
+                    clearedCount++;
+                  }
+                }
+                
+                // Close loading dialog using Navigator.of(context).pop()
+                if (mounted) {
+                  Navigator.of(context).pop();
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('✅ Cache cleared successfully\n$clearedCount items removed'),
+                      backgroundColor: Colors.green,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
+              } catch (e) {
+                // Close loading dialog
+                if (mounted) {
+                  Navigator.of(context).pop();
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('❌ Failed to clear cache: $e'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                }
+              }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF6C63FF),
+              backgroundColor: Colors.blue.shade700,
+              foregroundColor: Colors.white,
             ),
             child: Text('CLEAR'),
           ),
         ],
       ),
     );
+  }
+
+  /// Export settings to JSON file
+  Future<void> _exportSettings() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      // Collect all settings
+      final settingsData = {
+        'exported_at': DateTime.now().toIso8601String(),
+        'app': 'AdRig Malware Scanner',
+        'version': '1.0.0',
+        'settings': {
+          'general': {
+            'realTimeProtection': prefs.getBool('realTimeProtection') ?? true,
+            'autoScan': prefs.getBool('autoScan') ?? false,
+            'notifications': prefs.getBool('notifications') ?? true,
+            'cloudSync': prefs.getBool('cloudSync') ?? true,
+            'biometricLock': prefs.getBool('biometricLock') ?? false,
+            'scanFrequency': prefs.getString('scanFrequency') ?? 'Daily',
+            'threatLevel': prefs.getString('threatLevel') ?? 'Medium',
+          },
+          'privacy': {
+            'data_crashReports': prefs.getBool('data_crashReports') ?? true,
+            'data_usageStats': prefs.getBool('data_usageStats') ?? true,
+            'data_threatIntel': prefs.getBool('data_threatIntel') ?? true,
+            'data_performanceData': prefs.getBool('data_performanceData') ?? false,
+            'data_diagnostics': prefs.getBool('data_diagnostics') ?? false,
+          },
+        },
+      };
+      
+      // Convert to JSON
+      final jsonString = JsonEncoder.withIndent('  ').convert(settingsData);
+      
+      // Get documents directory
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/adrig_settings_backup.json';
+      final file = File(filePath);
+      
+      // Write to file
+      await file.writeAsString(jsonString);
+      
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: Color(0xFF151933),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.green, size: 28),
+                SizedBox(width: 12),
+                Text(
+                  'Export Successful',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Settings exported to:',
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF0A0E27),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    filePath,
+                    style: TextStyle(
+                      color: Color(0xFF6C63FF),
+                      fontSize: 12,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK', style: TextStyle(color: Color(0xFF6C63FF))),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Export failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }
