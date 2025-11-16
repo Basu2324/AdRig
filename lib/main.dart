@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/theme/scanx_colors.dart';
 import 'services/scan_coordinator.dart';
 import 'services/app_telemetry_collector.dart';
@@ -12,6 +13,15 @@ import 'screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Load environment variables (API keys)
+  try {
+    await dotenv.load(fileName: ".env");
+    print('✅ Environment variables loaded');
+  } catch (e) {
+    print('⚠️ .env file not found - API features disabled');
+    print('ℹ️ Create .env file with API keys for full functionality');
+  }
   
   // Initialize Firebase (optional - app works without it)
   try {

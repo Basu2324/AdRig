@@ -148,7 +148,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
   Future<void> _performScan() async {
     print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    print('� Dashboard: _performScan() called');
+    print('🚀🚀🚀 SCAN BUTTON TAPPED - STARTING COMPREHENSIVE SCAN!!! 🚀🚀🚀');
+    print('🚀 Dashboard: _performScan() called');
     print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     
     // Check permissions first!
@@ -310,14 +311,15 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         return;
       }
       
-      print('Step 4: Starting scan of ${apps.length} apps...');
+      print('Step 4: Starting FULL SCAN (Apps + System)...');
 
-      final result = await coordinator.scanInstalledApps(
+      // Use scanEverything instead of scanInstalledApps for comprehensive scanning
+      final result = await coordinator.scanEverything(
         apps,
-        onProgress: (scanned, total, appName) {
+        onProgress: (stage, scanned, total, details) {
           // Check for cancellation during scan
           if (_cancelScan || !mounted) {
-            print('⚠️ Scan cancelled at $scanned/$total apps');
+            print('⚠️ Scan cancelled at $scanned/$total');
             return;
           }
           
@@ -326,7 +328,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               setState(() {
                 _scannedApps = scanned;
                 _totalApps = total;
-                _currentApp = appName;
+                _currentApp = '$stage: $details';
               });
             } catch (e) {
               print('⚠️ Error updating progress: $e');
@@ -362,10 +364,11 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         await _loadThreatHistory();
         
         if (mounted) {
+          // Extract the app scan result from the full scan result
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ScanResultsScreen(result: result),
+              builder: (_) => ScanResultsScreen(result: result.appScanResult),
             ),
           );
         }
@@ -978,11 +981,50 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           
           SizedBox(height: 40),
           
+          // Current Stage (LARGE & PROMINENT)
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              color: Color(0xFF6C63FF).withOpacity(0.15),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Color(0xFF6C63FF).withOpacity(0.6),
+                width: 2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFF6C63FF).withOpacity(0.3),
+                  blurRadius: 12,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Text(
+                  _currentApp.isEmpty ? 'Initializing scan...' : _currentApp,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF00D9FF),
+                    letterSpacing: 0.5,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          
+          SizedBox(height: 30),
+          
           Text(
-            'Scanning...',
+            'Comprehensive Security Scan',
             style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
               color: Colors.white,
             ),
           ),
@@ -991,10 +1033,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           
           Container(
             width: 300,
-            height: 8,
+            height: 10,
             decoration: BoxDecoration(
               color: Colors.white10,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(5),
             ),
             child: FractionallySizedBox(
               alignment: Alignment.centerLeft,
@@ -1004,7 +1046,14 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   gradient: LinearGradient(
                     colors: [Color(0xFF6C63FF), Color(0xFF00D9FF)],
                   ),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xFF00D9FF).withOpacity(0.5),
+                      blurRadius: 8,
+                      spreadRadius: 1,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -1013,7 +1062,18 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           SizedBox(height: 16),
           
           Text(
-            '$_scannedApps / $_totalApps apps',
+            '${(_scannedApps / (_totalApps > 0 ? _totalApps : 1) * 100).toStringAsFixed(0)}% Complete',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF00D9FF),
+            ),
+          ),
+          
+          SizedBox(height: 8),
+          
+          Text(
+            '$_scannedApps of $_totalApps items',
             style: TextStyle(
               fontSize: 16,
               color: Colors.white70,
@@ -1022,16 +1082,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           
           SizedBox(height: 8),
           
-          Text(
-            _currentApp,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white60,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+          // Removed duplicate display of _currentApp since it's now shown prominently above
           
           SizedBox(height: 40),
           

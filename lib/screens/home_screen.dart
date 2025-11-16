@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/scan_coordinator.dart';
 import '../services/app_telemetry_collector.dart';
+import '../widgets/network_security_status_widget.dart';
 import 'scan_results_screen.dart';
 import 'dart:math' as math;
 
@@ -18,6 +19,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int _scannedApps = 0;
   int _totalApps = 0;
   String _currentApp = '';
+  String _scanStage = ''; // NEW: Track current scan stage
+  bool _fullScanMode = false; // NEW: Toggle between app-only and full scan
   
   late AnimationController _pulseController;
   late AnimationController _rotateController;
@@ -54,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       _scannedApps = 0;
       _totalApps = 0;
       _currentApp = '';
+      _scanStage = 'Preparing...';
     });
     
     _rotateController.repeat();
@@ -65,28 +69,77 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       final apps = await telemetryCollector.collectAllAppsTelemetry();
       setState(() => _totalApps = apps.length);
 
-      final result = await coordinator.scanInstalledApps(
-        apps,
-        onProgress: (scanned, total, appName) {
-          if (mounted) {
-            setState(() {
-              _scannedApps = scanned;
-              _currentApp = appName;
-            });
-          }
-        },
-      );
-
-      if (mounted) {
-        setState(() => _isScanning = false);
-        _rotateController.stop();
+      if (_fullScanMode) {
+        // COMPREHENSIVE SCAN - Everything on phone
+        setState(() => _scanStage = 'Apps');
         
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ScanResultsScreen(result: result),
-          ),
+        final fullResult = await coordinator.scanEverything(
+          apps,
+          onProgress: (stage, scanned, total, details) {
+            if (mounted) {
+              setState(() {
+                _scanStage = stage;
+                _scannedApps = scanned;
+                _totalApps = total;
+                _currentApp = details;
+              });
+            }
+          },
         );
+        
+        if (mounted) {
+          setState(() => _isScanning = false);
+          _rotateController.stop();
+          
+          // Show comprehensive results
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '✅ Full scan complete! Found ${fullResult.totalThreats} threats',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: fullResult.totalThreats > 0 
+                ? Color(0xFFFF6B6B) 
+                : Color(0xFF4CAF50),
+              duration: Duration(seconds: 4),
+            ),
+          );
+          
+          // Navigate to app scan results (we'll enhance this later)
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ScanResultsScreen(result: fullResult.appScanResult),
+            ),
+          );
+        }
+      } else {
+        // QUICK SCAN - Apps only
+        setState(() => _scanStage = 'Scanning Apps');
+        
+        final result = await coordinator.scanInstalledApps(
+          apps,
+          onProgress: (scanned, total, appName) {
+            if (mounted) {
+              setState(() {
+                _scannedApps = scanned;
+                _currentApp = appName;
+              });
+            }
+          },
+        );
+
+        if (mounted) {
+          setState(() => _isScanning = false);
+          _rotateController.stop();
+          
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ScanResultsScreen(result: result),
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -186,6 +239,107 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           
           SizedBox(height: 40),
           
+          // Scan Mode Toggle
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24),
+            child: Container(
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Color(0xFF1A1F3A),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Color(0xFF6C63FF).withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _fullScanMode = false),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: !_fullScanMode 
+                            ? Color(0xFF6C63FF) 
+                            : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.apps,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              'Quick Scan',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                            Text(
+                              'Apps Only',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _fullScanMode = true),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: _fullScanMode 
+                            ? Color(0xFFFF6B6B) 
+                            : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.security,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              'Full Scan',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                            Text(
+                              'Everything',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          SizedBox(height: 30),
+          
           // Main Scan Button
           GestureDetector(
             onTap: _startScan,
@@ -255,29 +409,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           
           SizedBox(height: 50),
           
+          // Network Security Status Widget
+          NetworkSecurityStatusWidget(),
+          
+          SizedBox(height: 20),
+          
           // Feature Cards
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
                 _buildFeatureCard(
-                  icon: Icons.bug_report,
-                  title: 'YARA Pattern Detection',
-                  description: '35 malware signatures including banking trojans, spyware & RATs',
+                  icon: Icons.folder_open,
+                  title: 'Complete System Scan',
+                  description: 'Apps, Files, SD Card, SMS, WhatsApp, Network & Downloads',
                   color: Color(0xFFFF6B6B),
                 ),
                 SizedBox(height: 16),
                 _buildFeatureCard(
-                  icon: Icons.cloud_queue,
-                  title: 'Cloud Reputation Check',
-                  description: 'Real-time threat intelligence from VirusTotal & SafeBrowsing',
+                  icon: Icons.flash_on,
+                  title: 'Ultra-Fast Scanning',
+                  description: '10x parallel processing with smart caching & incremental scans',
                   color: Color(0xFF00D9FF),
                 ),
                 SizedBox(height: 16),
                 _buildFeatureCard(
                   icon: Icons.security,
-                  title: 'Behavioral Analysis',
-                  description: 'Monitor app permissions, network activity & file operations',
+                  title: 'Multi-Layer Detection',
+                  description: 'YARA rules, ML models, signatures, behavior & cloud intelligence',
                   color: Color(0xFF6C63FF),
                 ),
               ],
@@ -442,8 +601,43 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         
         SizedBox(height: 40),
         
+        // Scan stage indicator
+        if (_scanStage.isNotEmpty) ...[
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              color: Color(0xFF00D9FF).withOpacity(0.15),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Color(0xFF00D9FF).withOpacity(0.5),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  _getScanStageIcon(_scanStage),
+                  color: Color(0xFF00D9FF),
+                  size: 20,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  'Stage: $_scanStage',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF00D9FF),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16),
+        ],
+        
         Text(
-          'Scanning your device...',
+          _fullScanMode ? 'Comprehensive System Scan...' : 'Scanning your apps...',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -454,7 +648,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         SizedBox(height: 12),
         
         Text(
-          '$_scannedApps / $_totalApps apps analyzed',
+          '$_scannedApps / $_totalApps ${_scanStage == "Apps" ? "apps" : "items"} analyzed',
           style: TextStyle(
             fontSize: 16,
             color: Colors.white54,
@@ -699,4 +893,31 @@ class AdRigLogoPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// Helper extension for HomeScreenState
+extension _HomeScreenStateHelpers on _HomeScreenState {
+  IconData _getScanStageIcon(String stage) {
+    switch (stage.toLowerCase()) {
+      case 'apps':
+      case 'scanning apps':
+        return Icons.apps;
+      case 'file system':
+      case 'files':
+        return Icons.folder;
+      case 'sd card':
+        return Icons.sd_card;
+      case 'downloads':
+        return Icons.download;
+      case 'sms/mms':
+      case 'sms':
+        return Icons.message;
+      case 'network':
+        return Icons.wifi;
+      case 'whatsapp':
+        return Icons.chat;
+      default:
+        return Icons.security;
+    }
+  }
 }

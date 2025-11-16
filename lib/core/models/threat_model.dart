@@ -13,6 +13,7 @@ enum ThreatType {
   anomaly,
   suspicious,
   rootkit,
+  networkThreat,
 }
 
 enum DetectionMethod {

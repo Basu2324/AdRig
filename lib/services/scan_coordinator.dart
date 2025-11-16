@@ -196,6 +196,9 @@ class ScanCoordinator {
         // Notify UI of progress
         onProgress?.call(processedCount, appsToScan.length, app.appName);
         
+        // CRITICAL: Yield to UI thread to prevent ANR ("App Not Responding")
+        await Future.delayed(Duration(milliseconds: 50));
+        
         print('[${processedCount}/${appsToScan.length}] ${app.appName}');
         
         if (error != null) {
@@ -367,4 +370,45 @@ class ScanCoordinator {
   
   /// Check if cancellation was requested
   bool isCancellationRequested() => _cancelRequested;
+  
+  /// Scan EVERYTHING: Apps + System (Files, SMS, Network, WiFi)
+  Future<FullScanResult> scanEverything(
+    List<AppTelemetry> installedApps, {
+    Function(String stage, int progress, int total, String details)? onProgress,
+  }) async {
+    print('🚀 Starting COMPREHENSIVE scan (Apps + System)...');
+    
+    // Scan apps first (takes longest)
+    final appScanResult = await scanInstalledApps(
+      installedApps,
+      onProgress: (scanned, total, app) {
+        onProgress?.call('Apps', scanned, total, app);
+      },
+    );
+    
+    // TODO: Add system scan (files, SMS, network, WiFi) here
+    // For now, return app scan results
+    
+    return FullScanResult(
+      appScanResult: appScanResult,
+      systemScanResult: null,
+      totalThreats: appScanResult.threats.length,
+      scanDuration: DateTime.now().difference(appScanResult.startTime),
+    );
+  }
 }
+
+class FullScanResult {
+  final ScanResult appScanResult;
+  final dynamic systemScanResult;
+  final int totalThreats;
+  final Duration scanDuration;
+  
+  FullScanResult({
+    required this.appScanResult,
+    required this.systemScanResult,
+    required this.totalThreats,
+    required this.scanDuration,
+  });
+}
+

@@ -170,9 +170,23 @@ class ProductionScanner {
         // Don't fail the whole scan if static analysis fails
       }
       
-      // ==================== STEP 2: FAST Signature Matching (Priority Check) ====================
-      print('\n🔐 [2/6] Signature Database Check...');
+      // ==================== STEP 2: SMART Signature Matching ====================
+      print('\n🔐 [2/6] Smart Signature Check...');
       scanSteps.add('Signature Matching');
+      
+      // OPTIMIZATION: Skip heavy scanning for known-good apps
+      if (_isKnownGoodApp(packageName)) {
+        print('  ✅ Trusted app - skipping deep scan: $packageName');
+        return APKScanResult(
+          scanId: 'trusted_${DateTime.now().millisecondsSinceEpoch}',
+          timestamp: DateTime.now(),
+          appScanned: appName,
+          packageName: packageName,
+          threatsFound: [],
+          riskScore: 0,
+          scanSteps: ['Fast Path - Trusted App'],
+        );
+      }
       
       bool signatureMatch = false;
       if (apkAnalysis != null && apkAnalysis.hashes.isNotEmpty) {
@@ -568,6 +582,38 @@ class ProductionScanner {
     
     // Cap at 100
     return risk.clamp(0, 100);
+  }
+  
+  /// Smart whitelist - skip heavy scanning for known-good apps
+  /// This prevents false positives and speeds up scanning
+  bool _isKnownGoodApp(String packageName) {
+    final trustedPrefixes = [
+      'com.google.',
+      'com.android.',
+      'com.samsung.',
+      'com.sec.android.',
+      'com.microsoft.',
+      'com.amazon.',
+      'com.facebook.',
+      'com.whatsapp',
+      'com.instagram.',
+      'com.twitter.',
+      'com.spotify.',
+      'com.netflix.',
+      'com.uber.',
+      'com.paypal.',
+      'com.linkedin.',
+      'com.snapchat.',
+      'com.skype.',
+      'com.zoom.',
+      'com.adobe.',
+      'com.dropbox.',
+      'org.mozilla.',
+      'com.opera.',
+      'com.brave.',
+    ];
+    
+    return trustedPrefixes.any((prefix) => packageName.startsWith(prefix));
   }
 }
 

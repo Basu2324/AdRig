@@ -6,7 +6,6 @@ import 'package:path_provider/path_provider.dart';
 import '../services/signature_database.dart';
 import 'threat_list_screen.dart';
 import 'scan_history_screen.dart';
-import 'network_activity_screen.dart';
 import 'quarantine_management_screen.dart';
 import 'whitelist_management_screen.dart';
 import 'data_collection_screen.dart';
@@ -249,20 +248,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ThreatListScreen(category: 'high'),
-                ),
-              );
-            },
-          ),
-          
-          _buildNavigationTile(
-            title: 'Network Activity',
-            subtitle: 'View network monitoring logs',
-            icon: Icons.network_check,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NetworkActivityScreen(),
                 ),
               );
             },
